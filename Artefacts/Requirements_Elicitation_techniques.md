@@ -1,10 +1,3 @@
-# 🏠 Rental_AI
-
-A smart rental application designed to simplify the process of finding and managing flat rentals.  
-This project applies various **Requirements Elicitation Techniques** to identify and refine the key features of the system.
-
----
-
 ## 📌 Requirements Elicitation Techniques
 
 ### 1. Observation
