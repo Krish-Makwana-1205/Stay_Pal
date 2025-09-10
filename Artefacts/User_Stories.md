@@ -28,5 +28,5 @@ author - Meet Dobariya <br>
 6.As a landlord <br>
 I want to update the availability of my flats daily <br> 
 so that tenants always see correct and up-to-date listings.<br>
-author - Meet Dobariya
+author - Meet Dobariya <br>
 
