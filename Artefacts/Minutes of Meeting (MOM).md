@@ -25,7 +25,9 @@ Mode: Offline
 Date: 02/09/2025  
 Agenda:  
 - Finalize team structure.  
-- Assign responsibilities.  
+- Assign responsibilities.
+
+  Minutes prepared by Aayman
 
                                       --
 
@@ -68,10 +70,47 @@ Mode: Offline
 - Non-Tech members begin documentation and requirement gathering activities.  
 
 ## Next Meeting
-Date: [To be decided]  
+Date: 11/09/2025  
 Agenda:  
 - Review learning progress of Tech team.  
 - Review initial documentation and requirement work of Non-Tech team.  
+
+Minutes prepared by Aayman  
+
+
+
+Date: 11/09/2025  
+Time: 4:00 PM – 5:00 PM  
+Attendees: Krish, Aayman, Harshil, Heet, Kosha, Namra, Meet, Shambhavi  
+Mode: Offline  
+
+## Agenda
+- Decide how the process will move forward for Tech and Non-Tech members.  
+- Discuss preparation for mid evaluation.  
+- Assign immediate next steps to Tech and Non-Tech teams.  
+
+## Discussion
+- Talked about how the general workflow will continue between Tech and Non-Tech members.  
+- Awaiting clarity from sir on what needs to be submitted for mid evaluation.  
+- Non-Tech members were advised to start learning UI/UX.  
+- Tech members planned to begin work on the landing page and login page.  
+
+## Decisions
+- Non-Tech members will start learning UI/UX.  
+- Tech members will start development of the landing page and login page.  
+
+## Action Points
+- Non-Tech team: Begin UI/UX learning.  
+- Tech team: Start implementing the landing page and login page.  
+- All members: Wait for sir’s instructions regarding mid evaluation submissions.  
+
+## Next Meeting
+Date: 12/09/2025  
+Time: 9:00 PM – 10:00 PM  
+Agenda:  
+- Review progress of Tech team on landing & login page.  
+- Review progress of Non-Tech team on UI/UX.  
+- Align tasks with mid evaluation requirements.  
 
 Minutes prepared by Aayman  
 
