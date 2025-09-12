@@ -76,8 +76,7 @@ Agenda:
 - Review initial documentation and requirement work of Non-Tech team.  
 
 Minutes prepared by Aayman  
-
-
+                                  --
 
 Date: 11/09/2025  
 Time: 4:00 PM – 5:00 PM  
