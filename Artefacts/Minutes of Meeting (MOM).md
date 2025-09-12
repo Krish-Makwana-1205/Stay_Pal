@@ -114,5 +114,58 @@ Agenda:
 
 Minutes prepared by Aayman  
 
+--
+
+Date: 12/09/2025  
+Time: 9:00 PM – 10:00 PM  
+Attendees: Aayman, Krish, Harshil, Heet, Kosha, Meet, Namra, Shambhavi, Yogesh  
+Mode: Offline  
+
+## Agenda
+- Understand sir’s feedback from class and align project approach.  
+- Focus on what is expected for the mid evaluation.  
+- Assign responsibilities for elicitation techniques and related tasks.
+- 
+## Discussion
+- Sir emphasized that for the **mid evaluation**, he is more focused on the **process** rather than the code.  
+- He highlighted interest in:  
+  - Sprints  
+  - User stories (and where they are implemented)  
+  - Elicitation techniques  
+  - Functional requirements  
+  - Non-functional requirements  
+  - Brainstorming methods  
+- He also mentioned that **running isn’t important but scaling and sustaining is.**  
+- Therefore, we decided to **start with elicitation techniques** as the base.  
+- Brainstormed how elicitation techniques would lead to user stories → conflict resolution → final requirements documentation.  
+- Agreed to **remove Tech/Non-Tech bifurcation** since all members should have knowledge of both sides.  
+
+## Decisions
+- Shambhavi will create a Google Form with questions for working professionals and prepare a report from the responses.  
+- Heet, Namra, and Krish will conduct interviews with a landlord and an advocate.  
+- Kosha and Harshil will study two existing websites with similar features and prepare documentation.  
+- Aayman will act as **SCRUM Master**, manage sprints, and also be responsible for updating the Minutes of Meetings (MoMs).  
+- The project workflow will follow this process:  
+  **Elicitation Techniques → Requirements (Functional, Non-Functional, Domain) → User Stories → EPICs (Sprints) → Conflict Resolution → Documentation.**  
+- All work to be completed over the weekend.  
+
+## Action Points
+- Shambhavi: Create Google Form, collect responses, and draft report.  
+- Heet, Namra, Krish: Conduct interviews with landlord and advocate.  
+- Kosha, Harshil: Research two similar websites and prepare documentation.  
+- Aayman: Act as SCRUM Master, structure sprints, and update MoMs.  
+- All members: Contribute to brainstorming and ensure knowledge sharing across tasks.  
+
+## Next Meeting
+Date: 15/09/2025  
+Time: 9:00 PM – 10:00 PM  
+Agenda:  
+- Review elicitation work (Google Form responses, interviews, website analysis).  
+- Start forming user stories based on elicitation.  
+- Plan sprints and identify possible conflicts.  
+
+Minutes prepared by Aayman  
+
+
 
   
