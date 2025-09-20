@@ -180,12 +180,12 @@ Mode: Offline
 - Start drafting user stories.  
 
 ## Discussion
-- Met our mentor **Hetul**, who advised us to start building some **backend prototype** such as user login and landing page.  
-- Team was initially confused about what exact problem the website should solve (finding flatmates, finding houses, or both).  
-- We went back to the basics and brainstormed possible problem areas.  
+- Met our mentor **Hetul**, who advised us to start building some functionalities such as user login and landing page.  
+- Team was divided about how the website should solve the problems(finding flatmates, finding houses, or both).  
+- We went back to the basics and brainstormed possible solutions.  
 - In the end, we structured the solution into three parts:  
   1. For people **only looking for flatmates**.  
-  2. For people looking for **empty houses with ‘x’ vacancies**.  
+  2. For people looking for **empty houses**.  
   3. For people looking for **houses already occupied** (further divided into):  
      - Houses listed by landlords.  
      - Houses listed by tenants.  
@@ -195,21 +195,20 @@ Mode: Offline
 ## Decisions
 - Website scope will cover three parts:  
   - Flatmate search.  
-  - Empty houses with vacancies.  
+  - Empty houses.  
   - Occupied houses (landlord listings + tenant listings).  
-- Backend prototype development will begin with **user login and landing page**.  
+- Development will begin with **user login and landing page**.  
 - User Stories writing has started, beginning with landlord perspective (based on Namra’s interview).  
 
 ## Action Points
-- Tech team: Start backend prototype (user login + landing page).  
-- Non-Tech/documentation team: Continue writing user stories for other stakeholders.  
+- Tech team: Start developing(user login + landing page).  
+- All members: Continue writing user stories for other stakeholders.  
 - All members: Contribute to brainstorming and refining problem definition.  
 
 ## Next Meeting
 Date: 19/09/2025  
 Time: 4:00 PM – 7:00 PM  
 Agenda:  
-- Review progress on backend prototype.  
 - Write user stories for other stakeholders.  
 - Align website scope with mentor’s advice.  
 
@@ -223,13 +222,11 @@ Attendees: Krish, Kosha, Shambhavi, Aayman, Yashkumar, Yogesh, Heet, Namra
 Mode: Offline  
 
 ## Agenda
-- Divide work for Functional Requirements, Non-Functional Requirements, EPICs, User Stories, and Conflicts.  
-- Review design templates for login and landing page.  
+- Divide work for Functional Requirements, Non-Functional Requirements, EPICs, User Stories, and Conflicts.   
 - Plan next steps for mid evaluation submission.  
 
 ## Discussion
 - Work responsibilities were divided among members.  
-- Suggested and reviewed some login design templates for the login page and landing page.  
 - Planned to start writing code for login and landing pages to present during mid evaluation.  
 
 ## Decisions
@@ -240,15 +237,13 @@ Mode: Offline
   - User Stories → Heet  
   - Conflicts → Yogesh  
 - These tasks should be completed by **20/09/2025, 12:00 noon**.  
-- The login and landing page will be implemented using the selected templates.  
 
 ## Action Points
 - Meet: Document Functional Requirements.  
 - Harshil: Document Non-Functional Requirements.  
 - Kosha: Prepare EPICs.  
 - Heet: Write User Stories.  
-- Yogesh: Document possible conflicts.  
-- All members: Work on login and landing page implementation based on selected templates.  
+- Yogesh: Document possible conflicts.   
 
 ## Next Meeting
 Date: 22/09/2025  
@@ -256,7 +251,7 @@ Time: 4:00 PM – 6:00 PM
 Agenda:  
 - Review Functional/Non-Functional Requirements, EPICs, User Stories, and Conflict documentation.  
 - Check progress on login and landing page code.  
-- Align work with mid evaluation requirements.  
+- Finalize the design for the login page 
 
 Minutes prepared by Aayman  
 
