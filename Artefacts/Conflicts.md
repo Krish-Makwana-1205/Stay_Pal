@@ -34,14 +34,14 @@ The property would go down the list if the property owner does not respond.
 
 ## Conflict 3
 
-**Property Owner**
+**Property Owner:**
 I want to list my property even if it is half occupied
 
-**Tenant**
+**Tenant:**
 Since I need to live with the roommate, I will list the property
 
 **Both want to list the same property**
 
-**Resolution**
+**Resolution:**
 Legally, the property owner must allow who lives in their property, so we let both of them list the property. We are just a matching application, and for both the tenant and the property owner, we would provide the best fit. And what happens after that is out of our scope
 
