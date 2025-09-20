@@ -186,7 +186,7 @@ Mode: Offline
 - In the end, we structured the solution into three parts:  
   1. For people **only looking for flatmates**.  
   2. For people looking for **empty houses**.  
-  3. For people looking for **houses already occupied** (further divided into):  
+  3. For people looking for **houses already occupied**(not to full capacity) (further divided into):  
      - Houses listed by landlords.  
      - Houses listed by tenants.  
      - A same house can be listed by both landlord and tenant.  
@@ -218,7 +218,7 @@ Minutes prepared by Aayman
 
 Date: 19/09/2025  
 Time: 4:00 PM – 7:00 PM  
-Attendees: Krish, Kosha, Shambhavi, Aayman, Yashkumar, Yogesh, Heet, Namra  
+Attendees: Krish, Kosha, Shambhavi, Aayman, Yashkumar, Yogesh, Heet, Namra, Meet, Harshil  
 Mode: Offline  
 
 ## Agenda
