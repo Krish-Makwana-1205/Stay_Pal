@@ -215,6 +215,52 @@ Agenda:
 
 Minutes prepared by Aayman  
 
+-- 
+
+Date: 19/09/2025  
+Time: 4:00 PM – 7:00 PM  
+Attendees: Krish, Kosha, Shambhavi, Aayman, Yashkumar, Yogesh, Heet, Namra  
+Mode: Offline  
+
+## Agenda
+- Divide work for Functional Requirements, Non-Functional Requirements, EPICs, User Stories, and Conflicts.  
+- Review design templates for login and landing page.  
+- Plan next steps for mid evaluation submission.  
+
+## Discussion
+- Work responsibilities were divided among members.  
+- Suggested and reviewed some login design templates for the login page and landing page.  
+- Planned to start writing code for login and landing pages to present during mid evaluation.  
+
+## Decisions
+- Work division:  
+  - Functional Requirements → Meet  
+  - Non-Functional Requirements → Harshil  
+  - EPICs → Kosha  
+  - User Stories → Heet  
+  - Conflicts → Yogesh  
+- These tasks should be completed by **20/09/2025, 12:00 noon**.  
+- The login and landing page will be implemented using the selected templates.  
+
+## Action Points
+- Meet: Document Functional Requirements.  
+- Harshil: Document Non-Functional Requirements.  
+- Kosha: Prepare EPICs.  
+- Heet: Write User Stories.  
+- Yogesh: Document possible conflicts.  
+- All members: Work on login and landing page implementation based on selected templates.  
+
+## Next Meeting
+Date: 22/09/2025  
+Time: 4:00 PM – 6:00 PM  
+Agenda:  
+- Review Functional/Non-Functional Requirements, EPICs, User Stories, and Conflict documentation.  
+- Check progress on login and landing page code.  
+- Align work with mid evaluation requirements.  
+
+Minutes prepared by Aayman  
+
+
 
 
 
