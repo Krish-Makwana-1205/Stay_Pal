@@ -20,8 +20,7 @@
 - A property owner should receive a notification if someone is interested.  
 
 ## Verification & Security
-- System should verify tenants using documents.  
-- Protect website against Ddos attacks.  
+- System should verify tenants using documents.   
 - Private info or preferences of users should be secure.  
 - Property owner requirements should be restricted to him.  
 
