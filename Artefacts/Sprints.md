@@ -22,7 +22,7 @@
 
 ## Notes
 - Sprint 1 started after the 19th Sept meeting where tasks were divided.  
-- Goal is to complete by 22nd Sept for mid evaluation.  
+- Goal is to complete by 21st Sept for mid evaluation.  
 - Conflicts will be handled in later sprints.  
 - All members must commit their own contributions to GitHub.  
 - The Scrum Master (Aayman) is tracking progress and updating MoMs.  
