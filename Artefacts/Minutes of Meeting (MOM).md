@@ -166,6 +166,56 @@ Agenda:
 
 Minutes prepared by Aayman  
 
+--
+
+Date: 17/09/2025  
+Time: 5:30 PM – 8:30 PM  
+Attendees: Aayman, Krish, Shambhavi, Kosha, Yashkumar, Meet, Heet, Harshil, Yogesh, Namra  
+Mode: Offline  
+
+## Agenda
+- Meet Project Mentor Hetul for guidance.  
+- Clarify the exact problem our website will be solving.  
+- Brainstorm possible directions and finalize scope.  
+- Start drafting user stories.  
+
+## Discussion
+- Met our mentor **Hetul**, who advised us to start building some **backend prototype** such as user login and landing page.  
+- Team was initially confused about what exact problem the website should solve (finding flatmates, finding houses, or both).  
+- We went back to the basics and brainstormed possible problem areas.  
+- In the end, we structured the solution into three parts:  
+  1. For people **only looking for flatmates**.  
+  2. For people looking for **empty houses with ‘x’ vacancies**.  
+  3. For people looking for **houses already occupied** (further divided into):  
+     - Houses listed by landlords.  
+     - Houses listed by tenants.  
+     - A same house can be listed by both landlord and tenant.  
+- After finalizing the structure, we wrote **User Stories for Landlord** based on the interview conducted by Namra.  
+
+## Decisions
+- Website scope will cover three parts:  
+  - Flatmate search.  
+  - Empty houses with vacancies.  
+  - Occupied houses (landlord listings + tenant listings).  
+- Backend prototype development will begin with **user login and landing page**.  
+- User Stories writing has started, beginning with landlord perspective (based on Namra’s interview).  
+
+## Action Points
+- Tech team: Start backend prototype (user login + landing page).  
+- Non-Tech/documentation team: Continue writing user stories for other stakeholders.  
+- All members: Contribute to brainstorming and refining problem definition.  
+
+## Next Meeting
+Date: 19/09/2025  
+Time: 4:00 PM – 7:00 PM  
+Agenda:  
+- Review progress on backend prototype.  
+- Write user stories for other stakeholders.  
+- Align website scope with mentor’s advice.  
+
+Minutes prepared by Aayman  
+
+
 
 
   
