@@ -1,7 +1,7 @@
 # RentMatch AI – Sprint 1 Backlog
 
 **Sprint Goal:** Deliver a working prototype with basic authentication and landing page.  
-**Duration:** 19/09/2025 – 22/09/2025  
+**Duration:** 15/09/2025 – 21/09/2025  
 
 ## Sprint Tasks
 
