@@ -1,4 +1,4 @@
-# RentMatch AI - Meeting Minutes  
+# StayPal - Meeting Minutes  
 
 Date: 01/09/2025  
 Time: 4:00 PM – 5:00 PM  

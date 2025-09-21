@@ -1,27 +1,27 @@
-# RentMatch AI – Sprint 1 Backlog
+# StayPal – Sprint 1 Backlog
 
-**Sprint Goal:** Deliver a working prototype with basic authentication and landing page.  
-**Duration:** 15/09/2025 – 21/09/2025  
+**Sprint Goal:** Database formation, user authentication (login/signup), landing page, and visible user profile.  
+**Duration:** 21/09/2025 – 28/09/2025  
 
 ## Sprint Tasks
 
-| Task | Assigned To | Status |
-|------|-------------|--------|
-| Setup project repository | All members | Done |
-| Setup database schema and connection | Meet, Yogesh | In Progress |
-| Implement signup form (email, password, confirm password) | Krish, Namra | In Progress |
-| Add input validation (password strength, unique email) | Krish, Namra | Pending |
-| Encrypt passwords (bcrypt) | Krish | Pending |
-| Implement login form with error handling | Namra | Pending |
-| Apply CAPTCHA for signup/login | Meet | Pending |
-| Setup session/JWT management | Yogesh | Pending |
-| Create landing page design + navigation | Kosha, Shambhavi, Yashkumar | In Progress |
-| Add CSS styling for responsiveness | Kosha | In Progress |
-| Document Functional/Non-Functional Requirements (FR/NFR) | Meet, Harshil | Done |
-| Write MoM and update progress | Aayman | Done |
+| Task | Status |
+|------|--------|
+| Setup project repository | Done |
+| Setup database schema and connection | In Progress |
+| Implement signup form (email, password, confirm password) | In Progress |
+| Add input validation (password strength, unique email) | Pending |
+| Encrypt passwords (bcrypt) | Pending |
+| Implement login form with error handling | Pending |
+| Apply CAPTCHA for signup/login | Pending |
+| Setup session/JWT management | Pending |
+| Create landing page design + navigation | In Progress |
+| Add CSS styling for responsiveness | In Progress |
+| Document Functional/Non-Functional Requirements (FR/NFR) | Done |
+| Write MoM and update progress | Done |
 
 ## Notes
-- Sprint 1 started after the 19th Sept meeting where tasks were divided.  
+- Sprint 1 started after the 21st Sept meeting where tasks were divided.  
 - Goal is to complete by 21st Sept for mid evaluation.  
 - Conflicts will be handled in later sprints.  
 - All members must commit their own contributions to GitHub.  
