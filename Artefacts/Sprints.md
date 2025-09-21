@@ -1,7 +1,7 @@
-# RentMatch AI – Sprint 1 Backlog
+# StayPal – Sprint 1 Backlog
 
 **Sprint Goal:** Database formation, user authentication (login/signup), landing page, and visible user profile.  
-**Duration:** 15/09/2025 – 21/09/2025  
+**Duration:** 21/09/2025 – 28/09/2025  
 
 ## Sprint Tasks
 
@@ -21,7 +21,7 @@
 | Write MoM and update progress | Done |
 
 ## Notes
-- Sprint 1 started after the 15th Sept meeting where tasks were divided.  
+- Sprint 1 started after the 21st Sept meeting where tasks were divided.  
 - Goal is to complete by 21st Sept for mid evaluation.  
 - Conflicts will be handled in later sprints.  
 - All members must commit their own contributions to GitHub.  
