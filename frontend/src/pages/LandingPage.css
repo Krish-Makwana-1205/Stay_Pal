@@ -1,0 +1,56 @@
+.landingtext{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    color: rgb(0, 0, 15);
+    text-align: center;
+    max-height: 10vh;
+}
+.aftertext{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 20vh;
+    font-size: 75px;
+    color: rgb(62, 76, 234);
+    text-align: center;
+    width: 100%;
+}
+.get-started-btn {
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    margin: 650px;
+  background: linear-gradient(135deg, #3e4cea, #6a5acd);
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 5px 15px rgba(5, 40, 238, 0.958);
+  text-decoration: none; /* removes underline if it's a Link */
+  display: inline-block;
+  margin-top: 20px;
+}
+
+/* Hover Animation */
+.get-started-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 25px rgba(4, 168, 244, 0.94);
+  background: linear-gradient(135deg, #2506f3, #3e4cea);
+}
+
+/* Little "pulse" animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.get-started-btn {
+  animation: pulse 2s infinite;
+}

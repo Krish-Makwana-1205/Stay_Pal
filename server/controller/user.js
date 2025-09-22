@@ -63,7 +63,10 @@ async function loginUser(req, res){
 function provideUser(req, res){
     res.user = req.user
     console.log(res.user);
-    return res.status(200).json({ success: true, message: `user token decoded ${res.user.name}` });
+     return res.status(200).json({
+        success: true,
+        user: req.user,  
+    });
 }
 module.exports = {
     makeUser,
