@@ -22,7 +22,8 @@ export default function Signup() {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <h2>Create Account</h2>
+        <h1 className="form-title">Create an Account</h1>
+  <p className="form-subtitle">Join StayPal to find your perfect home.</p>
         <input
           type="email"
           placeholder="Email"

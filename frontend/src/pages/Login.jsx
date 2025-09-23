@@ -24,7 +24,8 @@ export default function Login() {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h1 className="form-title">Welcome Back!</h1>
+  <p className="form-subtitle">Log in to continue to StayPal.</p>
         <input
           type="email"
           placeholder="Email"

@@ -1,56 +1,127 @@
-.landingtext{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    color: rgb(0, 0, 15);
-    text-align: center;
-    max-height: 10vh;
+/* Landing Page Styling */
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
 }
-.aftertext{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 20vh;
-    font-size: 75px;
-    color: rgb(62, 76, 234);
-    text-align: center;
-    width: 100%;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-.get-started-btn {
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    margin: 650px;
-  background: linear-gradient(135deg, #3e4cea, #6a5acd);
+
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+  color: #4a4a4a;
+}
+
+.card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  max-width: 960px;
+  width: 90%;
+  margin: 2rem;
+}
+
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 4rem;
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2c2c2c;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  color: #5f5f5f;
+}
+
+.description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.description strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.cta-button {
+  background-color: #c78c71;
   color: white;
-  font-size: 20px;
-  font-weight: bold;
-  padding: 14px 32px;
   border: none;
   border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 5px 15px rgba(5, 40, 238, 0.958);
-  text-decoration: none; /* removes underline if it's a Link */
-  display: inline-block;
-  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  align-self: flex-start;
 }
 
-/* Hover Animation */
-.get-started-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 25px rgba(4, 168, 244, 0.94);
-  background: linear-gradient(135deg, #2506f3, #3e4cea);
+.cta-button:hover {
+  background-color: #b97b60;
+  transform: translateY(-2px);
 }
 
-/* Little "pulse" animation */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.image-gallery {
+  position: relative;
+  min-height: 400px;
 }
 
-.get-started-btn {
-  animation: pulse 2s infinite;
+.image-gallery img {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.img-1 {
+  width: 60%;
+  height: auto;
+  top: -40px;
+  right: 0;
+  z-index: 2;
+}
+
+.img-2 {
+  width: 100%;
+  height: 65%;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.img-3 {
+  width: 65%;
+  height: 40%;
+  bottom: 10%;
+  left: -5%;
+  z-index: 3;
+  top: 70%;
 }

@@ -2,31 +2,47 @@ import { Link } from "react-router-dom";
 import BlurText from "../Components/BlurText";
 import SplitText from "../Components/SplitText";
 import { useAuth } from "../context/AuthContext";
-
+import React from "react";
 import "./LandingPage.css";
+
 export default function LandingPage() {
-  const {user}=useAuth();
   return (
-    <div>
-      <BlurText
-        text="Looking for peace?"
-        delay={270}
-        animateBy="words"
-        direction="top"
-        className="landingtext"
-      />
-      <SplitText
-        text="Here Comes StayPal!"
-        delay={100}
-        duration={0.6}
-        ease="power3.out"
-        splitType="chars"
-        from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }}
-        threshold={0.1}
-        className="aftertext"
-      />
-      {user?<p>u are here </p>:<Link to="/login" className="get-started-btn">Get Started</Link>}  
-    </div>
+    <main className="card">
+      <div className="content-wrapper">
+        {/* Left Text Content */}
+        <div className="text-content">
+          <h1 className="logo">StayPal</h1>
+          <p className="tagline">
+            The one-stop solution for all your renting problems
+          </p>
+          <p className="description">
+            StayPal makes finding your next home or the perfect flatmate a
+            breeze. Our intuitive platform connects with verified listings and
+            compatible individuals, ensuring a smooth a stress renting
+            experience. Discover your{" "}
+            <strong>ideal living situation</strong> with StayPal.
+          </p>
+          <a href="/signup" className="cta-button">
+            Get Started
+          </a>
+        </div>
+
+        {/* Right Image Gallery */}
+        <div className="image-gallery">
+          <img
+            src="https://images.pexels.com/photos/6585626/pexels-photo-6585626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="New replaced main image"
+            className="img-1"
+          />
+          <img src="/roommate.png" alt="Roommates" className="img-2" />
+
+          <img
+            src="https://homeadore.com/wp-content/uploads/2024/05/004-basao-teahouse-panji-exploring-the-fujian-courtyard-aesthetic.jpg"
+            alt="Cozy bedroom"
+            className="img-3"
+          />
+        </div>
+      </div>
+    </main>
   );
 }

@@ -1,0 +1,8 @@
+/* index.css */
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+  color: #4a4a4a;
+}
