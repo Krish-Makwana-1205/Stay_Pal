@@ -1,7 +1,7 @@
 ## 📌 Requirements Elicitation Techniques
 
 ## 1. Interview  
-**Stakeholder:** Property Owner  
+**Stakeholder:** Property Owner, Broker, Advocate
 
 We need to gather details and understand the requirements and needs of property owners so we can implement them in our app. Therefore, we chose this technique because it allows one-on-one interaction with property owners, which helps us understand their challenges, clarify doubts, and explore hidden requirements.
 
