@@ -9,11 +9,11 @@ Mode: Offline
 - Decide how to divide the team (Tech vs Non-Tech).  
 - Plan what everyone will do next.  
 
-## What we discussed
+## Discussions
 - We agreed that the team will be divided into **Tech** and **Non-Tech** groups.  
 - Each member will choose their group based on interest and skills.  
 
-## What we decided
+## Decision
 - Everyone should decide whether they want Tech or Non-Tech before next week.  
 - The list of who is in which group will be finalized by the coordinator.  
 
@@ -254,6 +254,48 @@ Agenda:
 - Finalize the design for the login page 
 
 Minutes prepared by Aayman  
+
+--
+
+Date: 22/09/2025  
+Time: 9:00 PM – 10:00 PM  
+Attendees: Aayman, Krish, Namra, Heet, Harshil, Meet, Kosha, Shambhavi, Yashkumar, Yogesh  
+Mode: Offline  
+
+## Agenda
+- Final review meeting before mid evaluation.  
+- Discuss landing page and login page templates.  
+- Review and correct uploaded documents.  
+- Track coding progress for login and landing pages.  
+
+## Discussion
+- Discussed different **templates for landing page and login page**.  
+- Identified and discussed **corrections needed in the uploaded documents** (FRs, NFRs, User Stories, EPICs, Conflicts).  
+- Krish and Namra continued **working on the code for the landing and login pages**.  
+- **Krish compiled all the documents** for submission.  
+- Team ensured all submissions and documentation would be ready for mid evaluation.  
+
+## Decisions
+- Use selected templates as the base for **landing and login page implementation**.  
+- Apply corrections in documents before submission.  
+- Krish and Namra to finalize coding of login and landing page prototype.  
+- Krish to handle document compilation for submission.  
+
+## Action Points
+- Krish & Namra: Complete login and landing page code.  
+- Krish: Compile final documents for submission.  
+- All members: Review and apply corrections in their respective documents.  
+- Scrum Master (Aayman): Ensure MoMs, Sprint backlog, and all artefacts are properly compiled and submitted.  
+
+## Next Meeting
+Date: [To be decided after mid evaluation]  
+Agenda:  
+- Sprint 2 planning.  
+- Incorporate feedback from mid evaluation.  
+
+Minutes prepared by Aayman  
+
+--
 
 
 

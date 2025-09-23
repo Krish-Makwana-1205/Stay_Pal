@@ -8,15 +8,15 @@
 | Task | Status |
 |------|--------|
 | Setup project repository | Done |
-| Setup database schema and connection | In Progress |
-| Implement signup form (email, password, confirm password) | In Progress |
-| Add input validation (password strength, unique email) | Pending |
-| Encrypt passwords (bcrypt) | Pending |
-| Implement login form with error handling | Pending |
+| Setup database schema and connection | Done |
+| Implement signup form (email, password, confirm password) | Done |
+| Add input validation (unique email) | Done |
+| Encrypt passwords (bcrypt) | Done |
+| Implement login form with error handling | Done |
 | Apply CAPTCHA for signup/login | Pending |
-| Setup session/JWT management | Pending |
-| Create landing page design + navigation | In Progress |
-| Add CSS styling for responsiveness | In Progress |
+| Setup session/JWT management | Done |
+| Create landing page design + navigation | Done |
+| Add CSS styling for responsiveness | Done |
 | Document Functional/Non-Functional Requirements (FR/NFR) | Done |
 | Write MoM and update progress | Done |
 
