@@ -5,7 +5,7 @@
 | MoM                     | Aayman                                                               |
 | Concept Poster          | Kosha                                                                |
 | Chart Paper             | Harshil                                                              |
-| Stakeholder & End User  | Krish, Senior                                                        |
+| Stakeholder & End User  | Krish, Yash                                                      |
 | Requirement Elicitation | Yogesh                                                                |
 | Interviews              | Namra, Krish, Heet                                                   |
 | Documentation           | Harshil, Kosha                                                       |
