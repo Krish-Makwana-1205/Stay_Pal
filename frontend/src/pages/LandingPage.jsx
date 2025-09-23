@@ -30,14 +30,14 @@ export default function LandingPage() {
         {/* Right Image Gallery */}
         <div className="image-gallery">
           <img
-            src="https://images.pexels.com/photos/6585626/pexels-photo-6585626.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt="New replaced main image"
+            src="https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="Living room"
             className="img-1"
           />
           <img src="/roommate.png" alt="Roommates" className="img-2" />
 
           <img
-            src="https://homeadore.com/wp-content/uploads/2024/05/004-basao-teahouse-panji-exploring-the-fujian-courtyard-aesthetic.jpg"
+            src="https://i.pinimg.com/originals/56/a9/04/56a904ff1c6c62d02af5c6582722a01b.jpg"
             alt="Cozy bedroom"
             className="img-3"
           />
