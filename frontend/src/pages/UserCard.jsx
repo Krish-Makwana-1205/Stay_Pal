@@ -9,9 +9,9 @@ export default function UserCard() {
     const fetchUser = async () => {
       try {
         const res = await axios.get("http://localhost:8002/user/me", {
-          withCredentials: true, // ✅ important for cookies
+          withCredentials: true, 
         });
-        setUser(res.data.user); // access the user returned by backend
+        setUser(res.data.user); 
       } catch (err) {
         console.error("Error fetching user:", err);
         setUser(null);
