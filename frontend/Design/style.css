@@ -1,0 +1,233 @@
+/* General Setup and Body Background */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+    color: #4a4a4a;
+}
+
+/* Main Card Styling */
+.card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    max-width: 960px;
+    width: 90%;
+    margin: 2rem;
+}
+
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 4rem;
+}
+
+/* Text Content Styling (Left Side) */
+.text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    color: #5f5f5f;
+}
+
+.description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.description strong {
+    font-weight: 600;
+    color: #333;
+}
+
+.cta-button {
+    background-color: #c78c71;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    align-self: flex-start;
+}
+
+.cta-button:hover {
+    background-color: #b97b60;
+    transform: translateY(-2px);
+}
+
+/* Image Gallery Styling (Right Side) */
+.image-gallery {
+    position: relative;
+    min-height: 400px;
+}
+
+.image-gallery img {
+    position: absolute;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    
+}
+
+
+
+.img-1 { /* Living room */
+    width: 60%;
+    height: auto;
+    top: -40px;
+    right: 0;
+    z-index: 2;
+}
+
+.img-2 { /* Roommates */
+    width: 100%;
+    height: 65%;
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.img-3 { /* Kitchen */
+    width: 65%;
+    height: 40%;
+    bottom: 10%;
+    left: -5%;
+    z-index: 3;
+    top: 70%;
+}
+
+
+/* LOGIN & REGISTRATION PAGES */
+
+/* Container to center the form on the page */
+.form-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* The white card holding the form */
+.form-container {
+    background-color: white;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.form-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: #5f5f5f;
+    margin-bottom: 2.5rem;
+}
+
+/* Form element styling */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4a4a4a;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #c78c71;
+    box-shadow: 0 0 0 3px rgba(199, 140, 113, 0.25);
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #c78c71;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #b97b60;
+    transform: translateY(-2px);
+}
+
+/* Footer link (e.g., "Don't have an account?") */
+.form-footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #5f5f5f;
+}
+
+.form-footer a {
+    color: #c78c71;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
