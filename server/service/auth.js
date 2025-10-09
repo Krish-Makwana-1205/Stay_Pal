@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const secret = 'cpi||cgpa'
+require('dotenv').config();
+const secret = process.env.secret_sauce;
 
 function setUser(user){
     console.log(user);

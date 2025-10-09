@@ -3,9 +3,12 @@ const {connectmongodB} = require('./connect.js');
 const cookieParser = require("cookie-parser");
 const user = require('./router/user.js');
 const app = express();
-const PORT = 8002;
-const url = 'mongodb+srv://Krish:918273@my-first-cluster.zfc6ret.mongodb.net/staypal';
+require('dotenv').config();
 const cors = require('cors');
+
+
+const url = process.env.MONGO;
+const PORT = 8002;
 
 
 app.use(express.urlencoded({extended: false}));
