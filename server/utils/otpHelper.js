@@ -1,4 +1,4 @@
-const otp = require('../model/otp'); // lowercase as per your request
+const otp = require('../model/otp');
 const sendOtpEmail = require('./mailer');
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -15,5 +15,26 @@ async function createAndSendOtp(email) {
 
   await sendOtpEmail(email, otpCode);
 }
-
-module.exports = { createAndSendOtp };
+async function verifyOtp(email, otpcode) {
+  let veri
+  try {
+    veri = await otp.findOne({ email: email }, { otp: otpcode });
+  }catch(error){
+    return error;
+  }
+  if(veri.length === 0){
+    return 2;
+  }
+  else{
+    return 1;
+  }
+}
+async function deleteDB(otpcode){
+  try {
+    await otp.deleteMany({otp:otpcode});
+  }catch(e){
+    return false;
+  }
+  return true;
+}
+module.exports = { createAndSendOtp , verifyOtp,deleteDB};

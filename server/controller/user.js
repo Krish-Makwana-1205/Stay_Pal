@@ -3,11 +3,35 @@ const bcrypt = require('bcrypt');
 const salt = 5;
 const { setUser, getUser } = require('../service/auth');
 
-// OTP helper
-const { createAndSendOtp } = require('../utils/otpHelper'); // ⬅️ Include this
+const { createAndSendOtp,verifyOtp, deleteDB } = require('../utils/otpHelper'); 
 
-async function makeUser(req, res) {
-    console.log(req.body);
+async function sendOtp(req, res){
+    const body = req.body;
+    if(!body.email){
+        console.log('email not provided');
+        return res.status(400).json({ success: false, message: "email not provided" });
+    }
+    try{
+        tem = await user.find({email:body.email}); 
+    }catch(e){
+        return res.status(500).json({error:e, message:'DB interaction not working'})
+    }
+    if(tem.length == 0){
+
+    }
+    else{
+        return res.status(400, {message:"The email is already registered"});
+    }
+    try{
+        await createAndSendOtp(body.email);
+        return res.status(200).json({"success":true, message:"OTP successfully sent"});
+    }catch(error){
+        return res.status(500).json({ message:'error in sending otp',error: error.message})
+    }
+
+}
+
+async function makeUser(req, res){
     const body = req.body;
     let using;
 
@@ -19,19 +43,28 @@ async function makeUser(req, res) {
     const newpassword = await bcrypt.hash(body.password, salt);
 
     if ((!body.name) || (!body.email) || (!body.password)) {
-        console.log('false1');
-        return res.status(400).json({ success: false, message: "User creation failed" });
+        return res.status(400).json({ success: false, message: "User creation failed due to missing fields" });
     }
-
+    if(!body.otp){
+        return res.status(400).json({ success: false, message: "provide OTP for user creation" });
+    }
+    const type = await verifyOtp(body.email, body.otp);
+    if(type == 2){
+        return res.status(400).json({ success: false, message: "Incorrect OTP provided" });
+    }
+    else if(type != 1){
+        return res.status(500).json({error:type});
+    }
+    let fl = deleteDB(body.otp);
+    if(!fl){
+        
+    }
     try {
         using = await user.create({
             username: body.name,
             email: body.email,
             password: newpassword
         });
-
-        // ✅ Send OTP after user creation
-        await createAndSendOtp(body.email);
 
     } catch (error) {
         console.log('User creation error:', error);
@@ -45,7 +78,6 @@ async function makeUser(req, res) {
 }
 
 async function loginUser(req, res) {
-    console.log(req.body);
     const body = req.body;
 
     if ((!body.email) || (!body.password)) {
@@ -65,13 +97,11 @@ async function loginUser(req, res) {
     }
     const token = setUser(User);
     res.cookie('uid', token);
-    console.log('success');
     return res.status(200).json({ success: true, message: "User login" });
 }
 
 function provideUser(req, res) {
     res.user = req.user;
-    console.log(res.user);
     return res.status(200).json({
         success: true,
         user: req.user,
@@ -81,5 +111,6 @@ function provideUser(req, res) {
 module.exports = {
     makeUser,
     loginUser,
-    provideUser
+    provideUser,
+    sendOtp
 };
