@@ -7,12 +7,13 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [otp, setOtp] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signupUser({ email, password,name });
+      await signupUser({ email, password, name,otp});
       navigate("/login");
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
@@ -34,7 +35,7 @@ export default function Signup() {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder=" Set Password"
           value={password}
           name="password"
           onChange={(e) => setPassword(e.target.value)}
@@ -48,11 +49,20 @@ export default function Signup() {
           onChange={(e) => setName(e.target.value)}
           required
         />
+        <input
+          type="otp"
+          placeholder="enter otp"
+          value={otp}
+          name="otp"
+          onChange={(e) => setOtp(e.target.value)}
+          required
+        />
         <button type="submit">Signup</button>
 
         <p>
           Already have an account? <Link to="/login">Login</Link>
         </p>
+        <p><Link to="/Otp">Resend otp</Link></p>
       </form>
     </div>
   );

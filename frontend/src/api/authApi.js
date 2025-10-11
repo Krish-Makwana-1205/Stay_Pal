@@ -5,6 +5,8 @@ const API = axios.create({
   withCredentials:true
 });
 
-export const signupUser = (formData) => API.post("/registeration", formData);
+export const signupUser = (formData) => API.post("/registration", formData);
 
 export const loginUser = (formData) => API.post("/login", formData);
+
+export const otpFetch = (formData) => API.post("registration/otp", formData);

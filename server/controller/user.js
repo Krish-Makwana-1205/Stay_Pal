@@ -7,8 +7,8 @@ const { createAndSendOtp,verifyOtp, deleteDB } = require('../utils/otpHelper');
 
 async function sendOtp(req, res){
     const body = req.body;
+    body.email = (body.email.trimEnd().toLowerCase());
     if(!body.email){
-        console.log('email not provided');
         return res.status(400).json({ success: false, message: "email not provided" });
     }
     try{
@@ -20,7 +20,7 @@ async function sendOtp(req, res){
 
     }
     else{
-        return res.status(400, {message:"The email is already registered"});
+        return res.status(400).json({message:"The email is already registered", error:"The email is already registered"});
     }
     try{
         await createAndSendOtp(body.email);
@@ -33,6 +33,7 @@ async function sendOtp(req, res){
 
 async function makeUser(req, res){
     const body = req.body;
+    
     let using;
 
     if (!body.password) {
@@ -45,6 +46,9 @@ async function makeUser(req, res){
     if ((!body.name) || (!body.email) || (!body.password)) {
         return res.status(400).json({ success: false, message: "User creation failed due to missing fields" });
     }
+    body.email = (body.email.trimEnd().toLowerCase());
+    body.name = (body.name.trimEnd());
+    body.password = (body.password.trimEnd());
     if(!body.otp){
         return res.status(400).json({ success: false, message: "provide OTP for user creation" });
     }
