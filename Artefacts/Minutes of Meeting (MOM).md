@@ -350,6 +350,56 @@ Agenda:
 
 Minutes prepared by Aayman  
 
+--
+
+Date: 13/10/2025  
+Time: 4:00 PM – 6:00 PM  
+Attendees: Aayman, Krish, Heet, Namra, Kosha, Shambhavi, Yogesh, Harshil, Meet  
+Mode: Offline  
+
+## Agenda
+- Host the website and set up Git on all members’ laptops.  
+- Begin testing of implemented modules.  
+- Resolve hosting and technical issues.  
+- Discuss team structure for UI/UX and CSS roles.  
+- Plan completion of Sprint 2.  
+
+## Discussion
+- The team **hosted the website**; some deployment problems occurred but were successfully solved.  
+- **Git** was set up on every member’s laptop to enable version control.  
+- Began **testing** login, signup, and profile-building modules.  
+- Found an issue: **OTP was not generating** after entering email during signup, causing an error; debugging is in progress.  
+- Talked about **team structure**:  
+  - **Option 1:** Separate UI/UX Team (Aayman & Harshil) to design, then pass to **CSS Team (Shambhavi & Kosha)** for styling.  
+  - **Option 2:** Merge the two teams so CSS developers also handle design.  
+- Decided to **consult the TA or Professor** before finalizing the structure.  
+- Planned to **finish Sprint 2 by 15/10/2025**.  
+
+## Decisions
+- Website hosting completed after fixing issues.  
+- Git setup completed for all.  
+- Testing initiated; OTP bug identified.  
+- Final decision on team structure deferred until discussion with TA/Professor.  
+
+## Action Points
+- **All Members:** Continue testing and record bugs.  
+- **Aayman & Harshil:** Prepare both team-structure options for discussion.  
+- **Shambhavi & Kosha:** Continue CSS design and fix layout inconsistencies.  
+- **Krish, Heet, Namra & Yogesh:** Debug OTP issue and backend errors.  
+- **Scrum Master (Aayman):** Track Sprint 2 progress and document all issues before 15 Oct.  
+
+## Next Meeting
+Date: 15/10/2025  
+Time: 4:00 PM – 6:00 PM  
+Agenda:  
+- Review and finalize Sprint 2.  
+- Resolve OTP bug and complete testing.  
+- Decide on UI/UX vs CSS team structure.  
+- Plan Sprint 3 tasks.  
+
+Minutes prepared by Aayman
+
+
 
 
 
