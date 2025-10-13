@@ -12,9 +12,8 @@ export default function Otp() {
         e.preventDefault();
         try {
             console.log("bun");
-            const temp = await otpFetch({ email });
+            const temp = otpFetch({ email });
             console.log("here");
-            console.log(temp.error);
             console.log("Run");
             navigate("/Signup");
         } catch (err) {
