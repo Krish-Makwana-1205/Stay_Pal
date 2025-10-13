@@ -297,6 +297,60 @@ Minutes prepared by Aayman
 
 --
 
+Date: 09/10/2025  
+Time: 4:00 PM – 6:00 PM  
+Attendees: Aayman, Shambhavi, Kosha, Heet, Krish, Yogesh, Meet, Namra  
+Mode: Offline  
+
+## Agenda
+- Discuss design and flow of Login and Signup pages.  
+- Finalize features and layout for Sprint 2.  
+- Decide user profile structure for Tenant and Property Owner.  
+- Plan next steps for Git setup and website hosting.  
+
+## Discussion
+- Discussed the **Login Page** design and flow:  
+  It will include header, footer, examples, and reviews sections for a professional layout.  
+
+- Discussed the **Signup Page** design:  
+  It will include **Sign in through Google**, **Forgot Password**, **Location input**, and overall improved design.  
+
+- **Sprint 2** will focus on:  
+  - Finalizing the **User Profile section** for both **Tenant** and **Property Owner**.  
+  - **Property Listing module** (for owners to add property details).  
+  - Adding **Header and Footer** to Login and Signup pages.  
+
+- **Tenant Profile Questions** decided:  
+  Name, Gender, Nationality, Occupation, Date of Birth, Hometown, Dietary Preference (Veg/Non-Veg/Jain), Religion, Alcohol consumption, Smoking habit, etc.  
+
+- **Property Owner Profile Questions** decided:  
+  Name, Property Details – Size, Number of Occupants, Amenities, Age of Construction, BHK type, Semi/Fully Furnished status, Parking availability, Nearby Landmarks, and Total Rent.  
+
+- The team will start working on **design, backend, and integration** of these components in this sprint.  
+
+## Decisions
+- Header and Footer will be included in both Login and Signup pages.  
+- User profiles for both Tenant and Property Owner will be implemented in Sprint 2.  
+- Property Listing feature will also begin in this sprint.  
+- Git setup and hosting will be done in the next meeting.  
+
+## Action Points
+- **Shambhavi & Kosha:** Work on CSS design and styling.  
+- **Aayman & Harshil:** Focus on UI/UX design and testing.  
+- **Yogesh, Krish, Heet & Namra:** Work on backend implementation (login, signup, user profiles, and property listing).  
+- **All members:** Coordinate to integrate frontend and backend for a complete working flow.  
+- **Scrum Master (Aayman):** Track Sprint 2 progress and ensure all tasks are updated on GitHub.  
+
+## Next Meeting
+Date: 13/10/2025  
+Agenda:  
+- Set up Git on all members’ laptops.  
+- Host the website.  
+- Begin testing the login, signup, and profile modules.  
+
+Minutes prepared by Aayman  
+
+
 
 
 
