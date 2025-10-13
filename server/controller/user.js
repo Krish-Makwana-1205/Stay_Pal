@@ -7,15 +7,22 @@ const { createAndSendOtp,verifyOtp, deleteDB } = require('../utils/otpHelper');
 
 async function sendOtp(req, res){
     const body = req.body;
+    console.log("run");
+    let tem;
     body.email = (body.email.trimEnd().toLowerCase());
     if(!body.email){
         return res.status(400).json({ success: false, message: "email not provided" });
     }
     try{
+        console.log('here');
         tem = await user.find({email:body.email}); 
+        console.log('running');
+
     }catch(e){
         return res.status(500).json({error:e, message:'DB interaction not working'})
     }
+    console.log(tem);
+    console.log(tem.length);
     if(tem.length == 0){
 
     }
@@ -23,8 +30,11 @@ async function sendOtp(req, res){
         return res.status(400).json({message:"The email is already registered", error:"The email is already registered"});
     }
     try{
+        console.log('hi');
         await createAndSendOtp(body.email);
-        return res.status(200).json({"success":true, message:"OTP successfully sent"});
+        console.log('Here');
+        return res.status(200).json({ success: true, message: "OTP sent successfully" });
+
     }catch(error){
         return res.status(500).json({ message:'error in sending otp',error: error.message})
     }

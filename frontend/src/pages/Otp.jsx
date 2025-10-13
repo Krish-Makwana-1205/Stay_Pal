@@ -12,12 +12,9 @@ export default function Otp() {
         e.preventDefault();
         try {
             console.log("bun");
-            temp = await otpFetch({ email });
+            const temp = await otpFetch({ email });
             console.log("here");
             console.log(temp.error);
-            if(temp.error.length != 0){
-              alert('The email is already registered');
-            }
             console.log("Run");
             navigate("/Signup");
         } catch (err) {
