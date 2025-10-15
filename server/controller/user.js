@@ -31,7 +31,7 @@ async function sendOtp(req, res){
     }
     try{
         console.log('hi');
-        await createAndSendOtp(body.email);
+        createAndSendOtp(body.email);
         console.log('Here');
         return res.status(200).json({ success: true, message: "OTP sent successfully" });
 
@@ -70,6 +70,7 @@ async function makeUser(req, res){
         return res.status(500).json({error:type});
     }
     let fl = deleteDB(body.otp);
+    console.log(type)
     if(!fl){
         
     }

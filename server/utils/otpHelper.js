@@ -18,11 +18,13 @@ async function createAndSendOtp(email) {
 async function verifyOtp(email, otpcode) {
   let veri
   try {
-    veri = await otp.findOne({ email: email }, { otp: otpcode });
+    veri = await otp.findOne({ email: email, otp: otpcode });
   }catch(error){
     return error;
   }
-  if(veri.length === 0){
+  console.log("verify")
+  console.log(veri);
+  if(veri === null){
     return 2;
   }
   else{
