@@ -8,11 +8,11 @@ export default function Otp() {
     const [email, setEmail] = useState("");
     const navigate = useNavigate();
     const handleSubmit = async (e) => {
-        
         e.preventDefault();
         try {
             console.log("bun");
-            const temp = otpFetch({ email });
+
+            const temp = await otpFetch({ email });
             console.log("here");
             console.log("Run");
             navigate("/Signup");
