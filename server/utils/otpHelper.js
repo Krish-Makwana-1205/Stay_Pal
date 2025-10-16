@@ -24,14 +24,18 @@ async function verifyOtp(email, otpcode) {
   }
   console.log("verify")
   console.log(veri);
+  const cur = new Date();
   if(veri === null){
     return 2;
+  }
+  else if(veri.expiresAt < cur){
+    return 3;
   }
   else{
     return 1;
   }
 }
-async function deleteDB(otpcode){
+async function deleteOtp(otpcode){
   try {
     await otp.deleteMany({otp:otpcode});
   }catch(e){
@@ -39,4 +43,4 @@ async function deleteDB(otpcode){
   }
   return true;
 }
-module.exports = { createAndSendOtp , verifyOtp,deleteDB};
+module.exports = { createAndSendOtp , verifyOtp,deleteOtp};
