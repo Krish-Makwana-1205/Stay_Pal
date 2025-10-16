@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
-import "./Login.css";
+import "../StyleSheets/Login.css";
 
 export default function Login() {
   const { login } = useAuth();
@@ -14,6 +14,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await loginUser({ email, password });
+      console.log(res.data.user);
       login(res.data.user); 
       navigate("/usercard");
     } catch (err) {
@@ -45,6 +46,9 @@ export default function Login() {
 
         <p>
           Don’t have an account? <Link to="/signup">Signup</Link>
+        </p>
+        <p>
+          <Link to ='/forgetpass'>forget password?</Link>
         </p>
       </form>
     </div>

@@ -152,7 +152,8 @@ async function forgotPassword(req, res) {
     if (!body.otp) {
         return res.status(400).json({ success: false, message: "OTP not provided" });
     }
-    const type= await verifyOtp(body.otp);
+    body.otp = body.otp.trimEnd();
+    const type= await verifyOtp(body.email, body.otp);
     if (type == 2) {
         return res.status(400).json({ success: false, message: "Incorrect OTP provided" });
     }
@@ -172,6 +173,7 @@ async function forgotPassword(req, res) {
     }catch(e){
         return res.status(500).json({ message: 'unable to update password', error: e.message })
     } 
+    return res.status(200).json({success:true});
 }
 function logOut(req, res)  {
   res.clearCookie("uid", {
