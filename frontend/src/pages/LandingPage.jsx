@@ -22,7 +22,7 @@ export default function LandingPage() {
             experience. Discover your{" "}
             <strong>ideal living situation</strong> with StayPal.
           </p>
-          <a href="/Otp" className="cta-button">
+          <a href="/signup" className="cta-button">
             Get Started
           </a>
         </div>

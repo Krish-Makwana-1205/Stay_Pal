@@ -122,10 +122,17 @@ function provideUser(req, res) {
         user: req.user,
     });
 }
-
+function logOut(req, res)  {
+  res.clearCookie("uid", {
+    httpOnly: true,
+    sameSite: "strict",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+}
 module.exports = {
     makeUser,
     loginUser,
     provideUser,
-    sendOtp
+    sendOtp,
+    logOut
 };
