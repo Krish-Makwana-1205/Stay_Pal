@@ -5,3 +5,5 @@ const router = express.Router();
 
 router.post('/form1', restrictToLoggedinUserOnly,makeProfile);
 router.post('/form2', restrictToLoggedinUserOnly, addPreferences);
+
+module.exports = router;
