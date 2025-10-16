@@ -2,6 +2,7 @@ const express = require('express');
 const {connectmongodB} = require('./connect.js');
 const cookieParser = require("cookie-parser");
 const user = require('./router/user.js');
+const tenant = require('./router/tenant.js');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
@@ -28,3 +29,4 @@ connectmongodB(url).then(()=>{
 });
 
 app.use("/user",user);
+app.use("/tenant",tenant);

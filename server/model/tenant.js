@@ -22,7 +22,7 @@ const tenantSchema = new mongoose.Schema({
     },
     foodPreference: {
         type: String,
-        enum: ['Veg', 'Non-Veg', 'Jain'],
+        enum: ['Veg', 'Non-Veg', 'Jain', 'Vegan'],
     },
     religion: {
         type: String
@@ -35,7 +35,8 @@ const tenantSchema = new mongoose.Schema({
         type: Boolean,
     },
     hometown: {
-        type: String
+        type: String,
+        required: true,
     },
     nationality: {
         type: String,
@@ -49,8 +50,7 @@ const tenantSchema = new mongoose.Schema({
     },
     professional_status:{
         type: String,
-        enum: ['student', 'working']
-
+        enum: ['student', 'working'],
     },
     workingshifts: {
         type: String,
@@ -59,6 +59,12 @@ const tenantSchema = new mongoose.Schema({
     },    
     havePet: {
         type: Boolean,
+    },
+    workPlace: {
+        type: String,
+    },
+    descriptions: {
+        type: String,
     }
 }, { timestamps: true });
 
