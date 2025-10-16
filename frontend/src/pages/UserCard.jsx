@@ -8,7 +8,7 @@ export default function UserCard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Logout handler
+
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -22,7 +22,7 @@ export default function UserCard() {
     }
   };
 
-  // 🔹 Fetch user on mount
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -54,7 +54,7 @@ export default function UserCard() {
 
   return (
     <div className="usercard-container">
-      {/* Header */}
+      
       <header className="usercard-header">
         <h2 className="usercard-greeting">Hi, {user.name || "User"} 👋</h2>
         <button className="logout-btn" onClick={handleLogout}>
@@ -62,13 +62,13 @@ export default function UserCard() {
         </button>
       </header>
 
-      {/* Main Content */}
+     
       <main className="usercard-main">
-        <h3 className="usercard-title">What are you looking for?</h3>
+        <h3 className="usercard-title">Who are You ?</h3>
         <div className="options">
           <button
             className="option-btn"
-            onClick={() => navigate("/tenant")}
+            onClick={() => navigate("/tenantForm")}
           >
            Tenant
           </button>

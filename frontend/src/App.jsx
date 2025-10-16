@@ -5,6 +5,7 @@ import Signup from "./pages/Signup";
 import UserCard from "./pages/UserCard";
 import ForgetPassword from "./pages/ForgetPassword";
 import { AuthProvider } from "./context/AuthContext";
+import TenantForm from "./pages/TenantForm";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgetpass" element={<ForgetPassword />} />
         <Route path="/usercard" element={<UserCard />} />
+        <Route path="/tenantForm" element={<TenantForm/>}/>
       </Routes>
     </AuthProvider>
   );
