@@ -3,77 +3,70 @@ const bcrypt = require('bcrypt');
 const salt = 5;
 const { setUser, getUser } = require('../service/auth');
 
-const { createAndSendOtp,verifyOtp, deleteDB } = require('../utils/otpHelper'); 
+const { createAndSendOtp, verifyOtp, deleteOtp } = require('../utils/otpHelper');
 
-async function sendOtp(req, res){
+async function sendOtp(req, res) {
     const body = req.body;
     console.log("run");
     let tem;
     body.email = (body.email.trimEnd().toLowerCase());
-    if(!body.email){
+    if (!body.email) {
         return res.status(400).json({ success: false, message: "email not provided" });
     }
-    try{
+    try {
         console.log('here');
-        tem = await user.find({email:body.email}); 
+        tem = await user.find({ email: body.email });
         console.log('running');
 
-    }catch(e){
-        return res.status(500).json({error:e, message:'DB interaction not working'})
+    } catch (e) {
+        return res.status(500).json({ error: e, message: 'DB interaction not working' })
     }
     console.log(tem);
     console.log(tem.length);
-    if(tem.length == 0){
+    if (tem.length == 0) {
 
     }
-    else{
-        return res.status(400).json({message:"The email is already registered", error:"The email is already registered"});
+    else {
+        return res.status(400).json({ message: "The email is already registered", error: "The email is already registered" });
     }
-    try{
-        console.log('hi');
+    try {
         createAndSendOtp(body.email);
-        console.log('Here');
         return res.status(200).json({ success: true, message: "OTP sent successfully" });
 
-    }catch(error){
-        return res.status(500).json({ message:'error in sending otp',error: error.message})
+    } catch (error) {
+        return res.status(500).json({ message: 'error in sending otp', error: error.message })
     }
 
 }
 
-async function makeUser(req, res){
+async function makeUser(req, res) {
     const body = req.body;
-    
     let using;
-
     if (!body.password) {
         console.log('Password not provided');
         return res.status(400).json({ success: false, message: "password not provided" });
     }
-
-    const newpassword = await bcrypt.hash(body.password, salt);
-
     if ((!body.name) || (!body.email) || (!body.password)) {
         return res.status(400).json({ success: false, message: "User creation failed due to missing fields" });
     }
     body.email = (body.email.trimEnd().toLowerCase());
     body.name = (body.name.trimEnd());
     body.password = (body.password.trimEnd());
-    if(!body.otp){
+    const newpassword = await bcrypt.hash(body.password, salt);
+    if (!body.otp) {
         return res.status(400).json({ success: false, message: "provide OTP for user creation" });
     }
     const type = await verifyOtp(body.email, body.otp);
-    if(type == 2){
+    if (type == 2) {
         return res.status(400).json({ success: false, message: "Incorrect OTP provided" });
     }
-    else if(type != 1){
-        return res.status(500).json({error:type});
+    else if (type == 3) {
+        return res.status(400).json({ success: false, message: "OTP you provided is expired" });
     }
-    let fl = deleteDB(body.otp);
-    console.log(type)
-    if(!fl){
-        
+    else if (type != 1) {
+        return res.status(500).json({ error: type });
     }
+    deleteOtp(body.otp);
     try {
         using = await user.create({
             username: body.name,
@@ -96,13 +89,11 @@ async function loginUser(req, res) {
     const body = req.body;
 
     if ((!body.email) || (!body.password)) {
-        console.log("fail1");
-        return res.status(400).json({ success: true, message: "email or password empty" });
+        return res.status(400).json({ success: false, message: "email or password empty" });
     }
 
     const User = await user.findOne({ email: body.email });
     if (!User) {
-        console.log('email not present in data base');
         return res.status(400).json({ success: false, message: "email not present in data base" });
     }
     const isMatch = await bcrypt.compare(body.password, User.password);
@@ -122,6 +113,66 @@ function provideUser(req, res) {
         user: req.user,
     });
 }
+
+async function forgotPasswordOtp(req, res) {
+    const body = req.body;
+    if ((!body.email)) {
+        return res.status(400).json({ success: false, message: "Email not provided" });
+    }
+    let temp;
+    try {
+        temp = await user.findOne({ email: body.email });
+    } catch (e) {
+        return res.status(500).json({ message: 'database cannot be reached', error: error.message })
+    }
+    if (temp == null) {
+        return res.status(400).json({ success: false, message: "Email is not registered" });
+    }
+    body.email = (body.email.trimEnd().toLowerCase());
+    try {
+        createAndSendOtp(body.email);
+        return res.status(200).json({ success: true, message: "OTP sent successfully" });
+
+    } catch (error) {
+        return res.status(500).json({ message: 'error in sending otp', error: error.message })
+    }
+
+}
+
+async function forgotPassword(req, res) {
+    const body = req.body;
+    if (!body.email) {
+        return res.status(500).json({ success: false, message: "React error email not provided" });
+    }
+    body.email = (body.email.trimEnd().toLowerCase());
+    if (!body.password) {
+        return res.status(400).json({ success: false, message: "New Password not provided" });
+    }
+    body.password = body.password.trimEnd();
+    if (!body.otp) {
+        return res.status(400).json({ success: false, message: "OTP not provided" });
+    }
+    const type= await verifyOtp(body.otp);
+    if (type == 2) {
+        return res.status(400).json({ success: false, message: "Incorrect OTP provided" });
+    }
+    else if (type == 3) {
+        return res.status(400).json({ success: false, message: "OTP you provided is expired" });
+    }
+    else if (type != 1) {
+        return res.status(500).json({ error: type });
+    }
+    const newpassword = await bcrypt.hash(body.password, salt);
+    deleteOtp(body.otp); 
+    try {
+        await user.updateOne(
+            { email: body.email },
+            { $set: { password: newpassword } }
+        );
+    }catch(e){
+        return res.status(500).json({ message: 'unable to update password', error: e.message })
+    } 
+}
 function logOut(req, res)  {
   res.clearCookie("uid", {
     httpOnly: true,
@@ -134,5 +185,7 @@ module.exports = {
     loginUser,
     provideUser,
     sendOtp,
-    logOut
+    logOut,
+    forgotPasswordOtp,
+    forgotPassword
 };
