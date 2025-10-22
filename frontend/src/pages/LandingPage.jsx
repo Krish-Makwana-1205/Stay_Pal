@@ -1,6 +1,8 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import "../StyleSheets/LandingPage.css";
+import { Link } from "react-router-dom";
+
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -24,9 +26,7 @@ export default function LandingPage() {
           </p>
 
           {!loading && (
-            <a href={getStartedLink} className="cta-button">
-              Get Started
-            </a>
+            <Link to={getStartedLink} className="cta-button">Get Started</Link>
           )}
         </div>
 

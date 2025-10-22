@@ -9,14 +9,24 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log('start');
         const res = await axios.get("http://localhost:8002/user/me", {
           withCredentials: true,
         });
-        setUser(res.data.user);
+        console.log(res);
+        if(res == 1){
+          console.log('here');
+          setUser(null);
+        }
+        else{
+          console.log('hi');
+          setUser(res.data.user);
+        }
       } catch (err) {
         console.error("Error fetching user:", err);
         setUser(null);
       } finally {
+        console.log('hello');
         setLoading(false);
       }
     };

@@ -7,22 +7,16 @@ const { createAndSendOtp, verifyOtp, deleteOtp } = require('../utils/otpHelper')
 
 async function sendOtp(req, res) {
     const body = req.body;
-    console.log("run");
     let tem;
     body.email = (body.email.trimEnd().toLowerCase());
     if (!body.email) {
         return res.status(400).json({ success: false, message: "email not provided" });
     }
     try {
-        console.log('here');
         tem = await user.find({ email: body.email });
-        console.log('running');
-
     } catch (e) {
         return res.status(500).json({ error: e, message: 'DB interaction not working' })
     }
-    console.log(tem);
-    console.log(tem.length);
     if (tem.length == 0) {
 
     }
@@ -32,7 +26,6 @@ async function sendOtp(req, res) {
     try {
         createAndSendOtp(body.email);
         return res.status(200).json({ success: true, message: "OTP sent successfully" });
-
     } catch (error) {
         return res.status(500).json({ message: 'error in sending otp', error: error.message })
     }
@@ -43,7 +36,6 @@ async function makeUser(req, res) {
     const body = req.body;
     let using;
     if (!body.password) {
-        console.log('Password not provided');
         return res.status(400).json({ success: false, message: "password not provided" });
     }
     if ((!body.name) || (!body.email) || (!body.password)) {
@@ -68,37 +60,37 @@ async function makeUser(req, res) {
     }
     deleteOtp(body.otp);
     try {
-        using = await user.create({
-            username: body.name,
-            email: body.email,
-            password: newpassword
-        });
-
+        const updateduser = await User.findOneAndUpdate(
+            { email: body.email},
+            {
+                username: body.name,
+                password: newpassword,
+            },
+            {
+                new: true,      
+                upsert: true,   
+                setDefaultsOnInsert: true,
+            }
+        );
     } catch (error) {
-        console.log('User creation error:', error);
         return res.status(500).json({ success: false, message: "User creation failed", error: error.message });
     }
-
     const token = setUser(using);
     res.cookie('uid', token);
-    console.log('true');
     return res.status(200).json({ success: true, message: "User created. OTP sent to email." });
 }
 
 async function loginUser(req, res) {
     const body = req.body;
-
     if ((!body.email) || (!body.password)) {
         return res.status(400).json({ success: false, message: "email or password empty" });
     }
-
     const User = await user.findOne({ email: body.email });
     if (!User) {
         return res.status(400).json({ success: false, message: "email not present in data base" });
     }
     const isMatch = await bcrypt.compare(body.password, User.password);
     if (!isMatch) {
-        console.log("Password is incorrect");
         return res.status(400).json({ success: false, message: "Password is incorrect" });
     }
     const token = setUser(User);
@@ -153,7 +145,7 @@ async function forgotPassword(req, res) {
         return res.status(400).json({ success: false, message: "OTP not provided" });
     }
     body.otp = body.otp.trimEnd();
-    const type= await verifyOtp(body.email, body.otp);
+    const type = await verifyOtp(body.email, body.otp);
     if (type == 2) {
         return res.status(400).json({ success: false, message: "Incorrect OTP provided" });
     }
@@ -164,23 +156,23 @@ async function forgotPassword(req, res) {
         return res.status(500).json({ error: type });
     }
     const newpassword = await bcrypt.hash(body.password, salt);
-    deleteOtp(body.otp); 
+    deleteOtp(body.otp);
     try {
         await user.updateOne(
             { email: body.email },
             { $set: { password: newpassword } }
         );
-    }catch(e){
+    } catch (e) {
         return res.status(500).json({ message: 'unable to update password', error: e.message })
-    } 
-    return res.status(200).json({success:true});
+    }
+    return res.status(200).json({ success: true });
 }
-function logOut(req, res)  {
-  res.clearCookie("uid", {
-    httpOnly: true,
-    sameSite: "strict",
-  });
-  res.status(200).json({ message: "Logged out successfully" });
+function logOut(req, res) {
+    res.clearCookie("uid", {
+        httpOnly: true,
+        sameSite: "strict",
+    });
+    res.status(200).json({ message: "Logged out successfully" });
 }
 module.exports = {
     makeUser,
