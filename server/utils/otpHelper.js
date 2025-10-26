@@ -22,8 +22,6 @@ async function verifyOtp(email, otpcode) {
   }catch(error){
     return error;
   }
-  console.log("verify")
-  console.log(veri);
   const cur = new Date();
   if(veri === null){
     return 2;
@@ -35,9 +33,9 @@ async function verifyOtp(email, otpcode) {
     return 1;
   }
 }
-async function deleteOtp(otpcode){
+async function deleteOtp(emailcode){
   try {
-    await otp.deleteMany({otp:otpcode});
+    await otp.deleteMany({email:emailcode});
   }catch(e){
     return false;
   }

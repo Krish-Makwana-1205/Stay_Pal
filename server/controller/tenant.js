@@ -13,7 +13,7 @@ async function makeProfile(req, res){
     body.hometown = body.hometown.trimEnd();
     body.gender = body.gender.trimEnd();
     try{
-        await tenant.create({
+        await tenant.findOneAndUpdate({email:user.email},{
             email:user.email,
             username:user.name,
             dob:body.dob,
@@ -43,7 +43,7 @@ async function addPreferences(req, res){
 
     try {
         await tenant.updateOne({email:user.email},{
-        
+            email:user.email,
             foodPreference:body.foodPreference||null,
             religion:body.religion||null,
             alcohol:typeof body.alcohol ==='boolean'?body.alcohol:null,

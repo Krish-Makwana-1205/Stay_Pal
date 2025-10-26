@@ -3,7 +3,6 @@ require('dotenv').config();
 const secret = process.env.secret_sauce;
 
 function setUser(user){
-    console.log(user);
     return jwt.sign({
         email: user.email,
         name: user.username

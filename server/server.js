@@ -3,10 +3,10 @@ const {connectmongodB} = require('./connect.js');
 const cookieParser = require("cookie-parser");
 const user = require('./router/user.js');
 const tenant = require('./router/tenant.js');
+const propertyOwner = require('./router/propertyOwner.js');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
-
 
 const url = process.env.MONGO;
 const PORT = 8002;
@@ -30,3 +30,6 @@ connectmongodB(url).then(()=>{
 
 app.use("/user",user);
 app.use("/tenant",tenant);
+app.use("/propertyOwner",propertyOwner);
+
+

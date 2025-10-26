@@ -58,11 +58,12 @@ async function makeUser(req, res) {
     else if (type != 1) {
         return res.status(500).json({ error: type });
     }
-    deleteOtp(body.otp);
+    deleteOtp(body.email);
     try {
-        const updateduser = await User.findOneAndUpdate(
+        const updateduser = await user.findOneAndUpdate(
             { email: body.email},
             {
+                email:body.email,
                 username: body.name,
                 password: newpassword,
             },
@@ -75,7 +76,7 @@ async function makeUser(req, res) {
     } catch (error) {
         return res.status(500).json({ success: false, message: "User creation failed", error: error.message });
     }
-    const token = setUser(using);
+    const token = setUser(body.email);
     res.cookie('uid', token);
     return res.status(200).json({ success: true, message: "User created. OTP sent to email." });
 }
@@ -85,6 +86,8 @@ async function loginUser(req, res) {
     if ((!body.email) || (!body.password)) {
         return res.status(400).json({ success: false, message: "email or password empty" });
     }
+    body.email = (body.email.trimEnd().toLowerCase());
+    body.password = (body.password.trimEnd());
     const User = await user.findOne({ email: body.email });
     if (!User) {
         return res.status(400).json({ success: false, message: "email not present in data base" });
