@@ -41,17 +41,14 @@ Complete the user profile and property listing modules, integrate header and foo
 | Task | Status |
 |------|--------|
 | Finalize Login and Signup page design | Done |
-| Add Header and Footer to Login and Signup pages | In Progress |
-| Implement Google Sign-in and Forgot Password functionality | In Progress |
-| Create Tenant Profile module (Name, Gender, Nationality, Occupation, DOB, Hometown, Dietary Preference – Veg/Non-Veg/Jain, Religion, Alcohol, Smoker/Non-Smoker, Hobbies) | In Progress |
-| Create Property Owner Profile module (Name, Property Size, BHK, Age of Construction, Furnishing Type, Parking, Amenities, Nearby Landmarks, Maximum Occupancy, Total Rent) | In Progress |
-| Implement Property Listing page | Pending |
-| Debug OTP generation issue during signup | In Progress |
-| Fix website hosting issues and re-deploy | Done |
+| Add Header and Footer to Login and Signup pages | Done |
+| Implement Google Sign-in and Forgot Password functionality | Postponed |
+| Create Tenant Profile module (Name, Gender, Nationality, Occupation, DOB, Hometown, Dietary Preference – Veg/Non-Veg/Jain, Religion, Alcohol, Smoker/Non-Smoker, Hobbies) | Done |
+| Create Property Owner Profile module (Name, Property Size, BHK, Age of Construction, Furnishing Type, Parking, Amenities, Nearby Landmarks, Maximum Occupancy, Total Rent) | Done |
+| Debug OTP generation issue during signup | Done |
 | Set up Git on all members’ laptops | Done |
-| Begin testing login, signup, and profile modules | In Progress |
-| Decide on UI/UX and CSS team structure | Pending |
-| Write and update MoMs for all meetings | Done |
+| Begin testing login, signup, and profile modules | Done |
+| Decide on design team structure | Done |
 
 ## Notes
 - Sprint 2 focused on **frontend-backend integration** and **enhancing user interaction** through profile and listing modules.  
