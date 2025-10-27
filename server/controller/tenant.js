@@ -1,9 +1,9 @@
 const tenant = require('../model/tenant');
-
+const user = require('../model/user');
 async function makeProfile(req, res){
     const body = req.body;
-    const user = req.user;
-    if((!user.email) || (!user.name)){
+    const User = req.user;
+    if((!User.email) || (!User.name)){
         return res.status(500).json({message:"Error while fetching cookie data"});
     }
     if((!body.nationality) || (!body.hometown) || (!body.gender) || (!body.dob)){
@@ -13,34 +13,34 @@ async function makeProfile(req, res){
     body.hometown = body.hometown.trimEnd();
     body.gender = body.gender.trimEnd();
     try{
-        await tenant.findOneAndUpdate({email:user.email},{
-            email:user.email,
-            username:user.name,
+        await tenant.findOneAndUpdate({email:User.email},{
+            email:User.email,
+            username:User.name,
             dob:body.dob,
             nationality:body.nationality,
             hometown:body.hometown,
             gender:body.gender
-        });
+        }, {upsert:true, new:true});
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Error in contacting Database", error:error.message});
     }
     
     try{
-        user.findOneAndUpdate({email:user.email},{
+        user.findOneAndUpdate({email:User.email},{
             istenant:true
         });
     }
     catch(error){
         console.log(error.message);
-        return res.status(500).jos({message:"Error in contacting Database",error:error.message});
+        return res.status(500).json({message:"Error in contacting Database",error:error.message});
     }
     return res.status(200).json({message:"success"});
 }
 async function addPreferences(req, res){
     const body =req.body;
-    const user = req.user;
-    if((!user.email) || (!user.username)){
+    const User = req.user;
+    if((!User.email) || (!User.username)){
         return res.status(500).json({message:"Error while fetching cookie data"});
     }
     
@@ -52,8 +52,8 @@ async function addPreferences(req, res){
     if (body.workingshifts) body.workingshifts =body.workingshifts.trimEnd();
 
     try {
-        await tenant.updateOne({email:user.email},{
-            email:user.email,
+        await tenant.updateOne({email:User.email},{
+            email:User.email,
             foodPreference:body.foodPreference||null,
             religion:body.religion||null,
             alcohol:typeof body.alcohol ==='boolean'?body.alcohol:null,
@@ -65,7 +65,7 @@ async function addPreferences(req, res){
             havePet:typeof body.havePet ==='boolean'?body.havePet : null,
             workPlace:body.workPlace||null,
             descriptions:body.descriptions||null
-        });
+        },{upsert:true, new:true});
     } catch(error){
         res.status(500).json({message:"Error in contacting Database", error:error.message});
     }

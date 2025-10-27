@@ -45,7 +45,7 @@ async function uploadProfilePhoto(req, res) {
     const updatedUser =await User.findOneAndUpdate(
       {email: body.email, username: body.username },
       {profilePhoto:imageUrl },
-      {new:true,}
+      {new:true,upsert:true}
     );
 
     if (!updatedUser) {
