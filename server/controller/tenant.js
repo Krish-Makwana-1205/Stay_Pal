@@ -23,7 +23,17 @@ async function makeProfile(req, res){
         });
     }catch(error){
         console.log(error.message);
-        res.status(500).json({message:"Error in contacting Database", error:error.message});
+        return res.status(500).json({message:"Error in contacting Database", error:error.message});
+    }
+    
+    try{
+        user.findOneAndUpdate({email:user.email},{
+            istenant:true
+        });
+    }
+    catch(error){
+        console.log(error.message);
+        return res.status(500).jos({message:"Error in contacting Database",error:error.message});
     }
     return res.status(200).json({message:"success"});
 }

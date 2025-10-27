@@ -14,6 +14,14 @@ const userSchema = new mongoose.Schema({
     password:{
         required:true,
         type:String
+    },
+    profilePhoto:{
+        type: String,
+        default:"",
+    },
+    istenant:{
+        type: Boolean,
+        default: false,
     }
 })
 
