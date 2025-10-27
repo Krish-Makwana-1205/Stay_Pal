@@ -74,7 +74,7 @@ export default function UserCard() {
           </button>
           <button
             className="option-btn"
-            onClick={() => navigate("/owner")}
+            onClick={() => navigate("/propertyForm")}
           >
             Property Owner
           </button>

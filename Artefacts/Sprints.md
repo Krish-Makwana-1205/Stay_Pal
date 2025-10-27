@@ -67,6 +67,47 @@ Complete the user profile and property listing modules, integrate header and foo
 ## Scrum Master Notes
 - Scrum Master (Aayman) tracked progress, wrote MoMs, and ensured documentation consistency.  
 - The team was coordinated for testing and deployment cycles.  
-- Sprint 3 will focus on finishing remaining property listing functionalities and starting matching logic.  
+- Sprint 3 will focus on finishing remaining property listing functionalities and starting matching logic.
+
+  --
+  
+#  Sprint 3 Backlog  
+
+**Linked EPIC:** EPIC 3 – Feature-Based Search (Filters)  
+**Sprint Goal:**  
+Implement the feature-based search module that allows tenants to search for flats or flatmates using customizable filters such as budget, location, gender, lifestyle choices, and amenities. Display results dynamically according to preferences.  
+
+**Duration:** 24/10/2025 – 28/10/2025  
+
+---
+
+## Sprint Tasks  
+
+| Task | Status |
+|------|--------|
+| Design and integrate search bar with filter options (budget, location, gender, lifestyle, amenities) | In Progress |
+| Create backend logic for filtering property and roommate listings based on user input | In Progress |
+| Add option for users to choose whether they are searching for a **flat**, **flatmate**, or **both** | Pending |
+| Implement dynamic rendering of filtered search results | Pending |
+| Connect search filters to existing property database | In Progress |
+| Test and validate search accuracy for multiple filter combinations | Pending |
+| Optimize search response time and handle empty-result cases | Pending |
+
+## Notes  
+- Sprint 3 directly derives from **EPIC 3**, focusing on building filtering and recommendation logic.  
+- Search results should be dynamic — updating instantly when the user changes a filter.  
+- The filter system will also help resolve earlier user-experience gaps noted in Sprint 2 (e.g., finding relevant listings faster).  
+- Once implemented, this module will form the foundation for the future **NLP-based smart search** planned in EPIC 5.  
+
+## Key Deliverables  
+- Functional search component integrated into the main website.  
+- Filter options for budget, location, gender, lifestyle, and amenities.    
+- Working backend logic for query filtering.  
+
+## Scrum Master Notes  
+- Scrum Master (Aayman) tracked Sprint 3 progress and coordinated between frontend and backend integration.  
+- Collaboration emphasized between backend (Krish, Yogesh, Meet and Aayman) and frontend (Kosha, Shambhavi, Heet, Harshil and Namra).  
+- Sprint 4 will extend this work with user-to-user matching and chat functionality.  
+
 
 

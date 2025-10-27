@@ -1,0 +1,85 @@
+.property-form-container {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 25px 30px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.property-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: 500;
+  color: #444;
+}
+
+.required {
+  color: red;
+}
+
+input,
+select,
+textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.response-message {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* file input styling */
+input[type="file"] {
+  border: 1px dashed #ccc;
+  background-color: #fff;
+  padding: 8px;
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: #007bff;
+}

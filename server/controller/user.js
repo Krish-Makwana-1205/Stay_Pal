@@ -32,6 +32,38 @@ async function sendOtp(req, res) {
 
 }
 
+async function uploadProfilePhoto(req, res) {
+  try {
+    if (!req.file){
+      return res.status(400).json({message:"No image uploaded"});
+    }
+    const imageUrl =req.file.path;
+    const body =req.body;
+    if (!body.email||!body.username){
+      return res.status(400).json({message:"Email and username are required"});
+    }
+    const updatedUser =await User.findOneAndUpdate(
+      {email: body.email, username: body.username },
+      {profilePhoto:imageUrl },
+      {new:true,}
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      message: "Profile photo uploaded successfully",
+      profilePhoto: updatedUser.profilePhoto,
+    });
+  } catch (error) {
+    console.error("Error uploading profile photo:", error);
+    return res.status(500).json({ message: "Error uploading profile photo", error });
+  }
+}
+
+
+
 async function makeUser(req, res) {
     const body = req.body;
     let using;
@@ -184,5 +216,6 @@ module.exports = {
     sendOtp,
     logOut,
     forgotPasswordOtp,
-    forgotPassword
+    forgotPassword,
+    uploadProfilePhoto
 };

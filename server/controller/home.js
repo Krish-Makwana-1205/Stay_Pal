@@ -1,4 +1,3 @@
-// controller/dashboard.js
 const property = require("../model/property");
 
 async function home(req, res) {
@@ -22,4 +21,4 @@ async function home(req, res) {
   }
 }
 
-module.exports = { home }; 
+module.exports = { home };
