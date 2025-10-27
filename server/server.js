@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 const user = require('./router/user.js');
 const tenant = require('./router/tenant.js');
 const propertyOwner = require('./router/propertyOwner.js');
+const dashboard = require('./router/home.js');  
+
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
@@ -32,4 +34,4 @@ app.use("/user",user);
 app.use("/tenant",tenant);
 app.use("/propertyOwner",propertyOwner);
 
-
+app.use("/home", dashboard);  
