@@ -4,13 +4,12 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserCard from "./pages/UserCard";
 import ForgetPassword from "./pages/ForgetPassword";
-import { AuthProvider } from "./context/AuthContext";
 import TenantForm from "./pages/TenantForm";
 import PropertyForm from "./pages/PropertyForm";
+import TenantForm2 from "./pages/TenantForm2";
 
 function App() {
-  return (
-    <AuthProvider>
+  return (    
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
@@ -19,8 +18,9 @@ function App() {
         <Route path="/usercard" element={<UserCard />} />
         <Route path="/propertyForm" element={<PropertyForm />} />
         <Route path="/tenantForm" element={<TenantForm/>}/>
+        <Route path="/tenantForm2" element={<TenantForm2/>}/>
       </Routes>
-    </AuthProvider>
+    
   );
 }
 

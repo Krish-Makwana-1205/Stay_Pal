@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../StyleSheets/TenantForm.css";
 import { form1 } from "../api/tenantform";
+import { useNavigate } from "react-router-dom";
+
 
 export default function TenantForm() {
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     nationality: "",
     hometown: "",
@@ -28,7 +30,8 @@ export default function TenantForm() {
 
       if (res.status === 200) {
         setMessage("Profile created successfully!");
-      }
+        navigate("/tenantForm2");     
+       }
     } catch (error) {
       console.error("Error submitting tenant form:", error);
       if (error.response) {

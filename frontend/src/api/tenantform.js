@@ -7,4 +7,4 @@ const API = axios.create({
 
 export const form1 = (formData) => API.post("/form1", formData);
 
-
+export const form2 = (formData) => API.post("/form2",formData);
