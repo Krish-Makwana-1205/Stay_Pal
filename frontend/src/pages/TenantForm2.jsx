@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../StyleSheets/TenantForm.css"; 
 import { form2 } from "../api/tenantform"; 
+import Alert from "../Components/Alert";
 
 export default function TenantForm2() {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ export default function TenantForm2() {
     descriptions: "",
   });
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -46,14 +47,14 @@ export default function TenantForm2() {
     try {
       const res = await form2(formData);
       if (res.status === 200) {
-        setMessage("Preferences saved successfully!");
+        setMessage({ text: "Preferences saved successfully!", type: "success" });
       }
     } catch (error) {
       console.error("Error submitting preferences:", error);
       if (error.response) {
-        setMessage(error.response.data.message || "Server error.");
+        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
       } else {
-        setMessage("Network error.");
+        setMessage({ text: "Network error.", type: "error" });
       }
     } finally {
       setLoading(false);
@@ -168,7 +169,7 @@ export default function TenantForm2() {
         </button>
       </form>
 
-      {message && <p className="response-message">{message}</p>}
+      {message && <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />}
     </div>
   );
 }

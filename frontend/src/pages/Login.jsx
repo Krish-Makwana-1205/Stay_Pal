@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
+import Alert from "../Components/Alert";
 import "../StyleSheets/Login.css";
 
 export default function Login() {
@@ -9,6 +10,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [alert, setAlert] = useState({ text: "", type: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,12 +20,13 @@ export default function Login() {
       login(res.data.user); 
       navigate("/usercard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      setAlert({ text: err.response?.data?.message || "Login failed", type: "error" });
     }
   };
 
   return (
     <div className="login-container">
+      <Alert message={alert.text} type={alert.type} onClose={() => setAlert({ text: "", type: "" })} />
       <form className="login-form" onSubmit={handleSubmit}>
         <h1 className="form-title">Welcome Back!</h1>
   <p className="form-subtitle">Log in to continue to StayPal.</p>
