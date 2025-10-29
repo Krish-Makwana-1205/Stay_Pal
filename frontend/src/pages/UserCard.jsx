@@ -36,29 +36,46 @@ export default function UserCard() {
   }
 
   return (
-    <div className="usercard-container">
+   <div className="usercard-container">
+
+      {/* Header */}
       <header className="usercard-header">
-        <h2 className="usercard-greeting">Hi, {user.name || "User"} 👋</h2>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <h2 className="usercard-greeting">Hi, User 👋</h2>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
       </header>
 
+      {/* Main Section */}
       <main className="usercard-main">
         <h3 className="usercard-title">Who are You?</h3>
+
         <div className="options">
-          <button
-            className="option-btn"
-            onClick={() => navigate("/tenantForm")}
-          >
-            Tenant
-          </button>
-          <button
-            className="option-btn"
-            onClick={() => navigate("/propertyForm")}
-          >
-            Property Owner
-          </button>
+
+          {/* Tenant Option */}
+          <div className="option-card">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
+              alt="Tenant"
+              className="option-img"
+            />
+            <p className="option-desc">
+              Looking for a new nest? Find your next perfect home.
+            </p>
+            <button className="option-btn">Tenant</button>
+          </div>
+
+          {/* Property Owner Option */}
+          <div className="option-card">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/619/619034.png"
+              alt="Property Owner"
+              className="option-img"
+            />
+            <p className="option-desc">
+              Have a space to offer? Connect with the right tenants.
+            </p>
+            <button className="option-btn">Property Owner</button>
+          </div>
+
         </div>
       </main>
     </div>
