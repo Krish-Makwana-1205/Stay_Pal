@@ -40,7 +40,7 @@ async function makeProfile(req, res){
 async function addPreferences(req, res){
     const body =req.body;
     const User = req.user;
-    if((!User.email) || (!User.username)){
+    if((!User.email) || (!User.name)){
         return res.status(500).json({message:"Error while fetching cookie data"});
     }
     
