@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import "../StyleSheets/TenantForm.css";
 import { form1 } from "../api/tenantform";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../context/AuthContext";
 
 export default function TenantForm() {
+ const { user, logout } =  useAuth();
+
   const navigate=useNavigate();
   const [formData, setFormData] = useState({
     nationality: "",
@@ -15,7 +17,20 @@ export default function TenantForm() {
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+if (loading || user === undefined) {
+  return <p className="loading-text">Loading user...</p>;
+}
+  if (!user) {
+    return (
+      <div className="not-logged">
+        <p>User not logged in.</p>
+        <a href="/login" className="login-link">
+          Login
+        </a>
+      </div>
+    );
+  }
+  console.log(user);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
