@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "../StyleSheets/TenantForm.css";
 import { form1 } from "../api/tenantform";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import Alert from "../Components/Alert";
+
 
 export default function TenantForm() {
  const { user, logout } =  useAuth();
@@ -15,7 +16,7 @@ export default function TenantForm() {
     dob: "",
   });
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
 if (loading || user === undefined) {
   return <p className="loading-text">Loading user...</p>;
@@ -44,15 +45,15 @@ if (loading || user === undefined) {
     const res=await form1(formData);
 
       if (res.status === 200) {
-        setMessage("Profile created successfully!");
+        setMessage({ text: "Profile created successfully!", type: "success" });
         navigate("/tenantForm2");     
        }
     } catch (error) {
       console.error("Error submitting tenant form:", error);
       if (error.response) {
-        setMessage(error.response.data.message || "Server error.");
+        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
       } else {
-        setMessage("Network error.");
+        setMessage({ text: "Network error.", type: "error" });
       }
     } finally {
       setLoading(false);
@@ -116,7 +117,7 @@ if (loading || user === undefined) {
         </button>
       </form>
 
-      {message && <p className="response-message">{message}</p>}
+      <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
     </div>
   );
 }

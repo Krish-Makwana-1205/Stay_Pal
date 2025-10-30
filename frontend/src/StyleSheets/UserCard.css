@@ -1,21 +1,42 @@
-/* Container Setup */
-.usercard-container {
+/* Global Background */
+body {
   font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-  width: 100vw;
+  margin: 0;
+  padding: 0;
   background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Main Container */
+.usercard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw; /* make sure container takes full screen width */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Header */
 .usercard-header {
+  width: 100vw; /* full screen width */
+  left: 0;
+  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+  color: #4b2e05;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-sizing: border-box;
 }
 
 .usercard-greeting {
@@ -31,76 +52,145 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s ease;
+  font-weight: 500;
+  transition: transform 0.12s ease, background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .logout-btn:hover {
   background-color: #e13c3c;
+  transform: translateY(-2px);
 }
 
-/* Main Section */
+/* Center Main Section */
 .usercard-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* centers vertically */
+  align-items: center; /* centers horizontally */
   text-align: center;
+  padding: 2rem;
 }
 
 .usercard-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin-bottom: 2rem;
-  color: #333;
+  color: #3a2b1a;
 }
 
-/* Option Buttons */
+/* Options */
 .options {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: stretch; /* keep cards equal height where possible */
 }
 
+/* Option Card (now also usable as clickable-card) */
+.option-card {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  width: 220px;
+  box-shadow: 0 2px 10px rgba(75, 46, 5, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* Make whole card look & feel clickable */
+.clickable-card {
+  cursor: pointer;
+  outline: none;
+}
+
+.clickable-card:hover,
+.option-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(75, 46, 5, 0.12);
+}
+
+/* Focus style for keyboard users (accessibility) */
+.clickable-card:focus {
+  box-shadow: 0 0 0 4px rgba(124, 74, 31, 0.12);
+  transform: translateY(-3px);
+}
+
+/* Visual children styles */
+.option-img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  margin-bottom: 0.4rem;
+}
+
+.option-desc {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.8rem;
+  line-height: 1.2;
+  min-height: 2.2rem; /* keep cards visually consistent */
+}
+
+/* Button inside card */
 .option-btn {
-  background-color: #007bff;
+  background-color: #7c4a1f;
   color: white;
   border: none;
-  padding: 1rem 2rem;
+  padding: 0.65rem 1.2rem;
   border-radius: 10px;
-  font-size: 1rem;
   cursor: pointer;
-  transition: 0.3s ease;
+  font-weight: 600;
+  transition: transform 0.12s ease, background 0.18s ease, box-shadow 0.12s ease;
+  box-shadow: 0 4px 10px rgba(124, 74, 31, 0.12);
+  /* ensure button stands out but doesn't fill the entire card */
+  align-self: center;
+  pointer-events: auto; /* ensures button is clickable */
 }
 
 .option-btn:hover {
-  background-color: #005dc1;
+  background-color: #5d3417;
+  transform: translateY(-2px);
 }
 
-/* Fallback States */
-.loading-text,
-.not-logged {
-  text-align: center;
-  margin-top: 3rem;
-  color: #555;
+/* Make button keyboard-focus visible */
+.option-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(124, 74, 31, 0.16);
 }
 
-.login-link {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.login-link:hover {
-  text-decoration: underline;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
+/* Small devices */
+@media (max-width: 760px) {
   .options {
     flex-direction: column;
     gap: 1rem;
   }
 
+  .option-card {
+    width: 86%;
+    padding: 1.25rem;
+  }
+
+  .usercard-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 380px) {
+  .option-img {
+    width: 72px;
+    height: 72px;
+  }
+
   .option-btn {
-    width: 80%;
+    padding: 0.55rem 1rem;
   }
 }

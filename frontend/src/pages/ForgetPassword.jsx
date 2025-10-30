@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { forgetPass, resetPass, loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
+import Alert from "../Components/Alert";
+
 // import "./ForgetPassword.css";
 
 export default function ForgetPassword() {
@@ -11,6 +13,7 @@ export default function ForgetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({ text: "", type: "" });
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -19,17 +22,17 @@ export default function ForgetPassword() {
     e.preventDefault();
 
     if (!email) {
-      alert("Please enter your email!");
+      setAlert({ text: "Please enter your email!", type: "error" });
       return;
     }
 
     try {
       setLoading(true);
       await forgetPass({ email }); // calls /forgotpassword/otp
-      alert("OTP sent to your email!");
+      setAlert({ text: "OTP sent to your email!", type: "success" });
       setStep("reset");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to send OTP");
+      setAlert({ text: err.response?.data?.message || "Failed to send OTP", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -40,7 +43,7 @@ export default function ForgetPassword() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setAlert({ text: "Passwords do not match!", type: "error" });
       return;
     }
 
@@ -50,14 +53,13 @@ export default function ForgetPassword() {
       // call /forgotpassword to reset password
       await resetPass({ email, otp, password });
 
-      alert("Password reset successful! Logging you in...");
-
+      setAlert({ text: "Password reset successful! Logging you in...", type: "success" });
       // auto-login
       const res = await loginUser({ email, password });
       login(res.data.user);
       navigate("/usercard");
     } catch (err) {
-      alert(err.response?.data?.message || "Password reset failed");
+      setAlert({ text: err.response?.data?.message || "Password reset failed", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -65,6 +67,7 @@ export default function ForgetPassword() {
 
   return (
     <div className="forget-container">
+      <Alert message={alert.text} type={alert.type} onClose={() => setAlert({ text: "", type: "" })} />
       <form
         className="forget-form"
         onSubmit={step === "email" ? handleSendOtp : handleResetPassword}

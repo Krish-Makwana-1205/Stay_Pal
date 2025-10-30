@@ -5,7 +5,7 @@ import "../StyleSheets/UserCard.css";
 
 export default function UserCard() {
   const navigate = useNavigate();
-  const { user, loading, logout } =  useAuth();
+  const { user, loading, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -21,9 +21,10 @@ export default function UserCard() {
     }
   };
 
- if (loading || user === undefined) {
-  return <p className="loading-text">Loading user...</p>;
-}
+  if (loading || user === undefined) {
+    return <p className="loading-text">Loading user...</p>;
+  }
+
   if (!user) {
     return (
       <div className="not-logged">
@@ -35,8 +36,18 @@ export default function UserCard() {
     );
   }
 
+  // ✅ Navigation handlers
+  const handleTenantClick = () => {
+    navigate("/tenantForm");
+  };
+
+  const handlePropertyOwnerClick = () => {
+    navigate("/propertyForm");
+  };
+
   return (
     <div className="usercard-container">
+      {/* Header */}
       <header className="usercard-header">
         <h2 className="usercard-greeting">Hi, {user.name || "User"} 👋</h2>
         <button className="logout-btn" onClick={handleLogout}>
@@ -44,21 +55,61 @@ export default function UserCard() {
         </button>
       </header>
 
+      {/* Main Section */}
       <main className="usercard-main">
         <h3 className="usercard-title">Who are You?</h3>
+
         <div className="options">
-          <button
-            className="option-btn"
-            onClick={() => navigate("/tenantForm")}
+          {/* Tenant Option */}
+          <div
+            className="option-card clickable-card"
+            onClick={handleTenantClick}
+            tabIndex={0}
           >
-            Tenant
-          </button>
-          <button
-            className="option-btn"
-            onClick={() => navigate("/propertyForm")}
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
+              alt="Tenant"
+              className="option-img"
+            />
+            <p className="option-desc">
+              Looking for a new nest? Find your next perfect home.
+            </p>
+            {/* stopPropagation prevents double trigger */}
+            <button
+              className="option-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleTenantClick();
+              }}
+            >
+              Tenant
+            </button>
+          </div>
+
+          {/* Property Owner Option */}
+          <div
+            className="option-card clickable-card"
+            onClick={handlePropertyOwnerClick}
+            tabIndex={0}
           >
-            Property Owner
-          </button>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/619/619034.png"
+              alt="Property Owner"
+              className="option-img"
+            />
+            <p className="option-desc">
+              Have a space to offer? Connect with the right tenants.
+            </p>
+            <button
+              className="option-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePropertyOwnerClick();
+              }}
+            >
+              Property Owner
+            </button>
+          </div>
         </div>
       </main>
     </div>

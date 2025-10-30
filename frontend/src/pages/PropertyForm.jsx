@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { uploadProperty } from "../api/propertyform";
 import "../StyleSheets/PropertyForm.css";
+import Alert from "../Components/Alert";
 
 export default function PropertyForm() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ export default function PropertyForm() {
     city: "",
   });
   const [images, setImages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
   const [imageLimitMessage, setImageLimitMessage] = useState("");
   const fileInputRef = useRef(null);
@@ -52,7 +53,7 @@ export default function PropertyForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
+    setMessage({ text: "", type: "" });
 
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
@@ -63,7 +64,7 @@ export default function PropertyForm() {
     try {
       const res = await uploadProperty(data);
       if (res.status === 200) {
-        setMessage("Property uploaded successfully!");
+        setMessage({ text: res.data.message || "Property uploaded successfully!", type: "success" });
         setFormData({
           name: "",
           email: "",
@@ -81,9 +82,9 @@ export default function PropertyForm() {
     } catch (error) {
       console.error("Error uploading property:", error);
       if (error.response) {
-        setMessage(error.response.data.message || "Server error.");
+        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
       } else {
-        setMessage("Network error.");
+        setMessage({ text: "Network error.", type: "error" });
       }
     } finally {
       setLoading(false);
@@ -216,7 +217,7 @@ export default function PropertyForm() {
         </button>
       </form>
 
-      {message && <p className="response-message">{message}</p>}
+      <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
     </div>
   );
 }

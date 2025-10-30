@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
-import "../StyleSheets/TenantForm.css";
-import { form2 } from "../api/tenantform";
+import "../StyleSheets/TenantForm.css"; 
+import { form2 } from "../api/tenantform"; 
+import Alert from "../Components/Alert";
 
 export default function TenantForm2() {
   const [formData, setFormData] = useState({
@@ -18,8 +18,7 @@ export default function TenantForm2() {
     descriptions: "",
   });
 
-  const [newHobby, setNewHobby] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
 
   // Handle checkbox and text/selection updates
@@ -56,22 +55,20 @@ export default function TenantForm2() {
     setMessage("");
 
     try {
-       const res=await form2(formData);
-   
-         if (res.status === 200) {
-           setMessage("Profile created successfully!");
-              
-          }
-       } catch (error) {
-         console.error("Error submitting tenant form:", error);
-         if (error.response) {
-           setMessage(error.response.data.message || "Server error.");
-         } else {
-           setMessage("Network error.");
-         }
-       } finally {
-         setLoading(false);
-       }
+      const res = await form2(formData);
+      if (res.status === 200) {
+        setMessage({ text: "Preferences saved successfully!", type: "success" });
+      }
+    } catch (error) {
+      console.error("Error submitting preferences:", error);
+      if (error.response) {
+        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
+      } else {
+        setMessage({ text: "Network error.", type: "error" });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -220,7 +217,7 @@ export default function TenantForm2() {
         </button>
       </form>
 
-      {message && <p className="response-message">{message}</p>}
+      {message && <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />}
     </div>
   );
 }

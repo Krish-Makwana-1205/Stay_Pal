@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupUser, otpFetch, loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
+import Alert from "../Components/Alert";
 import "../StyleSheets/Signup.css";
 
 export default function Signup() {
@@ -12,6 +13,7 @@ export default function Signup() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState("email");
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({ text: "", type: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -19,17 +21,17 @@ export default function Signup() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setAlert({ text: "Passwords do not match!", type: "error" });
       return;
     }
 
     try {
       setLoading(true);
       await otpFetch({ email });
-      alert("OTP sent to your email!");
+      setAlert({ text: "OTP sent to your email!", type: "success" });
       setStep("otp");
     } catch (err) {
-      alert(err.response?.data?.message || "OTP generation failed");
+      setAlert({ text: err.response?.data?.message || "OTP generation failed", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -40,13 +42,12 @@ export default function Signup() {
     try {
       setLoading(true);
       await signupUser({ email, password, name, otp });
-      alert("Signup successful!");
+      setAlert({ text: "Signup successful!", type: "success" });
     } catch (err) {
-      alert(err.response?.data?.message || "Signup failed");
-       return;
+      setAlert({ text: err.response?.data?.message || "Signup failed", type: "error" });
+      return;
     } finally {
       setLoading(false);
-     
     }
 
     try {
@@ -55,7 +56,7 @@ export default function Signup() {
       login(res.data.user);
       navigate("/usercard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      setAlert({ text: err.response?.data?.message || "Login failed", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -63,6 +64,7 @@ export default function Signup() {
 
   return (
     <div className="signup-container">
+      <Alert message={alert.text} type={alert.type} onClose={() => setAlert({ text: "", type: "" })} />
       <form
         className="signup-form"
         onSubmit={step === "email" ? handleGetOtp : handleSignup}
@@ -132,7 +134,7 @@ export default function Signup() {
 
         {step === "otp" && (
           <p>
-            Didn’t receive OTP?{" "}
+            Didn't receive OTP?{" "}
             <button
               type="button"
               className="resend-otp-btn"
