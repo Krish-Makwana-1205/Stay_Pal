@@ -30,27 +30,27 @@ This report focuses exclusively on the **Signup process**, including:
 
 ## 4. Test Cases  
 
-### ✅ Signup Module Test Scenarios (T1–T17)
+###  Signup Module Test Scenarios (T1–T17)
 
 | Test ID | Scenario | Input | Expected Result | Actual Result | Status |
 |----------|-----------|--------|------------------|----------------|---------|
-| **T1** | Navigation from Landing Page | Clicked “Get Started” | Redirects to Signup page | Redirected successfully | ✅ Pass |
-| **T2** | Valid signup | `user001@gmail.com` + `Test@123` | OTP received on mail | OTP generated successfully | ✅ Pass |
-| **T3** | Enter valid OTP | Entered received OTP | Display “Signup successful” | Message shown correctly | ✅ Pass |
-| **T4** | Redirection after signup | Clicked “Close” on popup | Redirect to login/profile page | Redirected correctly | ✅ Pass |
-| **T5** | Signup with existing email | Reused same email | Should show “Email already registered” | Displayed alert “Email is already registered” | ✅ Pass |
-| **T6** | Invalid email format | `user.com` | Should show “Invalid email format” | Tooltip: “Enter an email address” | ✅ Pass |
-| **T7** | Password mismatch | Password: `Test@123`, Confirm: `Test@12` | Should show “Passwords do not match” | Displayed “Passwords do not match!” | ⚠️ Minor logic issue |
-| **T8** | Incorrect OTP | Entered wrong OTP | Show “Incorrect OTP” | Displayed “Incorrect OTP provided” | ✅ Pass |
-| **T9** | Resend OTP and reuse old one | Clicked “Resend OTP”, used old OTP | Should show “Incorrect OTP” | Displayed “Incorrect OTP provided” | ✅ Pass |
-| **T10** | Username with special characters | `#User2025` | Should reject or sanitize | Accepted special characters | ⚠️ Improvement needed |
-| **T11** | Username exceeding 12 characters | Enter username >12 chars | Should show “Username too long” | Validation message displayed correctly | ✅ Pass |
-| **T12** | Password exceeding 12 characters | Enter password >12 chars | Should show “Password too long” | Validation message displayed correctly | ✅ Pass |
-| **T13** | Email exceeding 160 characters | Enter long email (>160 chars) | Should show “Email too long” | Validation message displayed correctly | ✅ Pass |
-| **T14** | OTP expiry after 5 minutes | Waited >5 min and entered OTP | Should show “OTP expired” | Displayed “OTP expired” | ✅ Pass |
-| **T15** | Invalid email with special symbol | `#user@gmail.com` | Should reject invalid email | Sent OTP successfully | ⚠️ Validation bug |
-| **T16** | Case sensitivity test (uppercase email) | `USER001@gmail.com` | Should accept (case-insensitive) | OTP sent successfully | ✅ Pass |
-| **T17** | Mixed-case email test | `UsEr001@GmAiL.CoM` | Should behave same as lowercase | OTP sent successfully | ✅ Pass |
+| **T1** | Navigation from Landing Page | Clicked “Get Started” | Redirects to Signup page | Redirected successfully |  Pass |
+| **T2** | Valid signup | `user001@gmail.com` + `Test@123` | OTP received on mail | OTP generated successfully |  Pass |
+| **T3** | Enter valid OTP | Entered received OTP | Display “Signup successful” | Message shown correctly |  Pass |
+| **T4** | Redirection after signup | Clicked “Close” on popup | Redirect to login/profile page | Redirected correctly | Pass |
+| **T5** | Signup with existing email | Reused same email | Should show “Email already registered” | Displayed alert “Email is already registered” | Pass |
+| **T6** | Invalid email format | `user.com` | Should show “Invalid email format” | Tooltip: “Enter an email address” |  Pass |
+| **T7** | Password mismatch | Password: `Test@123`, Confirm: `Test@12` | Should show “Passwords do not match” | Displayed “Passwords do not match!” |  Minor logic issue |
+| **T8** | Incorrect OTP | Entered wrong OTP | Show “Incorrect OTP” | Displayed “Incorrect OTP provided” |  Pass |
+| **T9** | Resend OTP and reuse old one | Clicked “Resend OTP”, used old OTP | Should show “Incorrect OTP” | Displayed “Incorrect OTP provided” |  Pass |
+| **T10** | Username with special characters | `#User2025` | Should reject or sanitize | Accepted special characters |  Improvement needed |
+| **T11** | Username exceeding 12 characters | Enter username >12 chars | Should show “Username too long” | Validation message displayed correctly |  Pass |
+| **T12** | Password exceeding 12 characters | Enter password >12 chars | Should show “Password too long” | Validation message displayed correctly |  Pass |
+| **T13** | Email exceeding 160 characters | Enter long email (>160 chars) | Should show “Email too long” | Validation message displayed correctly |  Pass |
+| **T14** | OTP expiry after 5 minutes | Waited >5 min and entered OTP | Should show “OTP expired” | Displayed “OTP expired” |  Pass |
+| **T15** | Invalid email with special symbol | `#user@gmail.com` | Should reject invalid email | Sent OTP successfully |  Validation bug |
+| **T16** | Case sensitivity test (uppercase email) | `USER001@gmail.com` | Should accept (case-insensitive) | OTP sent successfully |  Pass |
+| **T17** | Mixed-case email test | `UsEr001@GmAiL.CoM` | Should behave same as lowercase | OTP sent successfully |  Pass |
 
 ## 5. Bug Report  
 
@@ -104,19 +104,19 @@ This report focuses on the **Login functionality** of StayPal, covering:
 
 ### 4. Test Cases  
 
-#### ✅ Login Module Test Scenarios (T18–T26)
+####  Login Module Test Scenarios (T18–T26)
 
 | **Test ID** | **Scenario** | **Input / Action** | **Expected Result** | **Actual Result** | **Status** |
 |--------------|--------------|--------------------|----------------------|------------------|-------------|
-| **T18** | Valid login | Email: `user001@gmail.com` <br> Password: `Test@123` | Redirects to homepage/dashboard | Successfully logged in | ✅ Pass |
-| **T19** | Invalid password | Email: `user001@gmail.com` <br> Password: `Wrong@123` | “Incorrect password” message displayed | Message displayed correctly | ✅ Pass |
-| **T20** | Unregistered email | Email: `random@gmail.com` | “Email not found in database” | Message displayed correctly | ✅ Pass |
-| **T21** | Invalid email format | Email: `user@com` | “Enter valid email address” tooltip | Browser tooltip displayed | ✅ Pass |
-| **T22** | Empty fields | Leave both fields blank and click Login | Browser prompts user to fill fields | “Fill out this field” prompt shown | ✅ Pass |
-| **T23** | Case sensitivity of email | Email: `USER001@gmail.com` <br> Password: `Test@123` | Should still log in (case-insensitive email) | Login successful | ✅ Pass |
-| **T24** | Email with spaces before/after | `"  user001@gmail.com  "` | Should trim spaces and log in | Works correctly | ✅ Pass |
-| **T25** | Password exceeding 12 characters | Enter 13+ character password | Should show “Password too long” | Validation message displayed correctly | ✅ Pass |
-| **T26** | Email exceeding 160 characters | Enter email >160 chars | Should show “Email too long” | Validation message displayed correctly | ✅ Pass |
+| **T18** | Valid login | Email: `user001@gmail.com` <br> Password: `Test@123` | Redirects to homepage/dashboard | Successfully logged in |  Pass |
+| **T19** | Invalid password | Email: `user001@gmail.com` <br> Password: `Wrong@123` | “Incorrect password” message displayed | Message displayed correctly |  Pass |
+| **T20** | Unregistered email | Email: `random@gmail.com` | “Email not found in database” | Message displayed correctly |  Pass |
+| **T21** | Invalid email format | Email: `user@com` | “Enter valid email address” tooltip | Browser tooltip displayed |  Pass |
+| **T22** | Empty fields | Leave both fields blank and click Login | Browser prompts user to fill fields | “Fill out this field” prompt shown |  Pass |
+| **T23** | Case sensitivity of email | Email: `USER001@gmail.com` <br> Password: `Test@123` | Should still log in (case-insensitive email) | Login successful |  Pass |
+| **T24** | Email with spaces before/after | `"  user001@gmail.com  "` | Should trim spaces and log in | Works correctly |  Pass |
+| **T25** | Password exceeding 12 characters | Enter 13+ character password | Should show “Password too long” | Validation message displayed correctly |  Pass |
+| **T26** | Email exceeding 160 characters | Enter email >160 chars | Should show “Email too long” | Validation message displayed correctly |  Pass |
 
 ### 5. Bug Report  
 
@@ -170,23 +170,23 @@ This module covers:
 
 ### 4. Test Cases  
 
-#### ✅ Forgot Password Module Test Scenarios (T25–T37)
+####  Forgot Password Module Test Scenarios (T25–T37)
 
 | **Test ID** | **Scenario** | **Input / Action** | **Expected Result** | **Actual Result** | **Status** |
 |--------------|--------------|--------------------|----------------------|------------------|-------------|
-| **T25** | Valid registered email | `user001@gmail.com` | OTP sent to user’s email | “OTP sent to your email!” shown | ✅ Pass |
-| **T26** | Unregistered email | `randomuser@gmail.com` | “Email not registered” | Displayed correctly | ✅ Pass |
-| **T27** | Invalid email format | `$user001@gmail.com` | “Invalid email” | Shows “Email not registered” instead | ⚠️ Minor issue |
-| **T28** | Email in uppercase | `USER001@GMAIL.COM` | Should send OTP (case-insensitive) | Shows “Email not registered” – case-sensitive | ⚠️ Improvement needed |
-| **T29** | Empty email field | Leave blank and click “Send OTP” | Browser prompts to fill field | “Fill out this field” prompt shown | ✅ Pass |
-| **T30** | Email with leading/trailing spaces | `"  user001@gmail.com  "` | Should trim spaces and send OTP | Works correctly | ✅ Pass |
-| **T31** | College domain email | `202301082@dau.ac.in` | Should send OTP successfully | OTP sent successfully | ✅ Pass |
-| **T32** | Valid OTP + matching passwords | Correct OTP + matching “New Password” & “Confirm Password” | “Password reset successful” + redirect | Message displayed correctly | ✅ Pass |
-| **T33** | Incorrect OTP + matching passwords | Wrong OTP + matching passwords | “Incorrect OTP provided” | Displayed correctly | ✅ Pass |
-| **T34** | Incorrect OTP + non-matching passwords | Random OTP + different passwords | Preferably “Incorrect OTP” | Shows “Passwords do not match” first | ⚠️ Minor logic issue |
-| **T35** | Correct OTP + non-matching passwords | Correct OTP + different passwords | “Passwords do not match” | Displayed correctly | ✅ Pass |
-| **T36** | Expired OTP + matching passwords | Expired OTP (>5 min) + matching passwords | “OTP expired” | “OTP provided is expired” shown | ✅ Pass |
-| **T37** | Expired OTP + non-matching passwords | Expired OTP + different passwords | Should prioritize OTP expiry message | Shows “Passwords do not match” instead | ⚠️ Logic order issue |
+| **T25** | Valid registered email | `user001@gmail.com` | OTP sent to user’s email | “OTP sent to your email!” shown |  Pass |
+| **T26** | Unregistered email | `randomuser@gmail.com` | “Email not registered” | Displayed correctly |  Pass |
+| **T27** | Invalid email format | `$user001@gmail.com` | “Invalid email” | Shows “Email not registered” instead |  Minor issue |
+| **T28** | Email in uppercase | `USER001@GMAIL.COM` | Should send OTP (case-insensitive) | Shows “Email not registered” – case-sensitive |  Improvement needed |
+| **T29** | Empty email field | Leave blank and click “Send OTP” | Browser prompts to fill field | “Fill out this field” prompt shown |  Pass |
+| **T30** | Email with leading/trailing spaces | `"  user001@gmail.com  "` | Should trim spaces and send OTP | Works correctly |  Pass |
+| **T31** | College domain email | `202301082@dau.ac.in` | Should send OTP successfully | OTP sent successfully |  Pass |
+| **T32** | Valid OTP + matching passwords | Correct OTP + matching “New Password” & “Confirm Password” | “Password reset successful” + redirect | Message displayed correctly |  Pass |
+| **T33** | Incorrect OTP + matching passwords | Wrong OTP + matching passwords | “Incorrect OTP provided” | Displayed correctly |  Pass |
+| **T34** | Incorrect OTP + non-matching passwords | Random OTP + different passwords | Preferably “Incorrect OTP” | Shows “Passwords do not match” first |  Minor logic issue |
+| **T35** | Correct OTP + non-matching passwords | Correct OTP + different passwords | “Passwords do not match” | Displayed correctly |  Pass |
+| **T36** | Expired OTP + matching passwords | Expired OTP (>5 min) + matching passwords | “OTP expired” | “OTP provided is expired” shown |  Pass |
+| **T37** | Expired OTP + non-matching passwords | Expired OTP + different passwords | Should prioritize OTP expiry message | Shows “Passwords do not match” instead |  Logic order issue |
 
 ### 5. Bug Report  
 
