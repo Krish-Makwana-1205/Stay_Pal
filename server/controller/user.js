@@ -146,6 +146,7 @@ async function forgotPasswordOtp(req, res) {
     if ((!body.email)) {
         return res.status(400).json({ success: false, message: "Email not provided" });
     }
+    body.email = (body.email.trimEnd().toLowerCase());
     let temp;
     try {
         temp = await user.findOne({ email: body.email });

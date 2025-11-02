@@ -3,12 +3,14 @@ import "../StyleSheets/TenantForm.css";
 import { form1 } from "../api/tenantform";
 import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
-
+import { useAuth } from "../context/AuthContext";         
+import AsyncSelect from "react-select/async";              
+import { Country, City } from "country-state-city";        
 
 export default function TenantForm() {
- const { user, logout } =  useAuth();
+  const { user, logout } = useAuth();
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nationality: "",
     hometown: "",
@@ -16,11 +18,64 @@ export default function TenantForm() {
     dob: "",
   });
 
+  const [selectedCountryCode, setSelectedCountryCode] = useState(null); 
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
-if (loading || user === undefined) {
-  return <p className="loading-text">Loading user...</p>;
-}
+
+  const loadCountryOptions = (inputValue, callback) => {
+    if (!inputValue || inputValue.length < 1) {
+      callback([]);
+      return;
+    }
+
+    const allCountries = Country.getAllCountries();
+
+    const filtered = allCountries
+      .filter((country) =>
+        country.name.toLowerCase().includes(inputValue.toLowerCase())
+      )
+      .slice(0, 20)
+      .map((country) => ({
+        value: country.isoCode,
+        label: country.name,
+      }));
+
+    callback(filtered);
+  };
+  const loadCityOptions = (inputValue, callback) => {
+    if (!selectedCountryCode) {
+      callback([]);
+      return;
+    }
+
+    if (!inputValue || inputValue.length < 2) {
+      callback([]);
+      return;
+    }
+
+    const allCities = City.getCitiesOfCountry(selectedCountryCode) || [];
+
+    const filtered = allCities
+      .filter((city) =>
+        city.name.toLowerCase().includes(inputValue.toLowerCase())
+      )
+      .slice(0, 20)
+      .map((city) => ({
+        value: city.name,
+        label: city.name,
+      }));
+
+    if (filtered.length === 0) {
+      filtered.push({ value: "Other", label: "Other" });
+    }
+
+    callback(filtered);
+  };
+
+  if (loading || user === undefined) {
+    return <p className="loading-text">Loading user...</p>;
+  }
+
   if (!user) {
     return (
       <div className="not-logged">
@@ -31,9 +86,33 @@ if (loading || user === undefined) {
       </div>
     );
   }
+
   console.log(user);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCountryChange = (selectedOption) => {
+    if (selectedOption) {
+      setSelectedCountryCode(
+        selectedOption.value === "OTHER" ? null : selectedOption.value
+      );
+      setFormData({
+        ...formData,
+        nationality: selectedOption.label,
+        hometown: "", // clear previous city if country changes
+      });
+    } else {
+      setSelectedCountryCode(null);
+      setFormData({ ...formData, nationality: "", hometown: "" });
+    }
+  };
+  const handleCityChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      hometown: selectedOption ? selectedOption.value : "",
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -42,16 +121,22 @@ if (loading || user === undefined) {
     setMessage("");
 
     try {
-    const res=await form1(formData);
+      const res = await form1(formData);
 
       if (res.status === 200) {
-        setMessage({ text: "Profile created successfully!", type: "success" });
-        navigate("/tenantForm2");     
-       }
+        setMessage({
+          text: "Profile created successfully!",
+          type: "success",
+        });
+        navigate("/tenantForm2");
+      }
     } catch (error) {
       console.error("Error submitting tenant form:", error);
       if (error.response) {
-        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
+        setMessage({
+          text: error.response.data.message || "Server error.",
+          type: "error",
+        });
       } else {
         setMessage({ text: "Network error.", type: "error" });
       }
@@ -65,25 +150,31 @@ if (loading || user === undefined) {
       <h2 className="form-title">Tenant Profile</h2>
       <form onSubmit={handleSubmit} className="tenant-form">
         <label>
-          Nationality <span className="required">*</span>
+          Country <span className="required">*</span>
         </label>
-        <input
-          type="text"
-          name="nationality"
-          value={formData.nationality}
-          onChange={handleChange}
-          required
+        <AsyncSelect
+          cacheOptions
+          loadOptions={loadCountryOptions}
+          onChange={handleCountryChange}
+          placeholder="Type to search your country..."
+          isClearable
         />
 
         <label>
           Hometown <span className="required">*</span>
         </label>
-        <input
-          type="text"
-          name="hometown"
-          value={formData.hometown}
-          onChange={handleChange}
-          required
+        {/* ✅ UPDATED: City search enabled only after country is selected */}
+        <AsyncSelect
+          cacheOptions
+          loadOptions={loadCityOptions}
+          onChange={handleCityChange}
+          placeholder={
+            selectedCountryCode
+              ? "Type to search your city..."
+              : "Select country first"
+          }
+          isDisabled={!selectedCountryCode} // ✅ disable until country chosen
+          isClearable
         />
 
         <label>
@@ -117,7 +208,11 @@ if (loading || user === undefined) {
         </button>
       </form>
 
-      <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
+      <Alert
+        message={message.text}
+        type={message.type}
+        onClose={() => setMessage({ text: "", type: "" })}
+      />
     </div>
   );
 }

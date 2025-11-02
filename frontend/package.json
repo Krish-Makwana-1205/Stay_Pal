@@ -12,13 +12,15 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "axios": "^1.12.2",
+    "country-state-city": "^3.2.1",
     "firebase": "^12.4.0",
     "framer-motion": "^12.23.16",
     "gsap": "^3.13.0",
     "motion": "^12.23.16",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.1"
+    "react-router-dom": "^7.9.1",
+    "react-select": "^5.10.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
