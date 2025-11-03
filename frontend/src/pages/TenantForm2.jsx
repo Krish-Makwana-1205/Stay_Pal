@@ -20,7 +20,7 @@ export default function TenantForm2() {
 
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
-
+  const [newHobby,setNewHobby]=useState({});
   // Handle checkbox and text/selection updates
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

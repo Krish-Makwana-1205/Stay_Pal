@@ -6,6 +6,8 @@ const propertySchema = new mongoose.Schema({
     imgLink: [{type: String}],
     description: {type: String, required: true},
     BHK : {type: Number, required:true},
+    address: { type: String, required: true},
+    addressLink: { type: String, required: true},
     rentLowerBound: {type: Number, required:true},
     rentUpperBound: {type: Number, required:true},
     nation: {type: String, required:true},

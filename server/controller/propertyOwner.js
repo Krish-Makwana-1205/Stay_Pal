@@ -4,9 +4,11 @@ async function uploadProperty(req, res) {
   try {
     const imgUrls = req.files.map(file => file.path);
     const body = req.body;
-    if (!body.name || !body.email || !body.description || !body.BHK || !body.rentLowerBound || !body.rentUpperBound || !body.nation || !body.pincode || !body.city) {
+    if (!body.name || !body.email || !body.description || !body.BHK || !body.rentLowerBound || !body.rentUpperBound || !body.nation || !body.pincode || !body.city || !body.address) {
       return res.status(400).json({ message: "Required fields missing" });
     }
+    const addressLink = body.addressLink;
+
     console.log('success');
     console.log(imgUrls);
     const Property = await property.findOneAndUpdate(
@@ -19,6 +21,8 @@ async function uploadProperty(req, res) {
         BHK: body.BHK,
         rentLowerBound: body.rentLowerBound,
         rentUpperBound: body.rentUpperBound,
+        address: body.address,
+        addressLink: addressLink,
         nation: body.nation,
         pincode: body.pincode,
         city: body.city,

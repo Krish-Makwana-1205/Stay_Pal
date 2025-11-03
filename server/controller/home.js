@@ -26,45 +26,42 @@ async function filterProperties(req, res) {
       city,
       furnishingType,
       areaSize,
+      parkingArea,
       page = 1,
       limit = 10,
     } = req.body;
 
     const body = {};
 
-    if (city) body.city = new RegExp(`^${city}$`, "i");
-
-    if (BHK) body.BHK = Number(BHK);
-    if (furnishingType)
-      body.furnishingType = new RegExp(`^${furnishingType}$`, "i");
-
-    if (areaSize) body.areaSize = { $gte: Number(areaSize) };
-
-    if (rentLowerBound || rentUpperBound) {
-      body.rentLowerBound = {};
-      if (rentLowerBound) body.rentLowerBound.$gte = Number(rentLowerBound);
-      if (rentUpperBound) body.rentLowerBound.$lte = Number(rentUpperBound);
+    if (!city) {
+      return res.status(400).json({ success: false, message: "city not found" });
     }
 
+    body.city =  "Ahmedabad";
+;
+
+    if (BHK) body.BHK = Number(BHK);
+
+    if (furnishingType) body.furnishingType = furnishingType.trimEnd().toLowerCase();
+
+    if (areaSize) body.areaSize = Number(areaSize);
+
+    if (parkingArea) body.parkingArea = Number(parkingArea);
+
+
+    if (rentLowerBound) body.rentLowerBound = Number(rentLowerBound);
+    if (rentUpperBound) body.rentLowerBound = Number(rentUpperBound);
+
+
+
     const skip = (page - 1) * Number.parseInt(limit);
+    const result = await property.find({city:body.city});
+    console.log(result);
 
-    const sortOrder = {
-      priority: -1,         
-      BHK: 1,               
-      rentLowerBound: 1,    
-      furnishingType: 1,    
-      areaSize: 1          
-    };
-
-    const [properties, total] = await Promise.all([
-      property.find(body).sort(sortOrder).skip(skip).limit(Number.parseInt(limit)),
-      property.countDocuments(body),
-    ]);
-
-    res.status(200).json({ success: true,total,count: properties.length, page: Number.parseInt(page), sortOrderUsed: sortOrder, data: properties});
-  } 
-  catch(error){
-    res.status(500).json({ success: false, message: "Error filtering properties", error: error.message});
+    res.status(200).json({ success: true, total, count: properties.length, page: Number.parseInt(page), sortOrderUsed: sortOrder, data: properties });
+  }
+  catch (error) {
+    res.status(500).json({ success: false, message: "Error filtering properties", error: error.message });
   }
 }
 
