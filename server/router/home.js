@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const {restrictToLoggedinUserOnly} = require('../middleware/logincheck');
 const { home, filterProperties  } = require("../controller/home"); 
 
-router.get("/", home); 
-router.get("/filter-properties", filterProperties);
+router.get("/", restrictToLoggedinUserOnly, home); 
+router.get("/filter", restrictToLoggedinUserOnly,filterProperties);
 
 module.exports = router;

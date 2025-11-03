@@ -15,7 +15,7 @@ router.post('/registration', makeUser);
 router.post('/login', loginUser);
 router.post('/registration/otp', sendOtp);
 router.get('/me', restrictToLoggedinUserOnly, provideUser);
-router.post('/logout',logOut);
+router.post('/logout',restrictToLoggedinUserOnly, logOut);
 router.post('/forgotPassword/otp', forgotPasswordOtp);
 router.post('/forgotPassword', forgotPassword);
 module.exports = router;

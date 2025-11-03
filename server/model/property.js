@@ -34,7 +34,7 @@ const propertySchema = new mongoose.Schema({
         nationality: { type: String, default: "Any" },
         workingShift: { type: String, enum: ["Day Shift", "Night Shift", "Any"], default: "Any" },
         professionalStatus: { type: String, enum: ["Student", "Employed", "Self-Employed", "Any"], default: "Any" },
-        religion: { type: String, default: "Any" },
+        religion: { type: String, enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other"] ,default: "Any" },
         language: { type: String, default: "Any" },
         minStayDuration: { type: Number, default: 0 },
         maxPeopleAllowed: { type: Number, default: 0 },

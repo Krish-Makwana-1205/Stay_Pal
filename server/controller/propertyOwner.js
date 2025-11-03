@@ -4,13 +4,10 @@ async function uploadProperty(req, res) {
   try {
     const imgUrls = req.files.map(file => file.path);
     const body = req.body;
-    if (!body.name || !body.email || !body.description || !body.BHK || !body.rentLowerBound || !body.rentUpperBound || !body.nation || !body.pincode || !body.city || !body.address) {
+    if (!body.name || !body.email || !body.description || !body.BHK || !body.rentLowerBound || !body.rentUpperBound || !body.nation || !body.pincode || !body.city) {
       return res.status(400).json({ message: "Required fields missing" });
     }
     const addressLink = body.addressLink;
-
-    console.log('success');
-    console.log(imgUrls);
     const Property = await property.findOneAndUpdate(
       { email: body.email, name: body.name },
       {
