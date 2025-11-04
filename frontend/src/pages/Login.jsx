@@ -3,21 +3,35 @@ import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import Alert from "../Components/Alert";
+import { useEffect } from "react";
 import "../StyleSheets/Login.css";
 
 export default function Login() {
   const { login } = useAuth();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [alert, setAlert] = useState({ text: "", type: "" });
-
+  const { user } = useAuth();
+ useEffect(() => {
+    if (user) {
+      if (user.istenant) {
+        navigate("/dashboard");
+      } else {
+        navigate("/tenantForm");
+      }
+    }
+  }, [user, navigate]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await loginUser({ email, password });
       console.log(res.data.user);
       login(res.data.user); 
+      if(user.istenant){
+        navigate("/dashboard");
+      }
       navigate("/usercard");
     } catch (err) {
       setAlert({ text: err.response?.data?.message || "Login failed", type: "error" });

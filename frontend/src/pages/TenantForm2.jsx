@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "../StyleSheets/TenantForm.css"; 
 import { form2 } from "../api/tenantform"; 
 import Alert from "../Components/Alert";
-
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 export default function TenantForm2() {
   const [formData, setFormData] = useState({
     foodPreference: "",
@@ -17,7 +18,11 @@ export default function TenantForm2() {
     workPlace: "",
     descriptions: "",
   });
-
+  const navigate=useNavigate();
+  const {user} = useAuth();
+  if(!user){
+    navigate("/login");
+  }
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
   const [newHobby,setNewHobby]=useState({});
