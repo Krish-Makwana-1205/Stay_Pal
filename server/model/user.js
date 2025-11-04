@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     istenant:{
         type: Boolean,
         default: false,
+    },
+    isroommate:{
+        type: Boolean,
+        default: false,
     }
 })
 

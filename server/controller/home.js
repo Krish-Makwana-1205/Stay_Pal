@@ -21,7 +21,7 @@ async function home(req, res) {
 async function filterProperties(req, res) {
   console.log('run');
   try {
-    const {
+    let {
       BHK,
       rentLowerBound,
       rentUpperBound,
@@ -35,9 +35,8 @@ async function filterProperties(req, res) {
     if(!req.user.email){
       return res.status(501).json({success:false, message:"User not defined"});
     }
-    const {
-      tenantPreferences = {}
-    } = await Tenant.findOne({email:req.user.email});
+    let tenantPreferences = await Tenant.findOne({email:req.user.email});
+    //city = (city.trimEnd().toLowerCase());
     if (!city) {
       return res.status(400).json({ success: false, message: "City not provided" });
     }
@@ -135,7 +134,7 @@ async function filterProperties(req, res) {
     }));
     console.log(properties);
     properties.sort((a, b) => b.points - a.points);
-    console.log(properties);
+    //console.log(properties);
     res.status(200).json({
       success: true,
       count: properties.length,
