@@ -46,6 +46,9 @@ export default function UserCard() {
     navigate("/propertyForm");
   };
 
+  const handleRoommateClick = () => {
+    navigate("/RoommateForm1")
+  }
   return (
     <div className="usercard-container">
       {/* Header */}
@@ -109,6 +112,30 @@ export default function UserCard() {
               }}
             >
               Property Owner
+            </button>
+          </div>
+           {/* Roommate Option */}
+          <div
+            className="option-card clickable-card"
+            onClick={handleRoommateClick}
+            tabIndex={0}
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2065/2065665.png" // You can choose another image
+              alt="Roommate"
+              className="option-img"
+            />
+            <p className="option-desc">
+              Looking for a roommate? Share a space and save on rent!
+            </p>
+            <button
+              className="option-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRoommateClick();
+              }}
+            >
+              Roommate
             </button>
           </div>
         </div>
