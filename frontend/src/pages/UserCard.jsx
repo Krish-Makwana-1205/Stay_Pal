@@ -35,8 +35,9 @@ export default function UserCard() {
       </div>
     );
   }
-
-  // ✅ Navigation handlers
+  if(user.istenant){
+    navigate("/dashboard");
+  }
   const handleTenantClick = () => {
     navigate("/tenantForm");
   };
