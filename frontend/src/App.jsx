@@ -7,7 +7,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import TenantForm from "./pages/TenantForm";
 import PropertyForm from "./pages/PropertyForm";
 import TenantForm2 from "./pages/TenantForm2";
-import Dashboard from "./pages/Dashboard";
+import RoommateForm1 from "./pages/RoommateForm1";
 function App() {
   return (    
       <Routes>
@@ -19,8 +19,7 @@ function App() {
         <Route path="/propertyForm" element={<PropertyForm />} />
         <Route path="/tenantForm" element={<TenantForm/>}/>
         <Route path="/tenantForm2" element={<TenantForm2/>}/>
-        <Route path="/dashboard" element={<Dashboard/>}/>
-        
+        <Route path="/RoommateForm1" element={<RoommateForm1/>}/>
       </Routes>
     
   );
