@@ -27,7 +27,7 @@ async function makeProfile(req, res){
     }
     
     try{
-        user.findOneAndUpdate({email:User.email},{
+        await user.findOneAndUpdate({email:User.email},{
             istenant:true
         });
     }
