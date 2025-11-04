@@ -14,29 +14,26 @@ export default function Login() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState({ text: "", type: "" });
   const { user } = useAuth();
- useEffect(() => {
-    if (user) {
-      if (user.istenant) {
-        navigate("/dashboard");
-      } else {
-        navigate("/tenantForm");
-      }
+useEffect(() => {
+  if (user) {
+    if (user.istenant) {
+      navigate("/dashboard");
+    } else {
+      navigate("/tenantForm");
     }
-  }, [user, navigate]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await loginUser({ email, password });
-      console.log(res.data.user);
-      login(res.data.user); 
-      if(user.istenant){
-        navigate("/dashboard");
-      }
-      navigate("/usercard");
-    } catch (err) {
-      setAlert({ text: err.response?.data?.message || "Login failed", type: "error" });
-    }
-  };
+  }
+}, [user, navigate]);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await loginUser({ email, password });
+    login(res.data.user);   
+  } catch (err) {
+    setAlert({ text: err.response?.data?.message || "Login failed", type: "error" });
+  }
+};
+
 
   return (
     <div className="login-container">

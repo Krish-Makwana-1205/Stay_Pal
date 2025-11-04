@@ -5,12 +5,16 @@ import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
 import { useAuth } from "../context/AuthContext";         
 import AsyncSelect from "react-select/async";              
-import { Country, City } from "country-state-city";        
+import { Country, City } from "country-state-city";     
+import { useEffect } from "react";   
 
 export default function TenantForm() {
-  const { user, logout } = useAuth();
-
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!user) navigate("/login");
+    }, [ user, navigate]);
   const [formData, setFormData] = useState({
     nationality: "",
     hometown: "",
@@ -74,17 +78,6 @@ export default function TenantForm() {
 
   if (loading || user === undefined) {
     return <p className="loading-text">Loading user...</p>;
-  }
-
-  if (!user) {
-    return (
-      <div className="not-logged">
-        <p>User not logged in.</p>
-        <a href="/login" className="login-link">
-          Login
-        </a>
-      </div>
-    );
   }
 
   console.log(user);

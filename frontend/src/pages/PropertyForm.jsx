@@ -2,7 +2,9 @@ import React, { useState, useRef } from "react";
 import { uploadProperty } from "../api/propertyform";
 import "../StyleSheets/PropertyForm.css";
 import Alert from "../Components/Alert";
-
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 export default function PropertyForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -20,7 +22,13 @@ export default function PropertyForm() {
   const [loading, setLoading] = useState(false);
   const [imageLimitMessage, setImageLimitMessage] = useState("");
   const fileInputRef = useRef(null);
-
+  const navigate=useNavigate();
+  const {user}=useAuth();
+useEffect(() => {
+  if (!user) {
+    navigate("/login");
+  }
+}, [user, navigate]);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

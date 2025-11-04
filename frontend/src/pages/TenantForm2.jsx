@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../StyleSheets/TenantForm.css"; 
 import { form2 } from "../api/tenantform"; 
 import Alert from "../Components/Alert";
@@ -20,9 +20,11 @@ export default function TenantForm2() {
   });
   const navigate=useNavigate();
   const {user} = useAuth();
-  if(!user){
-    navigate("/login");
+  useEffect(() => {
+  if (!user) {   
+      navigate("/login");    
   }
+}, [user, navigate]);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
   const [newHobby,setNewHobby]=useState({});
@@ -58,7 +60,7 @@ export default function TenantForm2() {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-
+    navigate("/dashboard");
     try {
       const res = await form2(formData);
       if (res.status === 200) {
