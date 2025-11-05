@@ -2,6 +2,7 @@ const roommate = require("../model/roommate");
 
 const user = require('../model/user');
 async function makeRoommateProfile(req, res){
+    console.log('here');
     const body = req.body;
     const User = req.user;
     if((!User.email) || (!User.name)){
