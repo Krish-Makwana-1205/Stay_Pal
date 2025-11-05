@@ -27,7 +27,8 @@ const tenantSchema = new mongoose.Schema({
     },
     religion: {
         type: String,
-        default: 'Any'
+        enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other", "Any"] ,
+        default: "Any" 
     },
     alcohol: {
         type: Boolean,
@@ -74,7 +75,17 @@ const tenantSchema = new mongoose.Schema({
     descriptions: {
         type: String,
         default: ''
-    }
+    },
+    maritalStatus: { type: String, 
+        enum: ["Single", "Married", "Any"], 
+        default: "Any"
+    },
+    family: {
+        type: Boolean
+    },
+    language: { type: String, default: "Any" },
+    minStayDuration: { type: Number, default: 0 },
+
 }, { timestamps: true });
 
 const Tenant = mongoose.model('tenant', tenantSchema);

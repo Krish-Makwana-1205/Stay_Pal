@@ -64,7 +64,11 @@ async function addPreferences(req, res){
             workingshifts:body.workingshifts||null,
             havePet:typeof body.havePet ==='boolean'?body.havePet : null,
             workPlace:body.workPlace||null,
-            descriptions:body.descriptions||null
+            descriptions:body.descriptions||null,
+            maritalStatus:body.maritalStatus||"Any",
+            family:body.family,
+            language:body.language,
+            minStayDuration:body.minStayDuration
         },{upsert:true, new:true});
     } catch(error){
         res.status(500).json({message:"Error in contacting Database", error:error.message});
