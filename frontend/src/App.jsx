@@ -7,7 +7,6 @@ import ForgetPassword from "./pages/ForgetPassword";
 import TenantForm from "./pages/TenantForm";
 import PropertyForm from "./pages/PropertyForm";
 import TenantForm2 from "./pages/TenantForm2";
-import RoommateForm1 from "./pages/RoommateForm1";
 import Dashboard from "./pages/Dashboard";
 import PropertyForm2 from "./pages/PropertForm2";
 function App() {

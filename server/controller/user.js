@@ -134,10 +134,10 @@ async function loginUser(req, res) {
 }
 
 async function provideUser(req, res) {
-    res.user = await user.findOne({email:req.user.email});
+    const using = await user.findOne({email:req.user.email});
     return res.status(200).json({
         success: true,
-        user: req.user,
+        user: using,
     });
 }
 

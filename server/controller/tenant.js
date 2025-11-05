@@ -30,6 +30,8 @@ async function makeProfile(req, res){
         await user.findOneAndUpdate({email:User.email},{
             istenant:true
         });
+        const token = setUser(body.email);
+        res.cookie('uid', token);
     }
     catch(error){
         console.log(error.message);
@@ -77,8 +79,21 @@ async function addPreferences(req, res){
 
     return res.status(200).json({ success: true, message: "Profile created successfully" });
 }
-
+async function tenantdetails(req, res){
+    console.log(req.user);
+    let temp;
+    try{
+        temp = await tenant.findOne({email:req.user.email});
+    }catch(error){
+        res.status(500).json({message:"Error in contacting Database", error:error.message});
+    }
+    return res.status(200).json({
+        tenant:temp,
+        success:true
+    })
+}
 module.exports = {
     makeProfile,
-    addPreferences
+    addPreferences, 
+    tenantdetails,
 };
