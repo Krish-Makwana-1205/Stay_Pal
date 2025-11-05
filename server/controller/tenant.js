@@ -1,18 +1,23 @@
 const tenant = require('../model/tenant');
 const user = require('../model/user');
+const {setUser} = require('../service/auth');
 async function makeProfile(req, res){
     const body = req.body;
     const User = req.user;
+    console.log(User);
     if((!User.email) || (!User.name)){
         return res.status(500).json({message:"Error while fetching cookie data"});
     }
+    console.log('here');
     if((!body.nationality) || (!body.hometown) || (!body.gender) || (!body.dob)){
         return res.status(400).json({message:"Did not receive all the required form fields"});
     }
     body.nationality = body.nationality.trimEnd();
     body.hometown = body.hometown.trimEnd();
     body.gender = body.gender.trimEnd();
+    console.log(User);
     try{
+         console.log(User);
         await tenant.findOneAndUpdate({email:User.email},{
             email:User.email,
             username:User.name,
@@ -23,6 +28,7 @@ async function makeProfile(req, res){
         }, {upsert:true, new:true});
     }catch(error){
         console.log(error.message);
+        console.log('hi');
         return res.status(500).json({message:"Error in contacting Database", error:error.message});
     }
     
@@ -30,8 +36,9 @@ async function makeProfile(req, res){
         await user.findOneAndUpdate({email:User.email},{
             istenant:true
         });
-        const token = setUser(body.email);
-        res.cookie('uid', token);
+    // Re-issue token with updated istenant flag; use username from decoded token (User.name)
+    const token = setUser({ email: User.email, username: User.name || User.username, istenant: true });
+    res.cookie('uid', token);
     }
     catch(error){
         console.log(error.message);

@@ -9,7 +9,7 @@ import { Country, City } from "country-state-city";
 import { useEffect } from "react";   
 
 export default function TenantForm() {
-  const { user } = useAuth();
+  const { user ,fetchUser} = useAuth();
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -121,6 +121,7 @@ export default function TenantForm() {
           text: "Profile created successfully!",
           type: "success",
         });
+        await fetchUser();
         navigate("/tenantForm2");
       }
     } catch (error) {

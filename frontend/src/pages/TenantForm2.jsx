@@ -19,14 +19,15 @@ export default function TenantForm2() {
     descriptions: "",
   });
   const navigate=useNavigate();
-  const {user} = useAuth();
-  useEffect(() => {
-  if (!user) {   
-      navigate("/login");    
+  const {user,loading} = useAuth();
+useEffect(() => {
+  if (!loading && !user) {
+    navigate("/login");
   }
-}, [user, navigate]);
+}, [user, loading, navigate]);
+
   const [message, setMessage] = useState({ text: "", type: "" });
-  const [loading, setLoading] = useState(false);
+  const [loading1, setloading1] = useState(false);
   const [newHobby,setNewHobby]=useState({});
   // Handle checkbox and text/selection updates
   const handleChange = (e) => {
@@ -58,7 +59,7 @@ export default function TenantForm2() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setloading1(true);
     setMessage("");
     navigate("/dashboard");
     try {
@@ -74,7 +75,7 @@ export default function TenantForm2() {
         setMessage({ text: "Network error.", type: "error" });
       }
     } finally {
-      setLoading(false);
+      setloading1(false);
     }
   };
 
@@ -219,8 +220,8 @@ export default function TenantForm2() {
           placeholder="Tell us something about yourself..."
         />
 
-        <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? "Saving..." : "Save Preferences"}
+        <button type="submit" className="submit-btn" disabled={loading1}>
+          {loading1 ? "Saving..." : "Save Preferences"}
         </button>
       </form>
 

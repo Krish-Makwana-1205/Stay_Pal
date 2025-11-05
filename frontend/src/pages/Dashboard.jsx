@@ -13,6 +13,7 @@ const Dashboard = () => {
     if (!loading && !user) {
       navigate("/login");
     }
+    console.log(user);
   }, [loading, user, navigate]);
 
   const handleFilters = async (filters) => {

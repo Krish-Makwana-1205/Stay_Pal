@@ -108,7 +108,8 @@ async function makeUser(req, res) {
     } catch (error) {
         return res.status(500).json({ success: false, message: "User creation failed", error: error.message });
     }
-    const token = setUser(body.email);
+    // Create token with proper shape (email + username)
+    const token = setUser({ email: body.email, username: body.name, istenant: false });
     res.cookie('uid', token);
     return res.status(200).json({ success: true, message: "User created. OTP sent to email." });
 }
