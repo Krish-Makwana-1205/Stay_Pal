@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import "../StyleSheets/UserCard.css";
 
 export default function UserCard() {
@@ -9,12 +8,7 @@ export default function UserCard() {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:8002/user/logout",
-        {},
-        { withCredentials: true }
-      );
-      logout();
+      await logout();
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);

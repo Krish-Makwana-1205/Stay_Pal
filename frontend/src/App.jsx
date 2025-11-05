@@ -9,6 +9,7 @@ import PropertyForm from "./pages/PropertyForm";
 import TenantForm2 from "./pages/TenantForm2";
 import RoommateForm1 from "./pages/RoommateForm1";
 import Dashboard from "./pages/Dashboard";
+import PropertyForm2 from "./pages/PropertForm2";
 function App() {
   return (    
       <Routes>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/tenantForm2" element={<TenantForm2/>}/>
         <Route path="/RoommateForm1" element={<RoommateForm1/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/propertyForm2" element={<PropertyForm2/>}/>
       </Routes>
     
   );
