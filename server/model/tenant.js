@@ -22,17 +22,20 @@ const tenantSchema = new mongoose.Schema({
     },
     foodPreference: {
         type: String,
-        enum: ['Veg', 'Non-Veg', 'Jain', 'Vegan'],
+        enum: ['Veg', 'Non-Veg', 'Jain', 'Vegan', 'Any'],
+        default: 'Any'
     },
     religion: {
-        type: String
+        type: String,
+        default: 'Any'
     },
     alcohol: {
         type: Boolean,
-
+        default: false
     },
     smoker: {
         type: Boolean,
+        default: false
     },
     hometown: {
         type: String,
@@ -44,27 +47,33 @@ const tenantSchema = new mongoose.Schema({
     },
     nightOwl: {
         type: Boolean,
+        default: false
     },
     hobbies: {
-        type: [String] 
+        type: [String],
+        default: []
     },
-    professional_status:{
+    professional_status: {
         type: String,
-        enum: ['student', 'working'],
+        enum: ['student', 'working', 'Any'],
+        default: 'Any'
     },
     workingshifts: {
         type: String,
-        enum: ['morning', 'night'],
- 
+        enum: ['morning', 'night', 'Any'],
+        default: 'Any'
     },    
     havePet: {
         type: Boolean,
+        default: false
     },
     workPlace: {
         type: String,
+        default: 'Any'
     },
     descriptions: {
         type: String,
+        default: ''
     }
 }, { timestamps: true });
 

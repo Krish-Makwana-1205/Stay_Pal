@@ -13,7 +13,7 @@ const propertySchema = new mongoose.Schema({
     nation: {type: String, required:true},
     pincode: {type: String, required:true},
     city: {type: String, required:true},
-    furnishingType: { type: String, enum: ["Fully Furnished", "Semi Furnished", "Unfurnished"], default: "Unfurnished" },
+    furnishingType: { type: String, enum: ["Fully Furnished", "Semi Furnished", "Unfurnished","Any"], default: "Any" },
     areaSize: { type: Number },
     nearbyPlaces: [{ type: String }], // e.g. ["Market", "Bus Stop", "School"]
     transportAvailability: { type: Boolean, default: false },
@@ -34,7 +34,7 @@ const propertySchema = new mongoose.Schema({
         nationality: { type: String, default: "Any" },
         workingShift: { type: String, enum: ["Day Shift", "Night Shift", "Any"], default: "Any" },
         professionalStatus: { type: String, enum: ["Student", "Employed", "Self-Employed", "Any"], default: "Any" },
-        religion: { type: String, enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other"] ,default: "Any" },
+        religion: { type: String, enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other", "Any"] ,default: "Any" },
         language: { type: String, default: "Any" },
         minStayDuration: { type: Number, default: 0 },
         maxPeopleAllowed: { type: Number, default: 0 },

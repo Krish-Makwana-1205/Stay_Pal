@@ -21,7 +21,6 @@ function App() {
         <Route path="/propertyForm" element={<PropertyForm />} />
         <Route path="/tenantForm" element={<TenantForm/>}/>
         <Route path="/tenantForm2" element={<TenantForm2/>}/>
-        <Route path="/RoommateForm1" element={<RoommateForm1/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/propertyForm2" element={<PropertyForm2/>}/>
       </Routes>
