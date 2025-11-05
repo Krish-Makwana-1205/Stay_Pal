@@ -19,6 +19,10 @@ const propertySchema = new mongoose.Schema({
     transportAvailability: { type: Boolean, default: false },
     parkingArea: { type: Boolean, default: false },
     specialFeatures: [{ type: String }],
+    location: {type: {type: String,enum: ["Point"],default: "Point",required: true},coordinates: { type: [Number],required: true} },
+    latitude: { type: Number },
+    longitude: { type: Number },
+
 
     tenantPreferences: {
     
