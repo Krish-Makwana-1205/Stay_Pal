@@ -6,8 +6,8 @@ const propertySchema = new mongoose.Schema({
     imgLink: [{type: String}],
     description: {type: String, required: true},
     BHK : {type: Number, required:true},
-    address: { type: String, required: true},
-    addressLink: { type: String, required: true},
+    address: { type: String},
+    addressLink: { type: String},
     rentLowerBound: {type: Number, required:true},
     rentUpperBound: {type: Number, required:true},
     nation: {type: String, required:true},
@@ -19,9 +19,9 @@ const propertySchema = new mongoose.Schema({
     transportAvailability: { type: Boolean, default: false },
     parkingArea: { type: Boolean, default: false },
     specialFeatures: [{ type: String }],
-    location: {type: {type: String,enum: ["Point"],default: "Point",required: true},coordinates: { type: [Number],required: true} },
-    latitude: { type: Number },
-    longitude: { type: Number },
+    // location: {type: {type: String,enum: ["Point"],default: "Point",required: true},coordinates: { type: [Number],required: true} },
+    // latitude: { type: Number },
+    // longitude: { type: Number },
 
 
     tenantPreferences: {
