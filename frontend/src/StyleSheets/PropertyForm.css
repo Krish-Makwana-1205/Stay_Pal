@@ -83,3 +83,9 @@ input[type="file"] {
 input[type="file"]:hover {
   border-color: #007bff;
 }
+/*error styling */
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

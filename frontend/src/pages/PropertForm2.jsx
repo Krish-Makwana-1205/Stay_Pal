@@ -55,8 +55,8 @@ export default function PropertyForm2() {
     setMessage({ text: "", type: "" });
 
     // basic validation
-    if (!formData.email || !formData.name) {
-      setMessage({ text: "Owner email and name are required.", type: "error" });
+    if (!formData.name) {
+      setMessage({ text: "Prperty name is required.", type: "error" });
       return;
     }
 

@@ -8,12 +8,8 @@ async function uploadProperty(req, res) {
   try {
     const imgUrls = req.files.map(file => file.path);
     let body = req.body;
-    console.log('hi');
     // Trim trailing spaces AND convert to lowercase for relevant fields
-    if (body.name) body.name = body.name.trimEnd().toLowerCase();
-    if (body.email) body.email = body.email.trimEnd().toLowerCase();
     if (body.description) body.description = body.description.trimEnd().toLowerCase();
-    if (body.BHK) body.BHK = body.BHK;
     if (body.rentLowerBound) body.rentLowerBound = body.rentLowerBound;
     if (body.rentUpperBound) body.rentUpperBound = body.rentUpperBound;
     if (body.nation) body.nation = body.nation.trimEnd().toLowerCase();
@@ -21,13 +17,12 @@ async function uploadProperty(req, res) {
     if (body.city) body.city = body.city.trimEnd().toLowerCase();
     // if (body.address) body.address = body.address.trimEnd().toLowerCase();
     // if (body.addressLink) body.addressLink = body.addressLink.trimEnd();
-    if (body.furnishingType) body.furnishingType = body.furnishingType.trimEnd().toLowerCase();
 
     // Required fields check
     if (
-      !body.name || !body.email || !body.description || !body.BHK ||
+      !body.name || !body.description || !body.BHK ||
       !body.rentLowerBound || !body.rentUpperBound ||
-      !body.nation || !body.pincode || !body.city
+      !body.nation || !body.pincode || !body.city || !body.locality || !body.houseType
     ) {
       return res.status(400).json({ message: "Required fields missing" });
     }
@@ -43,6 +38,9 @@ async function uploadProperty(req, res) {
     //   console.error("Coordinate error:", error.message);
     //   return res.status(500).json({ message: "Unable to fetch location coordinates" });
     // }
+    if(!req.user.email){
+        return res.status(400).json({ message: "User is not logged in" });
+    }
     req.user.email = req.user.email.trimEnd().toLowerCase();
     const Property = await property.findOneAndUpdate(
       { email: body.email, name: body.name },
@@ -54,6 +52,7 @@ async function uploadProperty(req, res) {
         BHK: body.BHK,
         rentLowerBound: body.rentLowerBound,
         rentUpperBound: body.rentUpperBound,
+        locality: body.locality,
         // address: body.address,
         // addressLink: body.addressLink,
         nation: body.nation,
@@ -64,7 +63,8 @@ async function uploadProperty(req, res) {
         nearbyPlaces: Array.isArray(body.nearbyPlaces) ? body.nearbyPlaces.map(place => place.trimEnd().toLowerCase()) : [],
         transportAvailability: body.transportAvailability === "true" || body.transportAvailability === true,
         parkingArea: body.parkingArea,
-        specialFeatures: Array.isArray(body.specialFeatures) ? body.specialFeatures.map(feature => feature.trimEnd().toLowerCase()) : []
+        houseType: body.houseType,
+        isRoommate: body.isRoommate,
       },
       { new: true, timestamps: true, upsert: true }
     );
@@ -76,10 +76,8 @@ async function uploadProperty(req, res) {
 }
 async function addTenantPreferences(req, res) {
   try {
-    const { email, name } = req.body;
-
-    if (!email || !name) {
-      return res.status(400).json({ message: "Email and property name are required" });
+    if (!req.user.email || !req.user.name) {
+      return res.status(400).json({ message: "User not defined" });
     }
 
     const updated = await property.findOneAndUpdate(

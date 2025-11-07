@@ -19,24 +19,25 @@ async function home(req, res) {
 }
 
 async function filterProperties(req, res) {
-  console.log('run');
   try {
     let {
       BHK,
       rentLowerBound,
       rentUpperBound,
       city,
+      locality,
       furnishingType,
       areaSize,
       transportAvailability,
+      houseType,
+      nearbyPlaces,
       page = 1,
-      limit = 10,
+      limit = 20,
     } = req.query;
-    if(!req.user.email){
-      return res.status(501).json({success:false, message:"User not defined"});
+    if (!req.user.email) {
+      return res.status(501).json({ success: false, message: "User not defined" });
     }
-    let tenantPreferences = await Tenant.findOne({email:req.user.email});
-    //city = (city.trimEnd().toLowerCase());
+
     if (!city) {
       return res.status(400).json({ success: false, message: "City not provided" });
     }
@@ -56,21 +57,35 @@ async function filterProperties(req, res) {
 
     const skip = (page - 1) * Number(limit);
 
-    let properties = await property.find(filterCriteria).skip(skip).limit(limit);
+    //Parallelize to improve performance
+    let [tenantPreferences, properties] = await Promise.all([
+      Tenant.findOne({ email: req.user.email }),
+      property.find(filterCriteria).skip(skip).limit(limit),
+    ]);
+
 
     const calculatePoints = (prop) => {
       let points = 0;
-
+      if (locality && prop.locality) {
+        if (locality == prop.locality) {
+          points += 15;
+        }
+      }
+      if (houseType && prop.houseType) {
+        if (houseType == prop.houseType) {
+          points += 10;
+        }
+      }
       if (BHK && prop.BHK) {
         const diff = Math.abs(prop.BHK - BHK);
-        points += Math.max(0, 10 - diff); 
+        points += Math.max(0, 10 - diff);
       }
 
       if (furnishingType && prop.furnishingType) {
         if (prop.furnishingType.toLowerCase() === furnishingType.toLowerCase()) {
           points += 10;
         } else {
-          if(prop.furnishingType.toLowerCase() == 'semi furnished' || furnishingType.toLowerCase() == 'semi furnished'){
+          if (prop.furnishingType.toLowerCase() == 'semi furnished' || furnishingType.toLowerCase() == 'semi furnished') {
             points += 5;
           }
         }
@@ -78,7 +93,7 @@ async function filterProperties(req, res) {
 
       if (areaSize && prop.areaSize) {
         const diff = prop.areaSize - areaSize;
-        points += Math.max(0, 10 + diff / 100); 
+        points += Math.max(0, 10 + diff / 100);
       }
 
       if (typeof transportAvailability === "boolean" && prop.transportAvailability === transportAvailability) {
@@ -105,7 +120,7 @@ async function filterProperties(req, res) {
         }
 
         if (tenantPreferences.smoking && prefs.smoking !== "Any") {
-          if (tenantPreferences.smoking === prefs.smoking) points += 3;
+          if (tenantPreferences.smoking === prefs.smoking) points += 2;
         }
 
         if (tenantPreferences.alcohol && prefs.alcohol !== "Any") {
@@ -117,7 +132,7 @@ async function filterProperties(req, res) {
         }
 
         if (tenantPreferences.workingShift && prefs.workingShift !== "Any") {
-          if (tenantPreferences.workingShift === prefs.workingShift) points += 2;
+          if (tenantPreferences.workingShift === prefs.workingShift) points += 1;
         }
 
         if (tenantPreferences.language && prefs.language !== "Any") {
@@ -132,9 +147,7 @@ async function filterProperties(req, res) {
       ...prop.toObject(),
       points: calculatePoints(prop),
     }));
-    console.log(properties);
     properties.sort((a, b) => b.points - a.points);
-    //console.log(properties);
     res.status(200).json({
       success: true,
       count: properties.length,
