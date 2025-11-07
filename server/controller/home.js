@@ -1,5 +1,7 @@
 const property = require("../model/property");
 const Tenant = require("../model/tenant");
+const {getSimilarity} = require("../utils/nlp");
+
 async function home(req, res) {
 
   try {
@@ -18,6 +20,8 @@ async function home(req, res) {
   }
 }
 
+
+
 async function filterProperties(req, res) {
   try {
     let {
@@ -33,6 +37,7 @@ async function filterProperties(req, res) {
       nearbyPlaces,
       page = 1,
       limit = 20,
+      description,
     } = req.query;
     if (!req.user.email) {
       return res.status(501).json({ success: false, message: "User not defined" });
@@ -64,7 +69,7 @@ async function filterProperties(req, res) {
     ]);
 
 
-    const calculatePoints = (prop) => {
+    const calculatePoints = async (prop) => {
       let points = 0;
       if (locality && prop.locality) {
         if (locality == prop.locality) {
@@ -139,20 +144,29 @@ async function filterProperties(req, res) {
           if (tenantPreferences.language === prefs.language) points += 2;
         }
       }
-
+      if(description && prop.description){
+        let simi = await getSimilarity(description, prop.description);
+        points += simi*18; 
+      }
       return points;
     };
 
-    properties = properties.map((prop) => ({
-      ...prop.toObject(),
-      points: calculatePoints(prop),
-    }));
-    properties.sort((a, b) => b.points - a.points);
+    // Calculate points for all properties in parallel
+    const scoredProperties = await Promise.all(
+      properties.map(async (prop) => ({
+        ...prop.toObject(),
+        points: await calculatePoints(prop),
+      }))
+    );
+
+    // Sort by points descending
+    scoredProperties.sort((a, b) => b.points - a.points);
+
     res.status(200).json({
       success: true,
-      count: properties.length,
+      count: scoredProperties.length,
       page: Number(page),
-      data: properties,
+      data: scoredProperties,
     });
   } catch (error) {
     console.error("Error filtering properties:", error);
@@ -163,5 +177,6 @@ async function filterProperties(req, res) {
     });
   }
 }
+
 
 module.exports = { home, filterProperties };
