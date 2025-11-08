@@ -1,224 +1,304 @@
-// ../Components/Filters.js
 import React, { useState } from "react";
+import AsyncSelect from "react-select/async";
+import { City } from "country-state-city";
 
 const Filters = ({ onApply }) => {
-  const [city, setCity] = useState("");
-  const [selectedBHK, setSelectedBHK] = useState([]);
-  const [minRent, setMinRent] = useState(0);
-  const [maxRent, setMaxRent] = useState(100000);
-  const [selectedFurnishing, setSelectedFurnishing] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null); // store object
+  const [locality, setLocality] = useState("");
+  const [BHK, setBHK] = useState("");
+  const [rentLowerBound, setRentLowerBound] = useState(5000);
+  const [rentUpperBound, setRentUpperBound] = useState(10000);
+  const [furnishingType, setFurnishingType] = useState("");
+  const [areaSize, setAreaSize] = useState("");
   const [transportAvailability, setTransportAvailability] = useState(null);
+  const [houseType, setHouseType] = useState("");
+  const [nearbyPlaces, setNearbyPlaces] = useState("");
+  const [description, setDescription] = useState("");
 
-  // Predefined rent ranges for quick selection
-  const rentRanges = [
-    { label: "Under ₹10,000", min: 0, max: 10000 },
-    { label: "₹10,000 - ₹20,000", min: 10000, max: 20000 },
-    { label: "₹20,000 - ₹30,000", min: 20000, max: 30000 },
-    { label: "₹30,000 - ₹50,000", min: 30000, max: 50000 },
-    { label: "Above ₹50,000", min: 50000, max: 100000 },
-  ];
-
-  // Predefined BHK options
-  const bhkOptions = ["1", "2", "3", "4+"];
-
-  // Predefined furnishing options
   const furnishingOptions = ["Fully Furnished", "Semi Furnished", "Unfurnished"];
+  const houseTypeOptions = ["Apartment", "Independent House", "Villa", "PG / Hostel"];
 
-  const handleBHKChange = (bhk) => {
-    setSelectedBHK((prev) =>
-      prev.includes(bhk) ? prev.filter((b) => b !== bhk) : [...prev, bhk]
-    );
+  //  City options loader
+  const loadCityOptions = (inputValue, callback) => {
+    const allCities = City.getCitiesOfCountry("IN");
+    const filtered = allCities
+      .filter((c) =>
+        c.name.toLowerCase().includes(inputValue.toLowerCase())
+      )
+      .slice(0, 20)
+      .map((c) => ({
+        label: c.name,
+        value: c.name,
+      }));
+    callback(filtered);
   };
 
-  const handleFurnishingChange = (type) => {
-    setSelectedFurnishing((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+  //  Handle city change
+  const handleChange = (selectedOption) => {
+    setSelectedCity(selectedOption); // store full object
   };
 
-  const handleRentRangeSelect = (min, max) => {
-    setMinRent(min);
-    setMaxRent(max);
-  };
-
+  //  Apply filters
   const handleApply = () => {
+    if (!selectedCity?.value?.trim()) {
+      alert("Please select a city before applying filters.");
+      return;
+    }
+
     const filters = {
-      city,
-      bhk: selectedBHK,
-      minRent,
-      maxRent,
-      furnishing: selectedFurnishing,
-      transportAvailability,
+      city: selectedCity.value.trim(), // send string to backend
+      locality: locality.trim() || undefined,
+      BHK: BHK ? Number(BHK) : undefined,
+      rentLowerBound: rentLowerBound ? Number(rentLowerBound) : undefined,
+      rentUpperBound: rentUpperBound ? Number(rentUpperBound) : undefined,
+      furnishingType: furnishingType || undefined,
+      areaSize: areaSize ? Number(areaSize) : undefined,
+      transportAvailability:
+        transportAvailability === null ? undefined : Boolean(transportAvailability),
+      houseType: houseType || undefined,
+      nearbyPlaces: nearbyPlaces.trim() || undefined,
+      description: description.trim() || undefined,
+      page: 1,
+      limit: 20,
     };
+
+    console.log("Filters sent to backend:", filters);
     onApply(filters);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      {/* City Input */}
-      <div>
-        <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>City</label>
-        <input
-          type="text"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder="Enter city name"
-          style={{
-            width: "100%",
-            padding: "10px",
-            border: "1px solid #ced4da",
-            borderRadius: "4px",
+    <div className="filters-container">
+      <h2>Property Filters</h2>
+
+      {/* City Selector */}
+      <div className="filter-group">
+        <label>City *</label>
+        <AsyncSelect
+          cacheOptions
+          loadOptions={loadCityOptions}
+          defaultOptions
+          value={selectedCity} //  pass the object directly
+          onChange={handleChange}
+          placeholder="Search for a city..."
+          styles={{
+            control: (provided) => ({
+              ...provided,
+              borderRadius: "8px",
+              borderColor: "#ccc",
+              boxShadow: "none",
+              "&:hover": { borderColor: "#007bff" },
+            }),
           }}
         />
       </div>
 
-      {/* BHK Checkboxes */}
-      <div>
-        <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>BHK</label>
-        {bhkOptions.map((bhk) => (
-          <div key={bhk} style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
-            <input
-              type="checkbox"
-              id={`bhk-${bhk}`}
-              checked={selectedBHK.includes(bhk)}
-              onChange={() => handleBHKChange(bhk)}
-            />
-            <label htmlFor={`bhk-${bhk}`} style={{ marginLeft: "10px" }}>{bhk} BHK</label>
-          </div>
-        ))}
+      {/* Locality */}
+      <div className="filter-group">
+        <label>Locality</label>
+        <input
+          type="text"
+          value={locality}
+          onChange={(e) => setLocality(e.target.value)}
+          placeholder="Enter locality (optional)"
+        />
+      </div>
+
+      {/* BHK */}
+      <div className="filter-group">
+        <label>BHK</label>
+        <input
+          type="number"
+          min="1"
+          max="10"
+          placeholder="Enter number of BHK"
+          value={BHK}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (value >= 1 || e.target.value === "") {
+              setBHK(e.target.value);
+            }
+          }}
+        />
       </div>
 
       {/* Rent Range */}
-      <div>
-        <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>Rent Range</label>
-        {/* Predefined ranges */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "10px" }}>
-          {rentRanges.map((range, index) => (
-            <button
-              key={index}
-              onClick={() => handleRentRangeSelect(range.min, range.max)}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: minRent === range.min && maxRent === range.max ? "#007bff" : "#e9ecef",
-                color: minRent === range.min && maxRent === range.max ? "#fff" : "#000",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              {range.label}
-            </button>
-          ))}
+      <div className="filter-group rent-range">
+        <label>Rent Range (₹)</label>
+        <div className="rent-inputs">
+          <div className="range-wrapper">
+            <input
+              type="range"
+              min="0"
+              max="100000"
+              step="500"
+              value={rentLowerBound}
+              onChange={(e) => setRentLowerBound(Number(e.target.value))}
+              className="slider"
+            />
+            <span>Min: ₹{rentLowerBound.toLocaleString()}</span>
+          </div>
+
+          <div className="range-wrapper">
+            <input
+              type="range"
+              min="0"
+              max="100000"
+              step="500"
+              value={rentUpperBound}
+              onChange={(e) => setRentUpperBound(Number(e.target.value))}
+              className="slider"
+            />
+            <span>Max: ₹{rentUpperBound.toLocaleString()}</span>
+          </div>
         </div>
-        {/* Manual inputs */}
-        <div style={{ display: "flex", gap: "10px" }}>
-          <input
-            type="number"
-            value={minRent}
-            onChange={(e) => setMinRent(Number(e.target.value))}
-            placeholder="Min Rent"
-            style={{
-              width: "50%",
-              padding: "10px",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-            }}
-          />
-          <input
-            type="number"
-            value={maxRent}
-            onChange={(e) => setMaxRent(Number(e.target.value))}
-            placeholder="Max Rent"
-            style={{
-              width: "50%",
-              padding: "10px",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-            }}
-          />
-        </div>
-        {/* Simple slider for visual adjustment */}
-        <input
-          type="range"
-          min={0}
-          max={100000}
-          value={minRent}
-          onChange={(e) => setMinRent(Number(e.target.value))}
-          style={{ width: "100%", marginTop: "10px" }}
-        />
-        <input
-          type="range"
-          min={0}
-          max={100000}
-          value={maxRent}
-          onChange={(e) => setMaxRent(Number(e.target.value))}
-          style={{ width: "100%" }}
-        />
       </div>
 
-      {/* Furnishing Checkboxes */}
-      <div>
-        <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>Furnishing Type</label>
-        {furnishingOptions.map((type) => (
-          <div key={type} style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
-            <input
-              type="checkbox"
-              id={`furnishing-${type}`}
-              checked={selectedFurnishing.includes(type)}
-              onChange={() => handleFurnishingChange(type)}
-            />
-            <label htmlFor={`furnishing-${type}`} style={{ marginLeft: "10px" }}>{type}</label>
-          </div>
-        ))}
+      {/* Furnishing Type */}
+      <div className="filter-group">
+        <label>Furnishing Type</label>
+        <select
+          value={furnishingType}
+          onChange={(e) => setFurnishingType(e.target.value)}
+        >
+          <option value="">Any</option>
+          {furnishingOptions.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Area Size */}
+      <div className="filter-group">
+        <label>Area Size (sq ft)</label>
+        <input
+          type="number"
+          min="0"
+          value={areaSize}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (value >= 0 || e.target.value === "") {
+              setAreaSize(e.target.value);
+            }
+          }}
+          placeholder="Enter area size"
+        />
       </div>
 
       {/* Transport Availability */}
-      <div>
-        <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>Transport Availability</label>
-        <div style={{ display: "flex", gap: "20px" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="filter-group transport-group">
+        <label>Transport Availability</label>
+        <div className="radio-group">
+          <label>
             <input
               type="radio"
-              id="transport-yes"
+              name="transport"
               checked={transportAvailability === true}
               onChange={() => setTransportAvailability(true)}
             />
-            <label htmlFor="transport-yes" style={{ marginLeft: "10px" }}>Yes</label>
-          </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
+            Yes
+          </label>
+          <label>
             <input
               type="radio"
-              id="transport-no"
+              name="transport"
               checked={transportAvailability === false}
               onChange={() => setTransportAvailability(false)}
             />
-            <label htmlFor="transport-no" style={{ marginLeft: "10px" }}>No</label>
-          </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
+            No
+          </label>
+          <label>
             <input
               type="radio"
-              id="transport-any"
+              name="transport"
               checked={transportAvailability === null}
               onChange={() => setTransportAvailability(null)}
             />
-            <label htmlFor="transport-any" style={{ marginLeft: "10px" }}>Any</label>
-          </div>
+            Any
+          </label>
         </div>
       </div>
 
+      {/* House Type */}
+      <div className="filter-group">
+        <label>House Type</label>
+        <select
+          value={houseType}
+          onChange={(e) => setHouseType(e.target.value)}
+        >
+          <option value="">Any</option>
+          {houseTypeOptions.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Nearby Places */}
+      <div className="filter-group">
+        <label>Nearby Places</label>
+        <input
+          type="text"
+          value={nearbyPlaces}
+          onChange={(e) => setNearbyPlaces(e.target.value)}
+          placeholder="e.g. Metro, School, Hospital"
+        />
+        <div className="popular-places">
+          {[
+            "Metro Station",
+            "Bus Stop",
+            "Hospital",
+            "School",
+            "College",
+            "Grocery Store",
+            "Supermarket (e.g. Dmart, Big Bazaar)",
+            "Park",
+            "Mall",
+            "Restaurant",
+            "Pharmacy",
+            "ATM",
+            "Gym",
+          ].map((place) => (
+            <button
+              key={place}
+              type="button"
+              className={`place-option ${nearbyPlaces.includes(place) ? "selected" : ""}`}
+              onClick={() => {
+                if (nearbyPlaces.includes(place)) {
+                  setNearbyPlaces(
+                    nearbyPlaces
+                      .split(", ")
+                      .filter((p) => p !== place)
+                      .join(", ")
+                  );
+                } else {
+                  setNearbyPlaces(
+                    nearbyPlaces ? `${nearbyPlaces}, ${place}` : place
+                  );
+                }
+              }}
+            >
+              {place}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="filter-group">
+        <label>Property Description Match</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Describe the kind of property you are looking for..."
+          rows="3"
+        />
+      </div>
+
       {/* Apply Button */}
-      <button
-        onClick={handleApply}
-        style={{
-          padding: "10px",
-          backgroundColor: "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontSize: "1rem",
-        }}
-      >
+      <button className="apply-btn" onClick={handleApply}>
         Apply Filters
       </button>
     </div>

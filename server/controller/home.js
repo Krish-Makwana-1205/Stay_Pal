@@ -62,7 +62,6 @@ async function filterProperties(req, res) {
 
     const skip = (page - 1) * Number(limit);
 
-    //Parallelize to improve performance
     let [tenantPreferences, properties] = await Promise.all([
       Tenant.findOne({ email: req.user.email }),
       property.find(filterCriteria).skip(skip).limit(limit),

@@ -6,4 +6,5 @@ const API = axios.create({
 });
 
 export const fetchproperty = (filters) => API.get(`/filter`, { params: filters });
+export const fetchHome = () => API.get(`/`);
 

@@ -47,7 +47,7 @@ export default function UserCard() {
     <div className="usercard-container">
       {/* Header */}
       <header className="usercard-header">
-        <h2 className="usercard-greeting">Hi, {user.name || "User"} 👋</h2>
+        <h2 className="usercard-greeting">Hi, {user.username || "User"} 👋</h2>
         <button className="logout-btn" onClick={handleLogout}>
           Logout
         </button>
