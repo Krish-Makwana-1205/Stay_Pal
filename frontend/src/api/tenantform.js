@@ -1,15 +1,23 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8002", 
-  withCredentials: true,
+  baseURL: "http://localhost:8002",
+  withCredentials: true, // ensure cookies are sent
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
+// existing helpers
 export const form1 = (formData) => API.post("/tenant/form1", formData);
 export const form2 = (formData) => API.post("/tenant/form2", formData);
-
-// New helpers
 export const getProfile = () => API.get("/tenant/profile");
 export const updateProfile = (formData) => API.post("/tenant/updateprofile", formData);
+
+// file upload helper (multipart)
+export const uploadPhoto = (formData) =>
+  API.post("/user/uploadPhoto", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
 export default API;

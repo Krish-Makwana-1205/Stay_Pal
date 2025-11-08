@@ -5,8 +5,8 @@ async function makeProfile(req, res){
     const body = req.body;
     const User = req.user;
     console.log(User);
-    if((!User.email) || (!User.name)){
-        return res.status(500).json({message:"Error while fetching cookie data"});
+    if (!User || !User.email) {
+        return res.status(500).json({ message: "Error while fetching cookie data" });
     }
     console.log('here');
     if((!body.nationality) || (!body.hometown) || (!body.gender) || (!body.dob)){
@@ -20,7 +20,7 @@ async function makeProfile(req, res){
          console.log(User);
         await tenant.findOneAndUpdate({email:User.email},{
             email:User.email,
-            username:User.name,
+            username: User.name || User.username || "",
             dob:body.dob,
             nationality:body.nationality,
             hometown:body.hometown,
@@ -37,7 +37,7 @@ async function makeProfile(req, res){
             istenant:true
         });
     // Re-issue token with updated istenant flag; use username from decoded token (User.name)
-    const token = setUser({ email: User.email, username: User.name || User.username, istenant: true });
+    const token = setUser({ email: User.email, username: User.name || User.username || "", istenant: true });
     res.cookie('uid', token);
     }
     catch(error){
@@ -148,7 +148,12 @@ async function fullProfile(req, res) {
             istenant:true
         });
 
-        const token = setUser(User.email); 
+        // Re-issue token preserving username/name and istenant flag
+        const token = setUser({
+          email: User.email,
+          username: User.name || User.username || "",
+          istenant: true
+        });
         res.cookie('uid', token);
     }catch(error){
         console.log(error.message);

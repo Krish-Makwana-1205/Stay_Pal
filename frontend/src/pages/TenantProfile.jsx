@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../StyleSheets/TenantProfle.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
-import { getProfile, updateProfile } from "../api/tenantform";
+import { getProfile, updateProfile, uploadPhoto } from "../api/tenantform";
 
 export default function TenantProfile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+
+  // savedProfile stores the last-saved server state (used to revert on cancel)
+  const [savedProfile, setSavedProfile] = useState(null);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -37,6 +40,9 @@ export default function TenantProfile() {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [newHobby, setNewHobby] = useState("");
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (loading) return;
@@ -50,10 +56,9 @@ export default function TenantProfile() {
       try {
         const res = await getProfile();
         const tenant = res.data?.tenant || res.data?.data || res.data;
-        if (!tenant) return;
-        if (!mounted) return;
+        if (!tenant || !mounted) return;
 
-        setFormData({
+        const initial = {
           email: tenant.email || user.email || "",
           username: tenant.username || user.username || "",
           gender: tenant.gender || "",
@@ -75,7 +80,12 @@ export default function TenantProfile() {
           family: Boolean(tenant.family),
           language: tenant.language || "Any",
           minStayDuration: tenant.minStayDuration ?? 0,
-        });
+        };
+
+        // set both formData and savedProfile
+        setSavedProfile(initial);
+        setFormData(initial);
+        setPhotoPreview(tenant.profilePhoto || user.profilePhoto || null);
       } catch (err) {
         console.debug("loadProfile error:", err?.message || err);
       }
@@ -84,6 +94,20 @@ export default function TenantProfile() {
     loadProfile();
     return () => { mounted = false; };
   }, [user, loading, navigate]);
+
+  // When entering edit mode, ensure formData reflects last-saved profile
+  const handleStartEdit = () => {
+    if (savedProfile) setFormData(savedProfile);
+    setMessage({ text: "", type: "" });
+    setIsEditing(true);
+  };
+
+  // Cancel edits and revert to savedProfile
+  const handleCancel = () => {
+    if (savedProfile) setFormData(savedProfile);
+    setMessage({ text: "Edits canceled", type: "info" });
+    setIsEditing(false);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -102,6 +126,45 @@ export default function TenantProfile() {
     setFormData(prev => ({ ...prev, hobbies: prev.hobbies.filter((_, i) => i !== idx) }));
   };
 
+  const handlePhotoInputChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // show local preview immediately
+    setPhotoPreview(URL.createObjectURL(file));
+    if (!user) {
+      setMessage({ text: "Login required to upload photo", type: "error" });
+      return;
+    }
+    setPhotoUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("photo", file);
+      fd.append("email", formData.email);
+      fd.append("username", formData.username);
+      const res = await uploadPhoto(fd);
+
+      // Regardless of response body shape, re-fetch profile to ensure UI shows stored photo
+      const fresh = await getProfile();
+      const tenant = fresh.data?.tenant || fresh.data?.data || fresh.data;
+      if (tenant?.profilePhoto) {
+        setPhotoPreview(tenant.profilePhoto);
+        setMessage({ text: "Photo updated successfully", type: "success" });
+        // update savedProfile photo (so cancel won't revert to old)
+        setSavedProfile(prev => prev ? ({ ...prev, /* keep fields */ ...prev, }) : prev);
+      } else {
+        // server didn't return profile url but upload likely succeeded — inform user and keep preview
+        setMessage({ text: "Photo uploaded but server did not return URL. Preview shown locally.", type: "warning" });
+      }
+    } catch (err) {
+      // show server message when available
+      setMessage({ text: err.response?.data?.message || "Error updating photo", type: "error" });
+      console.error("Photo upload error:", err);
+      // keep local preview so user sees selected image, even if server upload failed
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingSubmit(true);
@@ -111,7 +174,44 @@ export default function TenantProfile() {
       const payload = { ...formData };
       if (!payload.dob) delete payload.dob;
       const res = await updateProfile(payload);
+
       if (res.status === 200 || res.status === 201) {
+        // refresh saved profile from server to avoid divergence and cookie issues
+        try {
+          const fresh = await getProfile();
+          const tenant = fresh.data?.tenant || fresh.data?.data || fresh.data;
+          if (tenant) {
+            const updated = {
+              email: tenant.email || payload.email,
+              username: tenant.username || payload.username,
+              gender: tenant.gender || payload.gender,
+              dob: tenant.dob ? tenant.dob.split("T")[0] : payload.dob || "",
+              foodPreference: tenant.foodPreference || payload.foodPreference || "Any",
+              religion: tenant.religion || payload.religion || "Any",
+              alcohol: Boolean(tenant.alcohol),
+              smoker: Boolean(tenant.smoker),
+              hometown: tenant.hometown || payload.hometown || "",
+              nationality: tenant.nationality || payload.nationality || "",
+              nightOwl: Boolean(tenant.nightOwl),
+              hobbies: Array.isArray(tenant.hobbies) ? tenant.hobbies : payload.hobbies || [],
+              professional_status: tenant.professional_status || payload.professional_status || "Any",
+              workingshifts: tenant.workingshifts || payload.workingshifts || "Any",
+              havePet: Boolean(tenant.havePet),
+              workPlace: tenant.workPlace || payload.workPlace || "Any",
+              descriptions: tenant.descriptions || payload.descriptions || "",
+              maritalStatus: tenant.maritalStatus || payload.maritalStatus || "Any",
+              family: Boolean(tenant.family),
+              language: tenant.language || payload.language || "Any",
+              minStayDuration: tenant.minStayDuration ?? payload.minStayDuration ?? 0,
+            };
+            setSavedProfile(updated);
+            setFormData(updated);
+            setPhotoPreview(tenant.profilePhoto || photoPreview);
+          }
+        } catch (refetchErr) {
+          console.debug("Profile refetch after update failed:", refetchErr?.message || refetchErr);
+        }
+
         setMessage({ text: "Profile saved successfully.", type: "success" });
         setIsEditing(false);
       } else {
@@ -119,6 +219,7 @@ export default function TenantProfile() {
       }
     } catch (err) {
       setMessage({ text: err.response?.data?.message || "Save failed.", type: "error" });
+      console.error("Update profile error:", err);
     } finally {
       setLoadingSubmit(false);
     }
@@ -127,20 +228,43 @@ export default function TenantProfile() {
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <button onClick={() => navigate("/dashboard")} className="back-btn">← Dashboard</button>
         <h2>Tenant Profile</h2>
-        <div className="header-actions">
-          {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="edit-btn">Edit Profile</button>
-          ) : (
-            <button onClick={() => setIsEditing(false)} className="cancel-btn">Cancel</button>
-          )}
-        </div>
+        {!isEditing ? (
+          <button onClick={handleStartEdit} className="edit-btn">Edit Profile</button>
+        ) : (
+          <button onClick={handleCancel} className="cancel-btn">Cancel</button>
+        )}
       </div>
 
       <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
 
       <form onSubmit={handleSubmit} className="profile-form">
+        <div className="profile-photo-section full-width">
+          <div className="photo-container" style={{ width: 140, height: 140, margin: "0 auto" }}>
+            {photoPreview ? (
+              <img src={photoPreview} alt="Profile" className="profile-photo" />
+            ) : (
+              <div className="photo-placeholder" />
+            )}
+
+            {isEditing && (
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handlePhotoInputChange}
+                  accept="image/*"
+                  className="photo-input"
+                  aria-label="Upload profile photo"
+                />
+                <div className="photo-upload-overlay">Click to upload photo</div>
+              </>
+            )}
+
+            {photoUploading && <div className="photo-loading" />}
+          </div>
+        </div>
+
         <div className="form-grid">
           <div className="form-group">
             <label>Email</label>

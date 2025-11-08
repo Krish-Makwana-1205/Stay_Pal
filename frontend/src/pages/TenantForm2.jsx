@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import "../StyleSheets/TenantForm.css"; 
-import { form2 } from "../api/tenantform"; 
+import React, { useEffect, useState, useRef } from "react";
+import "../StyleSheets/TenantForm.css";
+import { form2, getProfile, uploadPhoto } from "../api/tenantform";
 import Alert from "../Components/Alert";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 export default function TenantForm2() {
   const [formData, setFormData] = useState({
     foodPreference: "",
@@ -18,18 +19,48 @@ export default function TenantForm2() {
     workPlace: "",
     descriptions: "",
   });
-  const navigate=useNavigate();
-  const {user,loading} = useAuth();
-useEffect(() => {
-  if (!loading && !user) {
-    navigate("/login");
-  }
-}, [user, loading, navigate]);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/login");
+    // prefill preferences + photo if exists
+    let mounted = true;
+    const load = async () => {
+      try {
+        const res = await getProfile();
+        const t = res.data?.tenant || res.data?.data || res.data;
+        if (!mounted || !t) return;
+        setFormData((f) => ({
+          ...f,
+          foodPreference: t.foodPreference ?? f.foodPreference,
+          religion: t.religion ?? f.religion,
+          alcohol: typeof t.alcohol === "boolean" ? t.alcohol : f.alcohol,
+          smoker: typeof t.smoker === "boolean" ? t.smoker : f.smoker,
+          nightOwl: typeof t.nightOwl === "boolean" ? t.nightOwl : f.nightOwl,
+          hobbies: Array.isArray(t.hobbies) ? t.hobbies : f.hobbies,
+          professional_status: t.professional_status ?? f.professional_status,
+          workingshifts: t.workingshifts ?? f.workingshifts,
+          havePet: typeof t.havePet === "boolean" ? t.havePet : f.havePet,
+          workPlace: t.workPlace ?? f.workPlace,
+          descriptions: t.descriptions ?? f.descriptions,
+        }));
+        if (t.profilePhoto) setPhotoPreview(t.profilePhoto);
+      } catch (err) {
+        // ignore
+      }
+    };
+    if (user) load();
+    return () => { mounted = false; };
+  }, [user, loading, navigate]);
 
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading1, setloading1] = useState(false);
-  const [newHobby,setNewHobby]=useState({});
-  // Handle checkbox and text/selection updates
+  const [newHobby, setNewHobby] = useState("");
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -38,42 +69,57 @@ useEffect(() => {
     });
   };
 
-  // Add hobby to array
   const handleAddHobby = () => {
-    if (newHobby.trim() !== "") {
-      setFormData({
-        ...formData,
-        hobbies: [...formData.hobbies, newHobby.trim()],
-      });
-      setNewHobby("");
-    }
+    if (!newHobby.trim()) return;
+    setFormData({ ...formData, hobbies: [...formData.hobbies, newHobby.trim()] });
+    setNewHobby("");
   };
 
-  // Remove hobby
   const handleRemoveHobby = (index) => {
-    setFormData({
-      ...formData,
-      hobbies: formData.hobbies.filter((_, i) => i !== index),
-    });
+    setFormData({ ...formData, hobbies: formData.hobbies.filter((_, i) => i !== index) });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProfilePhoto(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setPhotoPreview(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setloading1(true);
-    setMessage("");
-    navigate("/dashboard");
+    setMessage({ text: "", type: "" });
     try {
       const res = await form2(formData);
-      if (res.status === 200) {
+
+      // upload photo if selected
+      if (profilePhoto && user) {
+        const fd = new FormData();
+        fd.append("photo", profilePhoto);
+        fd.append("email", user.email);
+        fd.append("username", user.username || user.name || "");
+        try {
+          await uploadPhoto(fd);
+        } catch (err) {
+          // show upload error but allow preferences to be saved
+          setMessage({
+            text: err.response?.data?.message || "Photo upload failed. Backend may not accept uploads.",
+            type: "error",
+          });
+        }
+      }
+
+      if (res.status === 200 || res.status === 201) {
         setMessage({ text: "Preferences saved successfully!", type: "success" });
+        navigate("/dashboard");
+      } else {
+        setMessage({ text: res.data?.message || "Unexpected response", type: "error" });
       }
     } catch (error) {
-      console.error("Error submitting preferences:", error);
-      if (error.response) {
-        setMessage({ text: error.response.data.message || "Server error.", type: "error" });
-      } else {
-        setMessage({ text: "Network error.", type: "error" });
-      }
+      setMessage({ text: error.response?.data?.message || "Error saving preferences", type: "error" });
     } finally {
       setloading1(false);
     }
@@ -81,7 +127,8 @@ useEffect(() => {
 
   return (
     <div className="tenant-form-container">
-      <h2 className="form-title">Tenant Preferences</h2>
+      <h2 className="form-title">Preferences & Photo</h2>
+      <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
       <form onSubmit={handleSubmit} className="tenant-form">
         {/* Food Preference */}
         <label>Food Preference</label>
@@ -220,12 +267,27 @@ useEffect(() => {
           placeholder="Tell us something about yourself..."
         />
 
+        {/* Add this before the submit button */}
+        <div className="photo-upload-section">
+          <label>Profile Photo</label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handlePhotoChange}
+            accept="image/*"
+            className="photo-input"
+          />
+          {photoPreview && (
+            <div className="photo-preview">
+              <img src={photoPreview} alt="Preview" style={{ width: 140, height: 140, borderRadius: "50%", objectFit: "cover" }} />
+            </div>
+          )}
+        </div>
+
         <button type="submit" className="submit-btn" disabled={loading1}>
           {loading1 ? "Saving..." : "Save Preferences"}
         </button>
       </form>
-
-      {message && <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />}
     </div>
   );
 }
