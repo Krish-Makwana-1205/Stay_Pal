@@ -69,7 +69,7 @@ Complete the user profile and property listing modules, integrate header and foo
 - The team was coordinated for testing and deployment cycles.  
 - Sprint 3 will focus on finishing remaining property listing functionalities and starting matching logic.
 
-  --
+ ---
   
 #  Sprint 3 Backlog  
 
@@ -78,8 +78,6 @@ Complete the user profile and property listing modules, integrate header and foo
 Implement the feature-based search module that allows tenants to search for flats or flatmates using customizable filters such as budget, location, gender, lifestyle choices, and amenities. Display results dynamically according to preferences.  
 
 **Duration:** 24/10/2025 – 28/10/2025  
-
----
 
 ## Sprint Tasks  
 
@@ -107,7 +105,88 @@ Implement the feature-based search module that allows tenants to search for flat
 ## Scrum Master Notes  
 - Scrum Master (Aayman) tracked Sprint 3 progress and coordinated between frontend and backend integration.  
 - Collaboration emphasized between backend (Krish, Yogesh, Meet and Aayman) and frontend (Kosha, Shambhavi, Heet, Harshil and Namra).  
-- Sprint 4 will extend this work with user-to-user matching and chat functionality.  
+- Sprint 4 will extend this work with user-to-user matching and chat functionality.
+
+---
+
+# Sprint 4 Backlog  
+
+**Linked EPIC:** EPIC 6 – Admin Management  
+**Sprint Goal:**  
+Develop and integrate the Admin Panel to manage users, property listings, and maintain system integrity.  
+
+**Duration:** 06/11/2025 – 09/11/2025  
+
+## Sprint Tasks  
+
+| Task | Status |
+|------|--------|
+| Design Admin Dashboard layout and navigation panel | In Progress |
+| Implement Admin login authentication and access control | In Progress |
+| Create CRUD operations for user management (view, delete, ban, unban) | Pending |
+| Enable property listing moderation and approval workflow | Pending |
+| Add feature to view bug reports and system logs | Pending |
+| Integrate Admin database schema with existing user tables | In Progress |
+| Test Admin login and permission access across roles (Admin/User) | Pending |
+| Prepare documentation for Admin module functionalities | Pending |
+
+## Notes  
+- Sprint 4 was prioritized before EPIC 4 due to uncertainty in NLP module development.  
+- Focused on building stable control features critical for mid-evaluation and internal testing.  
+- Admin panel ensures moderation, monitoring, and management capabilities.  
+
+## Key Deliverables  
+- Functional Admin Dashboard with secure login and role restriction.  
+- CRUD management for users and property listings.  
+- Integrated database between Admin and User schemas.  
+
+## Scrum Master Notes  
+- Scrum Master (Aayman) tracked sprint progress and coordinated frontend–backend integration.  
+- Ensured testing of role-based permissions and Admin access.  
+- Addressed dependencies and sequencing between Admin and Notification modules.  
+  
+---
+
+# Sprint 5 Backlog  
+
+**Linked EPIC:** EPIC 4 – Notification System  
+**Sprint Goal:**  
+Implement the notification system to improve communication between tenants and property owners, supporting message alerts and request updates.  
+
+**Duration:** 09/11/2025 – 12/11/2025  
+
+## Sprint Tasks  
+
+| Task | Status |
+|------|--------|
+| Design notification UI banners and popup templates | In Progress |
+| Create backend API for sending and receiving notifications | In Progress |
+| Implement event-based triggers (e.g., new message, request approval) | Pending |
+| Add real-time notification display on dashboard | Pending |
+| Integrate database table for notification storage and read/unread status | Pending |
+| Add “Mark as Read” and “Delete Notification” functionalities | Pending |
+| Test notification delivery flow (frontend + backend) | Pending |
+| Update module documentation and architecture diagrams | Pending |
+
+## Notes  
+- Sprint 5 followed EPIC 6 due to dependency on Admin stability and pending NLP module testing.  
+- Notifications ensure user engagement and better interaction between tenants and property owners.  
+- This sprint establishes the foundation for future chat and NLP-driven features.  
+
+## Key Deliverables  
+- Working backend API for notification creation and delivery.  
+- Real-time frontend notification display integrated with user dashboard.  
+- Database schema for storing, retrieving, and updating notifications.  
+
+## Scrum Master Notes  
+- Scrum Master (Aayman) coordinated integration between frontend (UI notifications) and backend (API triggers).  
+- Managed database linkage with user profiles for personalized alerts.  
+- Focused on modular design to ensure easy scalability for future chat/NLP extensions.  
+
+---
+
+
+
 
 
 
