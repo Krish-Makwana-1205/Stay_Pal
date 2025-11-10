@@ -46,18 +46,19 @@ async function filterProperties(req, res) {
     if (!city) {
       return res.status(400).json({ success: false, message: "City not provided" });
     }
+    city = city.trimEnd().toLowerCase();
 
     const filterCriteria = { city };
 
     if (rentLowerBound && rentUpperBound) {
       filterCriteria.$and = [
-        { rentLowerBound: { $gte: Number(rentLowerBound) } },
-        { rentUpperBound: { $lte: Number(rentUpperBound) } },
+        { rentLowerBound: { $gte: Number(rent) } },
+        { rentUpperBound: { $lte: Number(rent) } },
       ];
     } else if (rentLowerBound) {
-      filterCriteria.rentLowerBound = { $gte: Number(rentLowerBound) };
+      filterCriteria.rentLowerBound = { $gte: Number(rent) };
     } else if (rentUpperBound) {
-      filterCriteria.rentUpperBound = { $lte: Number(rentUpperBound) };
+      filterCriteria.rentUpperBound = { $lte: Number(rent) };
     }
 
     const skip = (page - 1) * Number(limit);
@@ -135,8 +136,8 @@ async function filterProperties(req, res) {
           if (tenantPreferences.professionalStatus === prefs.professionalStatus) points += 1;
         }
 
-        if (tenantPreferences.workingShift && prefs.workingShift !== "Any") {
-          if (tenantPreferences.workingShift === prefs.workingShift) points += 1;
+        if (tenantPreferences.workingshifts && prefs.workingShift !== "Any") {
+          if (tenantPreferences.workingshifts === prefs.workingShift) points += 1;
         }
 
         if (tenantPreferences.language && prefs.language !== "Any") {

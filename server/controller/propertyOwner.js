@@ -10,8 +10,7 @@ async function uploadProperty(req, res) {
     let body = req.body;
     // Trim trailing spaces AND convert to lowercase for relevant fields
     if (body.description) body.description = body.description.trimEnd().toLowerCase();
-    if (body.rentLowerBound) body.rentLowerBound = body.rentLowerBound;
-    if (body.rentUpperBound) body.rentUpperBound = body.rentUpperBound;
+    if (body.rent) body.rent = body.rent;
     if (body.nation) body.nation = body.nation.trimEnd().toLowerCase();
     if (body.pincode) body.pincode = body.pincode;
     if (body.city) body.city = body.city.trimEnd().toLowerCase();
@@ -21,8 +20,7 @@ async function uploadProperty(req, res) {
     // Required fields check
     if (
       !body.name || !body.description || !body.BHK ||
-      !body.rentLowerBound || !body.rentUpperBound ||
-      !body.nation || !body.pincode || !body.city || !body.locality || !body.houseType
+      !body.rent || !body.nation || !body.pincode || !body.city || !body.locality || !body.houseType
     ) {
       return res.status(400).json({ message: "Required fields missing" });
     }
@@ -50,8 +48,7 @@ async function uploadProperty(req, res) {
         imgLink: imgUrls,
         description: body.description,
         BHK: body.BHK,
-        rentLowerBound: body.rentLowerBound,
-        rentUpperBound: body.rentUpperBound,
+        rent:body.rent,
         locality: body.locality,
         // address: body.address,
         // addressLink: body.addressLink,
@@ -81,7 +78,7 @@ async function addTenantPreferences(req, res) {
     }
 
     const updated = await property.findOneAndUpdate(
-      { email, name },
+      { email:req.user.email, name:req.user.name },
       {
         tenantPreferences: {
           gender: req.body.gender || "Any",

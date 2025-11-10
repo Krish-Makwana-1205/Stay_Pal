@@ -54,7 +54,7 @@ const tenantSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-    professional_status: {
+    professionalStatus: {
         type: String,
         enum: ['student', 'working', 'Any'],
         default: 'Any'
@@ -85,9 +85,9 @@ const tenantSchema = new mongoose.Schema({
     },
     language: { type: String, default: "Any" },
     minStayDuration: { type: Number, default: 0 },
-
 }, { timestamps: true });
 
+tenantSchema.index({email: 1});
 const Tenant = mongoose.model('tenant', tenantSchema);
 
 module.exports = Tenant;
