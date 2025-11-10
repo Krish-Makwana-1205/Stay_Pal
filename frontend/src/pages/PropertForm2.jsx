@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
 import { savePreferences } from "../api/propertyform";
 import "../StyleSheets/PropertyForm.css";
+import CreatableSelect from "react-select/creatable";
+import NumberInput from "../Components/NumberInput";
 
 export default function PropertyForm2() {
   const { user } = useAuth();
@@ -13,7 +15,8 @@ export default function PropertyForm2() {
     email: "",
     name: "",
     gender: "Any",
-    ageRange: "",
+    minAge: "",
+    maxAge: "",
     occupation: "",
     maritalStatus: "Any",
     family: "Any",
@@ -21,7 +24,6 @@ export default function PropertyForm2() {
     smoking: "Any",
     alcohol: "Any",
     pets: false,
-    nationality: "",
     workingShift: "Any",
     professionalStatus: "Any",
     minStayDuration: "",
@@ -50,13 +52,19 @@ export default function PropertyForm2() {
     }));
   };
 
+  const handleOccupationChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      occupation: selectedOption ? selectedOption.value : "",
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
-    // basic validation
     if (!formData.name) {
-      setMessage({ text: "Prperty name is required.", type: "error" });
+      setMessage({ text: "Property name is required.", type: "error" });
       return;
     }
 
@@ -64,38 +72,71 @@ export default function PropertyForm2() {
     try {
       const payload = {
         ...formData,
-        minStayDuration: formData.minStayDuration ? Number(formData.minStayDuration) : undefined,
-        maxPeopleAllowed: formData.maxPeopleAllowed ? Number(formData.maxPeopleAllowed) : undefined,
+        minAge: formData.minAge ? Number(formData.minAge) : undefined,
+        maxAge: formData.maxAge ? Number(formData.maxAge) : undefined,
+        minStayDuration: formData.minStayDuration
+          ? Number(formData.minStayDuration)
+          : undefined,
+        maxPeopleAllowed: formData.maxPeopleAllowed
+          ? Number(formData.maxPeopleAllowed)
+          : undefined,
       };
+
       const res = await savePreferences(payload);
       if (res.status === 200) {
-        setMessage({ text: res.data.message || "Preferences saved", type: "success" });
-        // optionally redirect back to owner page
+        setMessage({
+          text: res.data.message || "Preferences saved successfully!",
+          type: "success",
+        });
+        // Optionally redirect
         // navigate("/usercard");
       } else {
-        setMessage({ text: res.data?.message || "Unexpected response", type: "error" });
+        setMessage({
+          text: res.data?.message || "Unexpected response from server.",
+          type: "error",
+        });
       }
     } catch (err) {
-      setMessage({ text: err.response?.data?.message || "Failed to save preferences", type: "error" });
+      setMessage({
+        text: err.response?.data?.message || "Failed to save preferences.",
+        type: "error",
+      });
       console.error("Save preferences error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 Predefined Occupation Options (editable + user can add)
+  const occupationOptions = [
+    { value: "IT", label: "IT" },
+    { value: "Hospital", label: "Hospital / Healthcare" },
+    { value: "Government", label: "Government Employee" },
+    { value: "Lawyer", label: "Lawyer" },
+    { value: "Businessman", label: "Businessman" },
+    { value: "Teacher", label: "Teacher" },
+    { value: "Engineer", label: "Engineer" },
+    { value: "Accountant", label: "Accountant" },
+    { value: "Banker", label: "Banker" },
+    { value: "Police", label: "Police / Security" },
+    { value: "Student", label: "Student" },
+    { value: "Freelancer", label: "Freelancer" },
+    { value: "Artist", label: "Artist / Designer" },
+    { value: "Chef", label: "Chef" },
+    { value: "Other", label: "Other" },
+  ];
+
   return (
     <div className="property-form-container">
       <h2 className="form-title">Tenant Preferences for Property</h2>
 
-      <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
+      <Alert
+        message={message.text}
+        type={message.type}
+        onClose={() => setMessage({ text: "", type: "" })}
+      />
 
       <form onSubmit={handleSubmit} className="property-form">
-        <label>Owner Email *</label>
-        <input name="email" type="email" value={formData.email} onChange={handleChange} required />
-
-        <label>Property Name *</label>
-        <input name="name" type="text" value={formData.name} onChange={handleChange} required />
-
         <label>Gender Preference</label>
         <select name="gender" value={formData.gender} onChange={handleChange}>
           <option value="Any">Any</option>
@@ -103,14 +144,49 @@ export default function PropertyForm2() {
           <option value="Female">Female</option>
         </select>
 
+        {/* ✅ Age Range Split Inputs */}
         <label>Age Range</label>
-        <input name="ageRange" type="text" placeholder="eg. 21-30" value={formData.ageRange} onChange={handleChange} />
+        <div style={{ display: "flex", gap: "10px" }}>
+          <NumberInput
+            name="minAge"
+            placeholder="Min Age"
+            value={formData.minAge}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, minAge: e.target.value }))
+            }
+            min="0"
+          />
+          <NumberInput
+            name="maxAge"
+            placeholder="Max Age"
+            value={formData.maxAge}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, maxAge: e.target.value }))
+            }
+            min="0"
+          />
+        </div>
 
+        {/* ✅ Occupation with Predefined + Custom */}
         <label>Occupation</label>
-        <input name="occupation" type="text" value={formData.occupation} onChange={handleChange} />
+        <CreatableSelect
+          options={occupationOptions}
+          value={
+            formData.occupation
+              ? { value: formData.occupation, label: formData.occupation }
+              : null
+          }
+          onChange={handleOccupationChange}
+          placeholder="Select or type occupation"
+          isClearable
+        />
 
         <label>Marital Status</label>
-        <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange}>
+        <select
+          name="maritalStatus"
+          value={formData.maritalStatus}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Single">Single</option>
           <option value="Married">Married</option>
@@ -124,42 +200,74 @@ export default function PropertyForm2() {
         </select>
 
         <label>Food Preference</label>
-        <select name="foodPreference" value={formData.foodPreference} onChange={handleChange}>
+        <select
+          name="foodPreference"
+          value={formData.foodPreference}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Vegetarian">Vegetarian</option>
           <option value="Non-Vegetarian">Non-Vegetarian</option>
         </select>
 
         <label>Smoking</label>
-        <select name="smoking" value={formData.smoking} onChange={handleChange}>
+        <select
+          name="smoking"
+          value={formData.smoking}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Allowed">Allowed</option>
           <option value="Not Allowed">Not Allowed</option>
         </select>
 
         <label>Alcohol</label>
-        <select name="alcohol" value={formData.alcohol} onChange={handleChange}>
+        <select
+          name="alcohol"
+          value={formData.alcohol}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Allowed">Allowed</option>
           <option value="Not Allowed">Not Allowed</option>
         </select>
 
-        <label>
-          <input name="pets" type="checkbox" checked={formData.pets} onChange={handleChange} /> Pets allowed
-        </label>
+         <label>Pet</label>
+        <select
+          name="pets"
+          value={formData.pets ? "Allowed" : "Not Allowed"}
+          onChange={handleChange}
+        >
+          <option value="Any">Any</option>
+          <option value="Allowed">Allowed</option>
+          <option value="Not Allowed">Not Allowed</option>
+        </select>
 
-        <label>Nationality</label>
-        <input name="nationality" type="text" value={formData.nationality} onChange={handleChange} />
+        {/* <label>Nationality</label>
+        <input
+          name="nationality"
+          type="text"
+          value={formData.nationality}
+          onChange={handleChange}
+        /> */}
 
         <label>Working Shift</label>
-        <select name="workingShift" value={formData.workingShift} onChange={handleChange}>
+        <select
+          name="workingShift"
+          value={formData.workingShift}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Day Shift">Day Shift</option>
           <option value="Night Shift">Night Shift</option>
         </select>
 
         <label>Professional Status</label>
-        <select name="professionalStatus" value={formData.professionalStatus} onChange={handleChange}>
+        <select
+          name="professionalStatus"
+          value={formData.professionalStatus}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Student">Student</option>
           <option value="Employed">Employed</option>
@@ -167,13 +275,37 @@ export default function PropertyForm2() {
         </select>
 
         <label>Minimum Stay Duration (months)</label>
-        <input name="minStayDuration" type="number" min="0" value={formData.minStayDuration} onChange={handleChange} />
+        <NumberInput
+          name="minStayDuration"
+          min="0"
+          value={formData.minStayDuration}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              minStayDuration: e.target.value,
+            }))
+          }
+        />
 
         <label>Max People Allowed</label>
-        <input name="maxPeopleAllowed" type="number" min="0" value={formData.maxPeopleAllowed} onChange={handleChange} />
+        <NumberInput
+          name="maxPeopleAllowed"
+          min="0"
+          value={formData.maxPeopleAllowed}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              maxPeopleAllowed: e.target.value,
+            }))
+          }
+        />
 
         <label>Notes</label>
-        <textarea name="notes" value={formData.notes} onChange={handleChange} />
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+        />
 
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Saving..." : "Save Preferences"}
