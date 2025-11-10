@@ -50,7 +50,43 @@ const tenantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    earlybird: {
+        type: Boolean,
+        default: false
+    },
+    nightOwl: {
+        type: Boolean,
+        default: false
+    },
+    studious: {
+        type: Boolean,
+        default: false
+    },
+    fitness_freak: {
+        type: Boolean,
+        default: false
+    },
+    sporty: {
+        type: Boolean,
+        default: false
+    },
+    wanderer: {
+        type: Boolean,
+        default: false
+    },
+    party_lover: {
+        type: Boolean,
+        default: false
+    },
+    music_lover: {
+        type: Boolean,
+        default: false
+    },
     hobbies: {
+        type: [String],
+        default: []
+    },
+    allergies: {
         type: [String],
         default: []
     },
@@ -64,7 +100,7 @@ const tenantSchema = new mongoose.Schema({
         enum: ['morning', 'night', 'Any'],
         default: 'Any'
     },    
-    havePet: {
+    Pet_lover: {
         type: Boolean,
         default: false
     },
