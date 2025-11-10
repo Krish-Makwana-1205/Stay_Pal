@@ -17,7 +17,7 @@ const propertySchema = new mongoose.Schema({
     areaSize: { type: Number },
     nearbyPlaces: [{ type: String, enum: ["Market", "Bus Stop", "School", "Hospital", "Metro"]}], // e.g. 
     transportAvailability: { type: Boolean, default: false },
-    parkingArea: { type: Boolean, default: false },
+    parkingArea: { type: String },
     houseType: {type:String, enum:["Apartment", "Tenament", "Bungalow", "Studio", "Condo", "Other"], required:true},
     // location: {type: {type: String,enum: ["Point"],default: "Point",required: true},coordinates: { type: [Number],required: true} },
     // latitude: { type: Number },
@@ -49,7 +49,7 @@ propertySchema.index({ email: 1, name: 1 }, { unique: true }); // composite key
 
 //For faster filtering
 propertySchema.index({ city: 1 });
-propertySchema.index({ rentLowerBound: 1, rentUpperBound: 1 });
+propertySchema.index({ rent: 1 });
 
 const property = mongoose.model('property', propertySchema);
 

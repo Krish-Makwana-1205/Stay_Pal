@@ -40,9 +40,11 @@ async function filterProperties(req, res) {
       description,
     } = req.query;
     if (!req.user.email) {
-      return res.status(501).json({ success: false, message: "User not defined" });
+      return res.status(400).json({ success: false, message: "User not defined" });
     }
-
+    if(!rentLowerBound){
+      rentLowerBound = 0;
+    }
     if (!city) {
       return res.status(400).json({ success: false, message: "City not provided" });
     }
@@ -52,14 +54,15 @@ async function filterProperties(req, res) {
 
     if (rentLowerBound && rentUpperBound) {
       filterCriteria.$and = [
-        { rentLowerBound: { $gte: Number(rent) } },
-        { rentUpperBound: { $lte: Number(rent) } },
+        { rent: { $gte: Number(rentLowerBound) } },
+        { rent: { $lte: Number(rentUpperBound) } },
       ];
     } else if (rentLowerBound) {
-      filterCriteria.rentLowerBound = { $gte: Number(rent) };
+      filterCriteria.rent = { $gte: Number(rentLowerBound) };
     } else if (rentUpperBound) {
-      filterCriteria.rentUpperBound = { $lte: Number(rent) };
+      filterCriteria.rent = { $lte: Number(rentUpperBound) };
     }
+    console.log(filterCriteria);
 
     const skip = (page - 1) * Number(limit);
 
@@ -67,8 +70,6 @@ async function filterProperties(req, res) {
       Tenant.findOne({ email: req.user.email }),
       property.find(filterCriteria).skip(skip).limit(limit),
     ]);
-
-
     const calculatePoints = async (prop) => {
       let points = 0;
       if (locality && prop.locality) {

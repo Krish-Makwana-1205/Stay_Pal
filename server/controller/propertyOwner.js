@@ -24,8 +24,7 @@ async function uploadProperty(req, res) {
     ) {
       return res.status(400).json({ message: "Required fields missing" });
     }
-
-
+                                
     // let latitude, longitude;
 
     // try {

@@ -87,7 +87,7 @@ const tenantSchema = new mongoose.Schema({
     minStayDuration: { type: Number, default: 0 },
 }, { timestamps: true });
 
-tenantSchema.index({email: 1});
+
 const Tenant = mongoose.model('tenant', tenantSchema);
 
 module.exports = Tenant;

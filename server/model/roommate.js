@@ -20,7 +20,6 @@ const roommateSchema = new mongoose.Schema({
 }, { timestamps:true});
 
 roommateSchema.index({ email: 1, city: 1 }, { unique: true }); //composite key
-roommateSchema.index({email: 1});
 
 const roommate = mongoose.model('roommate', roommateSchema);
 
