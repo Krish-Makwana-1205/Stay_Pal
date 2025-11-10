@@ -26,7 +26,8 @@ const propertySchema = new mongoose.Schema({
     tenantPreferences: {
     
         gender: { type: String, enum: ["Male", "Female", "Any"], default:"Any"},
-        ageRange: { type: String },
+        upperagelimit: { type: Number },
+        loweragelimit: { type: Number },
         occupation: { type: String },
         maritalStatus: { type: String, enum: ["Single", "Married", "Any"], default: "Any"},
         family: { type: String, enum: ["Allowed", "Not Allowed", "Any"], default: "Any"},

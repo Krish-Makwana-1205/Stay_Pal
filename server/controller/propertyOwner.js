@@ -14,8 +14,8 @@ async function uploadProperty(req, res) {
     if (body.nation) body.nation = body.nation.trimEnd().toLowerCase();
     if (body.pincode) body.pincode = body.pincode;
     if (body.city) body.city = body.city.trimEnd().toLowerCase();
-    // if (body.address) body.address = body.address.trimEnd().toLowerCase();
-    // if (body.addressLink) body.addressLink = body.addressLink.trimEnd();
+    if (body.address) body.address = body.address.trimEnd().toLowerCase();
+    if (body.addressLink) body.addressLink = body.addressLink.trimEnd();
 
     // Required fields check
     if (
@@ -49,8 +49,8 @@ async function uploadProperty(req, res) {
         BHK: body.BHK,
         rent:body.rent,
         locality: body.locality,
-        // address: body.address,
-        // addressLink: body.addressLink,
+        address: body.address,
+        addressLink: body.addressLink,
         nation: body.nation,
         pincode: body.pincode,
         city: body.city,

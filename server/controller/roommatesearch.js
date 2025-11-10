@@ -80,6 +80,9 @@ async function roommateSearch(req, res) {
                 else if (room.foodPreference === 'Non-Veg') {
                     points -= 4;
                 }
+                else if (room.foodPreference === 'Jain') {
+                    points -= 2;
+                }
                 else {
                     points += 5;
                 }
@@ -89,6 +92,9 @@ async function roommateSearch(req, res) {
                 }
                 else if (room.foodPreference === 'Veg') {
                     points += 5;
+                }
+                else if (room.foodPreference === 'Jain') {
+                    points += 3;
                 }
                 else if (room.foodPreference === 'Non-Veg') {
                     points -= 4;
@@ -107,8 +113,28 @@ async function roommateSearch(req, res) {
                 else if (room.foodPreference === 'Non-Veg') {
                     points += 5;
                 }
+                else if (room.foodPreference === 'Jain') {
+                    points += 2;
+                }
                 else if (room.foodPreference === 'Vegan') {
                     points += 3;
+                }
+            }
+            else if (query.foodPreference === 'Jain') {
+                if (room.foodPreference === 'Any') {
+
+                }
+                else if (room.foodPreference === 'Veg') {
+                    points -= 3;
+                }
+                else if (room.foodPreference === 'Non-Veg') {
+                    points -= 5;
+                }
+                else if (room.foodPreference === 'Jain') {
+                    points += 5;
+                }
+                else if (room.foodPreference === 'Vegan') {
+                    points -= 3;
                 }
             }
         }
@@ -281,6 +307,11 @@ async function roommateSearch(req, res) {
             } else {
 
             }
+        }
+        // allergies
+        if (query.allergies && Array.isArray(query.allergies) && Array.isArray(room.allergies)) {
+            const commonallergies = query.allergies.filter(hobby => room.allergies.includes(allergies));
+            points += commonallergies.length * 3; 
         }
 
         // Min Stay Duration
