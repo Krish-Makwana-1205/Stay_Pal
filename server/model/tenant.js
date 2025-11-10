@@ -108,7 +108,7 @@ const tenantSchema = new mongoose.Schema({
         type: String,
         default: 'Any'
     },
-    descriptions: {
+    description: {
         type: String,
         default: ''
     },
@@ -120,7 +120,7 @@ const tenantSchema = new mongoose.Schema({
         type: Boolean
     },
     language: { type: String, default: "Any" },
-    minStayDuration: { type: Number, default: 0 },
+    minStayDuration: { type: Number, default: -1 },
 }, { timestamps: true });
 
 

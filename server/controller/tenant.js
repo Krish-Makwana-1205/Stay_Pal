@@ -28,7 +28,6 @@ async function makeProfile(req, res){
         }, {upsert:true, new:true});
     }catch(error){
         console.log(error.message);
-        console.log('hi');
         return res.status(500).json({message:"Error in contacting Database", error:error.message});
     }
     
@@ -55,7 +54,7 @@ async function addPreferences(req, res){
     
     if (body.professional_status) body.professional_status =body.professional_status.trimEnd();
     if (body.workPlace) body.workPlace =body.workPlace.trimEnd();
-    if (body.descriptions) body.descriptions =body.descriptions.trimEnd();
+    if (body.description) body.description =body.description.trimEnd();
     if (body.religion) body.religion =body.religion.trimEnd();
     if (body.foodPreference) body.foodPreference =body.foodPreference.trimEnd();
     if (body.workingshifts) body.workingshifts =body.workingshifts.trimEnd();
@@ -81,7 +80,7 @@ async function addPreferences(req, res){
                 workingshifts:body.workingshifts||null,
                 Pet_lover:typeof body.Pet_lover === 'boolean' ? body.Pet_lover : null,
                 workPlace:body.workPlace||null,
-                descriptions:body.descriptions||null,
+                description:body.description||null,
                 maritalStatus:body.maritalStatus||"Any",
                 family:body.family,
                 language:body.language
@@ -111,7 +110,7 @@ async function fullProfile(req, res) {
     if(body.gender) body.gender = body.gender.trimEnd();
     if(body.professional_status) body.professional_status = body.professional_status.trimEnd();
     if(body.workPlace) body.workPlace = body.workPlace.trimEnd();
-    if(body.descriptions) body.descriptions = body.descriptions.trimEnd();
+    if(body.description) body.description = body.description.trimEnd();
     if(body.religion) body.religion = body.religion.trimEnd();
     if(body.foodPreference) body.foodPreference = body.foodPreference.trimEnd();
     if(body.workingshifts) body.workingshifts = body.workingshifts.trimEnd();
@@ -145,7 +144,7 @@ async function fullProfile(req, res) {
                 workingshifts:body.workingshifts||null,
                 Pet_lover:typeof body.Pet_lover === 'boolean' ? body.Pet_lover : null,
                 workPlace:body.workPlace||null,
-                descriptions:body.descriptions||null,
+                description:body.description||null,
                 maritalStatus:body.maritalStatus||"Any",
                 family:body.family,
                 language:body.language

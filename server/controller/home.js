@@ -153,7 +153,7 @@ async function filterProperties(req, res) {
     };
 
     // Calculate points for all properties in parallel
-    const scoredProperties = await Promise.all(
+    let scoredProperties = await Promise.all(
       properties.map(async (prop) => ({
         ...prop.toObject(),
         points: await calculatePoints(prop),
@@ -163,7 +163,7 @@ async function filterProperties(req, res) {
     // Sort by points descending
     scoredProperties.sort((a, b) => b.points - a.points);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       count: scoredProperties.length,
       page: Number(page),
