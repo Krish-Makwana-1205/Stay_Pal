@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import AsyncSelect from "react-select/async";
 import { City } from "country-state-city";
+import { useEffect } from "react";
 
-const Filters = ({ onApply }) => {
-  const [selectedCity, setSelectedCity] = useState(null); // store object
-  const [locality, setLocality] = useState("");
+const Filters = ({ onApply,defaultCity }) => {
+const [selectedCity, setSelectedCity] = useState(() => {
+    const cityName = defaultCity || localStorage.getItem("defaultCity") || "";
+    return cityName ? { value: cityName, label: cityName } : null;
+  });  const [locality, setLocality] = useState("");
   const [BHK, setBHK] = useState("");
-  const [rentLowerBound, setRentLowerBound] = useState(5000);
-  const [rentUpperBound, setRentUpperBound] = useState(10000);
+  const [rentLowerBound, setRentLowerBound] = useState(0);
+  const [rentUpperBound, setRentUpperBound] = useState(10000000);
   const [furnishingType, setFurnishingType] = useState("");
   const [areaSize, setAreaSize] = useState("");
   const [transportAvailability, setTransportAvailability] = useState(null);
@@ -18,7 +21,6 @@ const Filters = ({ onApply }) => {
   const furnishingOptions = ["Fully Furnished", "Semi Furnished", "Unfurnished"];
   const houseTypeOptions = ["Apartment", "Independent House", "Villa", "PG / Hostel"];
 
-  //  City options loader
   const loadCityOptions = (inputValue, callback) => {
     const allCities = City.getCitiesOfCountry("IN");
     const filtered = allCities
@@ -33,12 +35,10 @@ const Filters = ({ onApply }) => {
     callback(filtered);
   };
 
-  //  Handle city change
   const handleChange = (selectedOption) => {
-    setSelectedCity(selectedOption); // store full object
+    setSelectedCity(selectedOption); 
   };
 
-  //  Apply filters
   const handleApply = () => {
     if (!selectedCity?.value?.trim()) {
       alert("Please select a city before applying filters.");
@@ -46,7 +46,7 @@ const Filters = ({ onApply }) => {
     }
 
     const filters = {
-      city: selectedCity.value.trim(), // send string to backend
+      city: selectedCity.value.trim(), 
       locality: locality.trim() || undefined,
       BHK: BHK ? Number(BHK) : undefined,
       rentLowerBound: rentLowerBound ? Number(rentLowerBound) : undefined,
@@ -65,7 +65,11 @@ const Filters = ({ onApply }) => {
     console.log("Filters sent to backend:", filters);
     onApply(filters);
   };
-
+useEffect(() => {
+  if (defaultCity && (!selectedCity || selectedCity.value !== defaultCity)) {
+    setSelectedCity({ value: defaultCity, label: defaultCity });
+  }
+}, [defaultCity]);
   return (
     <div className="filters-container">
       <h2>Property Filters</h2>
@@ -77,7 +81,7 @@ const Filters = ({ onApply }) => {
           cacheOptions
           loadOptions={loadCityOptions}
           defaultOptions
-          value={selectedCity} //  pass the object directly
+          value={selectedCity} 
           onChange={handleChange}
           placeholder="Search for a city..."
           styles={{
