@@ -40,7 +40,7 @@ async function uploadProperty(req, res) {
     }
     req.user.email = req.user.email.trimEnd().toLowerCase();
     const Property = await property.findOneAndUpdate(
-      { email: body.email, name: body.name },
+      { email: body.email, name: body.user.name },
       {
         email: req.user.email,
         name: body.name,

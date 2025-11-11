@@ -20,6 +20,33 @@ async function home(req, res) {
   }
 }
 
+async function property(req, res) {
+  try {
+    const { email, name } = req.query;
+    if (!email || !name) {
+      return res.status(400).json({ success: false, message: "Email and Property Name are required" });
+    }
+
+    const foundProperty = await Property.findOne({ email, name });
+
+    if (!foundProperty) { 
+      return res.status(404).json({ success: false, message: "No property found "});
+    }
+
+    return res.status(200).json({ 
+      success: true, message: "Property fetched successfully", data: foundProperty,
+    });
+  } 
+  catch (error) {
+    console.log("Error fetching property:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+}
+
 
 
 async function filterProperties(req, res) {
@@ -32,11 +59,10 @@ async function filterProperties(req, res) {
       locality,
       furnishingType,
       areaSize,
-      transportAvailability,
       houseType,
       nearbyPlaces,
       page = 1,
-      limit = 20,
+      limit = 1000,
       description,
     } = req.query;
     if (!req.user.email) {
@@ -102,8 +128,16 @@ async function filterProperties(req, res) {
         points += Math.max(0, 10 + diff / 100);
       }
 
-      if (typeof transportAvailability === "boolean" && prop.transportAvailability === transportAvailability) {
-        points += 7;
+      if (nearbyPlaces && prop.nearbyPlaces) {
+        let userPlaces = Array.isArray(nearbyPlaces)
+          ? nearbyPlaces
+          : nearbyPlaces.split(",").map(p => p.trim().toLowerCase());
+
+        let propertyPlaces = prop.nearbyPlaces.map(p => p.toLowerCase());
+
+        let matches = userPlaces.filter(p => propertyPlaces.includes(p)).length;
+
+        points += matches * 3;
       }
 
       if (tenantPreferences) {
@@ -180,4 +214,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties };
+module.exports = { home, filterProperties, property };
