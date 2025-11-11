@@ -20,14 +20,14 @@ async function home(req, res) {
   }
 }
 
-async function property(req, res) {
+async function propertysend(req, res) {
   try {
     const { email, name } = req.query;
     if (!email || !name) {
       return res.status(400).json({ success: false, message: "Email and Property Name are required" });
     }
 
-    const foundProperty = await Property.findOne({ email, name });
+    const foundProperty = await property.findOne({ email, name });
 
     if (!foundProperty) { 
       return res.status(404).json({ success: false, message: "No property found "});
@@ -154,25 +154,30 @@ async function filterProperties(req, res) {
         if (tenantPreferences.family && prefs.family !== "Any") {
           if (tenantPreferences.family === prefs.family) points += 2;
         }
+        
 
         if (tenantPreferences.foodPreference && prefs.foodPreference !== "Any") {
           if (tenantPreferences.foodPreference === prefs.foodPreference) points += 1;
         }
 
-        if (tenantPreferences.smoking && prefs.smoking !== "Any") {
-          if (tenantPreferences.smoking === prefs.smoking) points += 2;
+        if(!prefs.smoking){
+          if(tenantPreferences.smoking){
+            points -= 3;
+          }
         }
 
-        if (tenantPreferences.alcohol && prefs.alcohol !== "Any") {
-          if (tenantPreferences.alcohol === prefs.alcohol) points += 4;
+        if(!prefs.alcohol){
+          if(tenantPreferences.alcohol){
+            points -= 3;
+          }
         }
 
         if (tenantPreferences.professionalStatus && prefs.professionalStatus !== "Any") {
-          if (tenantPreferences.professionalStatus === prefs.professionalStatus) points += 1;
+          if (tenantPreferences.professionalStatus === prefs.professionalStatus) points += 2;
         }
 
         if (tenantPreferences.workingshifts && prefs.workingShift !== "Any") {
-          if (tenantPreferences.workingshifts === prefs.workingShift) points += 1;
+          if (tenantPreferences.workingshifts === prefs.workingShift) points += 2;
         }
 
         if (tenantPreferences.language && prefs.language !== "Any") {
@@ -214,4 +219,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, property };
+module.exports = { home, filterProperties, propertysend};

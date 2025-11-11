@@ -38,9 +38,8 @@ async function uploadProperty(req, res) {
     if(!req.user.email){
         return res.status(400).json({ message: "User is not logged in" });
     }
-    req.user.email = req.user.email.trimEnd().toLowerCase();
     const Property = await property.findOneAndUpdate(
-      { email: body.email, name: body.user.name },
+      { email: req.user.email, name: body.name },
       {
         email: req.user.email,
         name: body.name,
@@ -72,23 +71,24 @@ async function uploadProperty(req, res) {
 }
 async function addTenantPreferences(req, res) {
   try {
-    if (!req.user.email || !req.user.name) {
+    if (!req.user.email || !req.body.name) {
       return res.status(400).json({ message: "User not defined" });
     }
 
     const updated = await property.findOneAndUpdate(
-      { email:req.user.email, name:req.user.name },
+      { email:req.user.email, name:req.body.name },
       {
         tenantPreferences: {
           gender: req.body.gender || "Any",
-          ageRange: req.body.ageRange || null,
+          upperagelimit: req.body.upperagelimit,
+          loweragelimit: req.body.loweragelimit,
           occupation: req.body.occupation || null,
           maritalStatus: req.body.maritalStatus || "Any",
           family: req.body.family || "Any",
           foodPreference: req.body.foodPreference || "Any",
-          smoking: req.body.smoking || "Any",
-          alcohol: req.body.alcohol || "Any",
-          pets: req.body.pets === "true" || req.body.pets === true,
+          smoking: req.body.smoking || false,
+          alcohol: req.body.alcohol || false,
+          pets: req.body.pets,
           nationality: req.body.nationality || "Any",
           workingShift: req.body.workingShift || "Any",
           professionalStatus: req.body.professionalStatus || "Any",
