@@ -112,6 +112,15 @@ async function addTenantPreferences(req, res) {
     return res.status(500).json({ message: "Error saving tenant preferences", error: error.message });
   }
 }
+async function yourProperties(req, res){
+  try{
+    await property.find({email:req.user.email});
+    return res.status(200).json({success:true, message:"Properties fetched"});
+  }
+  catch(error){
+    return res.status(500).json({success:false, message:"Error in fetching property"});
+  }
+}
 // async function findNearestProperty(req, res) {
 //   try {
 //     const { addressLink } = req.body; 
@@ -157,5 +166,6 @@ async function addTenantPreferences(req, res) {
 module.exports = {
   uploadProperty,
   addTenantPreferences,
+  yourProperties,
   // findNearestProperty
 };

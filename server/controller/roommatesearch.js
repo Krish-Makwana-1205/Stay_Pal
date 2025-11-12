@@ -1,6 +1,7 @@
 const Tenant = require("../model/tenant");
 const Roommate = require("../model/roommate");
 const {getSimilarity} = require("../utils/nlp");
+const roommate = require("../model/roommate");
 
 async function roommateSearch(req, res) {
     let query = req.query;
@@ -338,4 +339,31 @@ async function roommateSearch(req, res) {
         }))
     );
     scoredRoommates.sort((a, b) => b.points - a.points);
+}
+
+async function roommateUpload(req, res){
+    let body = req.body
+    if((!req.body.rentupper) || (!req.body.rentlower) || (!req.body.city)){
+        return res.status(400).json({success:false, message:"Required fields not filed"});
+    }
+    if(!req.user.email){
+        return res.status(500).json({success:false, message:"Cookie data not received"});
+    }
+    body.city = body.city.trimEnd().toLowerCase();
+    try{
+        const tem = await roommate.create({
+            rentupper:body.rentupper,
+            rentlower:body.rentlower,
+            city:body.city,
+            email:req.user.email,
+        });
+        return res.status(200).json({success:true, message:"Roommate listing created"});
+    }catch(error){
+        return res.status(500).json({success:false, message:"Could not post roommate property"});
+    }
+}
+
+module.exports = {
+    roommateUpload,
+    roommateSearch,
 }

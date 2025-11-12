@@ -1,5 +1,7 @@
+const SavedProperties = require('../model/savedProperties');
 const tenant = require('../model/tenant');
 const user = require('../model/user');
+ 
 const {setUser} = require('../service/auth');
 async function makeProfile(req, res){
     const body = req.body;
@@ -177,7 +179,6 @@ async function fullProfile(req, res) {
 }
 
 async function tenantdetails(req, res){
-    console.log(req.user);
     let temp;
     try{
         temp = await tenant.findOne({email:req.user.email});
@@ -189,9 +190,77 @@ async function tenantdetails(req, res){
         success:true
     })
 }
+async function saveProperties(req, res){
+    if(!req.body.email || !req.body.name){
+        return res.status(400).json({success:false, message:"Missing fields"});
+    }
+    if(!req.user.email){
+        return res.status(400).json({success:false, message:"Error in fetching cookie data"})
+    }
+    try {
+        const propemail = req.body.email;
+        const propname = req.body.name;
+
+        const savedProperty = await SavedProperties.findOneAndUpdate(
+            { email: req.user.email }, 
+            { $push: { properties: { propemail, propname } } }, 
+            {upsert: true } 
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Property added successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+}
+
+async function sendProperties(req, res){
+    if(!req.user.email){
+        return res.status(500).json('Error in fetching cookie data');
+    }
+    const props = await SavedProperties.find({email:req.user.email});
+    try {
+        if (props.length === 0) {
+            return res.status(200).json({ success: true, message: 'No saved properties found' });
+        }
+        const propertyNamesAndEmails = savedProperties.map(prop => ({
+            propertyName: prop.propertyName,  
+            email: prop.email                 
+        }));
+
+       
+        const properties = await Property.find({
+            
+            $and: propertyNamesAndEmails.map(pair => ({
+                name: pair.propertyName,
+                email: pair.email
+            }))
+        });
+
+        
+        if (properties.length === 0) {
+            return res.status(200).json({ success: true, message: 'No matching properties found (probably deleted)' });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Properties fetched successfully',
+            data: properties,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+
+}
 module.exports = {
     makeProfile,
     addPreferences, 
     tenantdetails,
-    fullProfile
+    fullProfile,
+    saveProperties,
+    sendProperties
 };

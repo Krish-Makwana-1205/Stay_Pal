@@ -4,7 +4,8 @@ const cookieParser = require("cookie-parser");
 const user = require('./router/user.js');
 const tenant = require('./router/tenant.js');
 const propertyOwner = require('./router/propertyOwner.js');
-const dashboard = require('./router/home.js');  
+const dashboard = require('./router/home.js'); 
+const roommate = require('./router/Roommate.js'); 
 
 const app = express();
 require('dotenv').config();
@@ -32,4 +33,5 @@ connectmongodB(url).then(() => {
 app.use("/user", user);
 app.use("/tenant", tenant);
 app.use("/propertyOwner", propertyOwner);
-app.use("/home", dashboard);   
+app.use("/home", dashboard); 
+app.use("/roommate", roommate);  
