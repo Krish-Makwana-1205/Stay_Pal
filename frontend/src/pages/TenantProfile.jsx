@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "/Users/heetshah/Desktop/Stay_Pal/frontend/src/StyleSheets/TenantProfle.css";
+//import "/Users/heetshah/Desktop/Stay_Pal/frontend/src/StyleSheets/TenantProfle.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
