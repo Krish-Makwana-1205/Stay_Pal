@@ -8,8 +8,15 @@
   color: #222;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, "Noto Sans", "Liberation Sans", sans-serif;
+
+  /* 👇 Add these lines to enable scrolling inside the profile container */
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
+
+/* Header */
 .profile-header {
   display: flex;
   justify-content: space-between;
@@ -19,21 +26,18 @@
 }
 
 .profile-header h2 {
+  flex: 1;
+  text-align: center;
   margin: 0;
   color: #111827;
   font-size: 1.25rem;
 }
 
-.profile-header .header-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
 /* Buttons */
 .edit-btn,
 .cancel-btn,
-.submit-btn {
+.submit-btn,
+.back-btn {
   padding: 0.45rem 0.9rem;
   border: none;
   border-radius: 6px;
@@ -71,7 +75,14 @@
   cursor: not-allowed;
 }
 
-/* Form layout */
+.back-btn {
+  background-color: #f3f3f3;
+  color: #1f2937;
+}
+
+.back-btn:hover { background-color: #e5e7eb; transform: translateY(-1px); }
+
+/* Form Layout */
 .profile-form {
   display: flex;
   flex-direction: column;
@@ -124,7 +135,7 @@
   color: #64748b;
 }
 
-/* Checkbox section */
+/* Checkbox and Icon Preferences */
 .checkbox-section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -141,7 +152,52 @@
   color: #374151;
 }
 
-/* Hobbies styling */
+/* Preference Icons (for alcohol/smoking like in TenantForm2) */
+.small-pref-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.pref-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 84px;
+  text-align: center;
+  color: #374151;
+  transition: all 0.15s ease;
+}
+
+.pref-icon img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.pref-icon span {
+  font-size: 0.75rem;
+}
+
+.pref-icon:hover {
+  background: #f8fafc;
+  border-color: #dbeafe;
+}
+
+.pref-icon.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+}
+
+/* Hobbies */
 .full-width {
   grid-column: 1 / -1;
 }
@@ -188,9 +244,6 @@
 }
 
 .hobby-remove-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   background: transparent;
   border: none;
   color: #ef4444;
@@ -206,46 +259,7 @@ textarea {
   min-height: 110px;
 }
 
-/* Small screens */
-@media (max-width: 768px) {
-  .profile-container { margin: 1rem; padding: 1rem; }
-  .form-grid { grid-template-columns: 1fr; }
-  .checkbox-section { grid-template-columns: 1fr; }
-  .submit-btn { width: 100%; }
-}
-
-/* Back to Dashboard button */
-.back-btn {
-  background-color: #f3f3f3;
-  border: none;
-  padding: 0.45rem 0.9rem;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  color: #1f2937;
-  transition: background-color 0.15s ease, transform 0.06s ease;
-}
-
-.back-btn:hover {
-  background-color: #e5e7eb;
-  transform: translateY(-1px);
-}
-
-/* Adjust header layout for center alignment */
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.75rem;
-  gap: 1rem;
-}
-
-.profile-header h2 {
-  flex: 1;
-  text-align: center;
-}
-
-/* Add to existing CSS */
+/* Profile Photo Section */
 .profile-photo-section {
   display: flex;
   justify-content: center;
@@ -266,7 +280,7 @@ textarea {
   border: 3px solid #e2e8f0;
 }
 
-/* Updated photo placeholder styling */
+/* Placeholder for empty photo */
 .photo-placeholder {
   width: 100%;
   height: 100%;
@@ -300,7 +314,7 @@ textarea {
   top: 75%;
 }
 
-/* Photo upload overlay */
+/* Upload overlay */
 .photo-upload-overlay {
   position: absolute;
   bottom: 0;
@@ -319,7 +333,7 @@ textarea {
   opacity: 1;
 }
 
-/* File input styling */
+/* File input */
 .photo-input {
   position: absolute;
   width: 100%;
@@ -330,11 +344,7 @@ textarea {
   cursor: pointer;
 }
 
-.photo-input:focus + .photo-upload-overlay {
-  opacity: 1;
-}
-
-/* Loading state for photo upload */
+/* Uploading spinner */
 .photo-loading {
   position: absolute;
   inset: 0;
@@ -357,4 +367,13 @@ textarea {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-container { margin: 1rem; padding: 1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .checkbox-section { grid-template-columns: 1fr; }
+  .submit-btn { width: 100%; }
+  .pref-icon { width: 72px; }
 }

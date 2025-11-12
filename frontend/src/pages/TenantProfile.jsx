@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../StyleSheets/TenantProfle.css";
+import "/Users/heetshah/Desktop/Stay_Pal/frontend/src/StyleSheets/TenantProfle.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
@@ -8,10 +8,19 @@ import { getProfile, updateProfile, uploadPhoto } from "../api/tenantform";
 export default function TenantProfile() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
+  const fileInputRef = useRef(null);
 
-  // savedProfile stores the last-saved server state (used to revert on cancel)
-  const [savedProfile, setSavedProfile] = useState(null);
+  const imagePrefs = [
+    { key: "nightOwl", label: "Night Owl", img: "/nightOwl.png" },
+    { key: "earlybird", label: "Early Bird", img: "/earlybird.png" },
+    { key: "studious", label: "Studious", img: "/studious.png" },
+    { key: "fitness_freak", label: "Fitness Freak", img: "/fitness_freak.png" },
+    { key: "sporty", label: "Sporty", img: "/sporty.png" },
+    { key: "wanderer", label: "Wanderer", img: "/wanderer.png" },
+    { key: "party_lover", label: "Party Lover", img: "/party_lover.png" },
+    { key: "music_lover", label: "Music Lover", img: "/music_lover.png" },
+    { key: "Pet_lover", label: "Pet Lover", img: "/pet_lover.png" },
+  ];
 
   const [formData, setFormData] = useState({
     email: "",
@@ -22,27 +31,33 @@ export default function TenantProfile() {
     religion: "Any",
     alcohol: false,
     smoker: false,
-    hometown: "",
-    nationality: "",
     nightOwl: false,
+    earlybird: false,
+    studious: false,
+    fitness_freak: false,
+    sporty: false,
+    wanderer: false,
+    party_lover: false,
+    music_lover: false,
     hobbies: [],
+    allergies: [],
     professional_status: "Any",
     workingshifts: "Any",
-    havePet: false,
+    Pet_lover: false,
     workPlace: "Any",
-    descriptions: "",
+    description: "",
     maritalStatus: "Any",
     family: false,
     language: "Any",
-    minStayDuration: 0
+    minStayDuration: 0,
   });
 
-  const [message, setMessage] = useState({ text: "", type: "" });
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [newHobby, setNewHobby] = useState("");
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [newHobby, setNewHobby] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
+  const [isEditing, setIsEditing] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (loading) return;
@@ -51,115 +66,64 @@ export default function TenantProfile() {
       return;
     }
 
-    let mounted = true;
     const loadProfile = async () => {
       try {
         const res = await getProfile();
-        const tenant = res.data?.tenant || res.data?.data || res.data;
-        if (!tenant || !mounted) return;
+        const t = res.data?.tenant || res.data?.data || res.data;
+        if (!t) return;
 
-        const initial = {
-          email: tenant.email || user.email || "",
-          username: tenant.username || user.username || "",
-          gender: tenant.gender || "",
-          dob: tenant.dob ? tenant.dob.split("T")[0] : "",
-          foodPreference: tenant.foodPreference || "Any",
-          religion: tenant.religion || "Any",
-          alcohol: Boolean(tenant.alcohol),
-          smoker: Boolean(tenant.smoker),
-          hometown: tenant.hometown || "",
-          nationality: tenant.nationality || "",
-          nightOwl: Boolean(tenant.nightOwl),
-          hobbies: Array.isArray(tenant.hobbies) ? tenant.hobbies : [],
-          professional_status: tenant.professional_status || "Any",
-          workingshifts: tenant.workingshifts || "Any",
-          havePet: Boolean(tenant.havePet),
-          workPlace: tenant.workPlace || "Any",
-          descriptions: tenant.descriptions || "",
-          maritalStatus: tenant.maritalStatus || "Any",
-          family: Boolean(tenant.family),
-          language: tenant.language || "Any",
-          minStayDuration: tenant.minStayDuration ?? 0,
-        };
-
-        // set both formData and savedProfile
-        setSavedProfile(initial);
-        setFormData(initial);
-        setPhotoPreview(tenant.profilePhoto || user.profilePhoto || null);
+        setFormData({
+          ...formData,
+          ...t,
+          dob: t.dob ? t.dob.split("T")[0] : "",
+          professional_status: t.professionalStatus ?? t.professional_status ?? "Any",
+          description: t.description ?? t.descriptions ?? "",
+          Pet_lover: t.Pet_lover ?? false,
+        });
+        if (t.profilePhoto) setPhotoPreview(t.profilePhoto);
       } catch (err) {
-        console.debug("loadProfile error:", err?.message || err);
+        console.error("Profile load error:", err);
       }
     };
-
     loadProfile();
-    return () => { mounted = false; };
   }, [user, loading, navigate]);
-
-  // When entering edit mode, ensure formData reflects last-saved profile
-  const handleStartEdit = () => {
-    if (savedProfile) setFormData(savedProfile);
-    setMessage({ text: "", type: "" });
-    setIsEditing(true);
-  };
-
-  // Cancel edits and revert to savedProfile
-  const handleCancel = () => {
-    if (savedProfile) setFormData(savedProfile);
-    setMessage({ text: "Edits canceled", type: "info" });
-    setIsEditing(false);
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    let v = type === "checkbox" ? checked : value;
-    if (name === "minStayDuration") v = value === "" ? "" : Number(value);
-    setFormData(prev => ({ ...prev, [name]: v }));
+    setFormData((p) => ({
+      ...p,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const togglePref = (key) => {
+    setFormData((p) => ({ ...p, [key]: !p[key] }));
   };
 
   const handleAddHobby = () => {
     if (!newHobby.trim()) return;
-    setFormData(prev => ({ ...prev, hobbies: [...prev.hobbies, newHobby.trim()] }));
+    setFormData((p) => ({ ...p, hobbies: [...p.hobbies, newHobby.trim()] }));
     setNewHobby("");
   };
 
-  const handleRemoveHobby = (idx) => {
-    setFormData(prev => ({ ...prev, hobbies: prev.hobbies.filter((_, i) => i !== idx) }));
+  const handleRemoveHobby = (i) => {
+    setFormData((p) => ({ ...p, hobbies: p.hobbies.filter((_, idx) => idx !== i) }));
   };
 
-  const handlePhotoInputChange = async (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    // show local preview immediately
     setPhotoPreview(URL.createObjectURL(file));
-    if (!user) {
-      setMessage({ text: "Login required to upload photo", type: "error" });
-      return;
-    }
     setPhotoUploading(true);
     try {
       const fd = new FormData();
       fd.append("photo", file);
       fd.append("email", formData.email);
       fd.append("username", formData.username);
-      const res = await uploadPhoto(fd);
-
-      // Regardless of response body shape, re-fetch profile to ensure UI shows stored photo
-      const fresh = await getProfile();
-      const tenant = fresh.data?.tenant || fresh.data?.data || fresh.data;
-      if (tenant?.profilePhoto) {
-        setPhotoPreview(tenant.profilePhoto);
-        setMessage({ text: "Photo updated successfully", type: "success" });
-        // update savedProfile photo (so cancel won't revert to old)
-        setSavedProfile(prev => prev ? ({ ...prev, /* keep fields */ ...prev, }) : prev);
-      } else {
-        // server didn't return profile url but upload likely succeeded — inform user and keep preview
-        setMessage({ text: "Photo uploaded but server did not return URL. Preview shown locally.", type: "warning" });
-      }
+      await uploadPhoto(fd);
+      setMessage({ text: "Photo updated successfully", type: "success" });
     } catch (err) {
-      // show server message when available
-      setMessage({ text: err.response?.data?.message || "Error updating photo", type: "error" });
-      console.error("Photo upload error:", err);
-      // keep local preview so user sees selected image, even if server upload failed
+      setMessage({ text: "Photo upload failed", type: "error" });
     } finally {
       setPhotoUploading(false);
     }
@@ -168,58 +132,19 @@ export default function TenantProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingSubmit(true);
-    setMessage({ text: "", type: "" });
-
     try {
       const payload = { ...formData };
-      if (!payload.dob) delete payload.dob;
+      delete payload.email;
+      delete payload.username;
       const res = await updateProfile(payload);
-
       if (res.status === 200 || res.status === 201) {
-        // refresh saved profile from server to avoid divergence and cookie issues
-        try {
-          const fresh = await getProfile();
-          const tenant = fresh.data?.tenant || fresh.data?.data || fresh.data;
-          if (tenant) {
-            const updated = {
-              email: tenant.email || payload.email,
-              username: tenant.username || payload.username,
-              gender: tenant.gender || payload.gender,
-              dob: tenant.dob ? tenant.dob.split("T")[0] : payload.dob || "",
-              foodPreference: tenant.foodPreference || payload.foodPreference || "Any",
-              religion: tenant.religion || payload.religion || "Any",
-              alcohol: Boolean(tenant.alcohol),
-              smoker: Boolean(tenant.smoker),
-              hometown: tenant.hometown || payload.hometown || "",
-              nationality: tenant.nationality || payload.nationality || "",
-              nightOwl: Boolean(tenant.nightOwl),
-              hobbies: Array.isArray(tenant.hobbies) ? tenant.hobbies : payload.hobbies || [],
-              professional_status: tenant.professional_status || payload.professional_status || "Any",
-              workingshifts: tenant.workingshifts || payload.workingshifts || "Any",
-              havePet: Boolean(tenant.havePet),
-              workPlace: tenant.workPlace || payload.workPlace || "Any",
-              descriptions: tenant.descriptions || payload.descriptions || "",
-              maritalStatus: tenant.maritalStatus || payload.maritalStatus || "Any",
-              family: Boolean(tenant.family),
-              language: tenant.language || payload.language || "Any",
-              minStayDuration: tenant.minStayDuration ?? payload.minStayDuration ?? 0,
-            };
-            setSavedProfile(updated);
-            setFormData(updated);
-            setPhotoPreview(tenant.profilePhoto || photoPreview);
-          }
-        } catch (refetchErr) {
-          console.debug("Profile refetch after update failed:", refetchErr?.message || refetchErr);
-        }
-
-        setMessage({ text: "Profile saved successfully.", type: "success" });
+        setMessage({ text: "Profile updated successfully!", type: "success" });
         setIsEditing(false);
       } else {
-        setMessage({ text: res.data?.message || "Unexpected server response.", type: "error" });
+        setMessage({ text: "Unexpected server response.", type: "error" });
       }
     } catch (err) {
-      setMessage({ text: err.response?.data?.message || "Save failed.", type: "error" });
-      console.error("Update profile error:", err);
+      setMessage({ text: err.response?.data?.message || "Error saving profile", type: "error" });
     } finally {
       setLoadingSubmit(false);
     }
@@ -227,55 +152,65 @@ export default function TenantProfile() {
 
   return (
     <div className="profile-container">
+      {/* ✅ Back to Dashboard button */}
+    <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-start" }}>
+      <button
+        className="back-btn"
+        onClick={() => navigate("/dashboard")}
+      >
+        ← Back to Dashboard
+      </button>
+    </div>
       <div className="profile-header">
         <h2>Tenant Profile</h2>
         {!isEditing ? (
-          <button onClick={handleStartEdit} className="edit-btn">Edit Profile</button>
+          <button onClick={() => setIsEditing(true)} className="edit-btn">
+            Edit Profile
+          </button>
         ) : (
-          <button onClick={handleCancel} className="cancel-btn">Cancel</button>
+          <button onClick={() => setIsEditing(false)} className="cancel-btn">
+            Cancel
+          </button>
         )}
       </div>
 
       <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
 
       <form onSubmit={handleSubmit} className="profile-form">
+        {/* Photo Upload Section */}
         <div className="profile-photo-section full-width">
-          <div className="photo-container" style={{ width: 140, height: 140, margin: "0 auto" }}>
+          <div className="photo-container">
             {photoPreview ? (
               <img src={photoPreview} alt="Profile" className="profile-photo" />
             ) : (
               <div className="photo-placeholder" />
             )}
-
             {isEditing && (
               <>
                 <input
                   type="file"
                   ref={fileInputRef}
-                  onChange={handlePhotoInputChange}
+                  onChange={handlePhotoChange}
                   accept="image/*"
                   className="photo-input"
-                  aria-label="Upload profile photo"
                 />
                 <div className="photo-upload-overlay">Click to upload photo</div>
               </>
             )}
-
             {photoUploading && <div className="photo-loading" />}
           </div>
         </div>
 
+        {/* Editable Fields */}
         <div className="form-grid">
           <div className="form-group">
             <label>Email</label>
             <input type="email" name="email" value={formData.email} disabled />
           </div>
-
           <div className="form-group">
             <label>Username</label>
             <input type="text" name="username" value={formData.username} disabled />
           </div>
-
           <div className="form-group">
             <label>Gender</label>
             <select name="gender" value={formData.gender} onChange={handleChange} disabled={!isEditing}>
@@ -285,12 +220,10 @@ export default function TenantProfile() {
               <option value="Other">Other</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Date of Birth</label>
             <input type="date" name="dob" value={formData.dob} onChange={handleChange} disabled={!isEditing} />
           </div>
-
           <div className="form-group">
             <label>Food Preference</label>
             <select name="foodPreference" value={formData.foodPreference} onChange={handleChange} disabled={!isEditing}>
@@ -301,7 +234,6 @@ export default function TenantProfile() {
               <option value="Vegan">Vegan</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Religion</label>
             <select name="religion" value={formData.religion} onChange={handleChange} disabled={!isEditing}>
@@ -311,24 +243,21 @@ export default function TenantProfile() {
               <option value="Christianity">Christianity</option>
               <option value="Judaism">Judaism</option>
               <option value="Sikhism">Sikhism</option>
-              <option value="Buddhism">Buddhism</option>
               <option value="Jainism">Jainism</option>
+              <option value="Buddhism">Buddhism</option>
               <option value="Taoism">Taoism</option>
               <option value="Zoroastrianism">Zoroastrianism</option>
               <option value="Other">Other</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Hometown</label>
             <input type="text" name="hometown" value={formData.hometown} onChange={handleChange} disabled={!isEditing} />
           </div>
-
           <div className="form-group">
             <label>Nationality</label>
             <input type="text" name="nationality" value={formData.nationality} onChange={handleChange} disabled={!isEditing} />
           </div>
-
           <div className="form-group">
             <label>Professional Status</label>
             <select name="professional_status" value={formData.professional_status} onChange={handleChange} disabled={!isEditing}>
@@ -337,7 +266,6 @@ export default function TenantProfile() {
               <option value="working">Working</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Working Shifts</label>
             <select name="workingshifts" value={formData.workingshifts} onChange={handleChange} disabled={!isEditing}>
@@ -346,12 +274,10 @@ export default function TenantProfile() {
               <option value="night">Night</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Work Place</label>
             <input type="text" name="workPlace" value={formData.workPlace} onChange={handleChange} disabled={!isEditing} />
           </div>
-
           <div className="form-group">
             <label>Marital Status</label>
             <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} disabled={!isEditing}>
@@ -360,26 +286,58 @@ export default function TenantProfile() {
               <option value="Married">Married</option>
             </select>
           </div>
-
           <div className="form-group">
             <label>Language</label>
             <input type="text" name="language" value={formData.language} onChange={handleChange} disabled={!isEditing} />
           </div>
-
           <div className="form-group">
             <label>Minimum Stay Duration (months)</label>
             <input type="number" name="minStayDuration" value={formData.minStayDuration} onChange={handleChange} disabled={!isEditing} min="0" />
           </div>
         </div>
 
-        <div className="checkbox-section">
-          <label><input type="checkbox" name="alcohol" checked={formData.alcohol} onChange={handleChange} disabled={!isEditing} /> Consumes Alcohol</label>
-          <label><input type="checkbox" name="smoker" checked={formData.smoker} onChange={handleChange} disabled={!isEditing} /> Smoker</label>
-          <label><input type="checkbox" name="nightOwl" checked={formData.nightOwl} onChange={handleChange} disabled={!isEditing} /> Night Owl</label>
-          <label><input type="checkbox" name="havePet" checked={formData.havePet} onChange={handleChange} disabled={!isEditing} /> Have Pet</label>
-          <label><input type="checkbox" name="family" checked={formData.family} onChange={handleChange} disabled={!isEditing} /> Family</label>
+        {/* Alcohol and Smoking image toggles */}
+        <label>Alcohol Preference</label>
+        <div className="small-pref-row">
+          <button
+            type="button"
+            className={`pref-icon small ${formData.alcohol ? "active" : ""}`}
+            onClick={() => isEditing && togglePref("alcohol")}
+          >
+            <img src="/no_alcohol.png" alt="No Alcohol" />
+            <span>{formData.alcohol ? "Allows Alcohol" : "No Alcohol"}</span>
+          </button>
         </div>
 
+        <label>Smoking Preference</label>
+        <div className="small-pref-row">
+          <button
+            type="button"
+            className={`pref-icon small ${formData.smoker ? "active" : ""}`}
+            onClick={() => isEditing && togglePref("smoker")}
+          >
+            <img src="/no_smoking.png" alt="No Smoking" />
+            <span>{formData.smoker ? "Smoker" : "No Smoking"}</span>
+          </button>
+        </div>
+
+        {/* Quick Preferences */}
+        <label>Quick Preferences</label>
+        <div className="pref-icons">
+          {imagePrefs.map((pref) => (
+            <button
+              key={pref.key}
+              type="button"
+              className={`pref-icon ${formData[pref.key] ? "active" : ""}`}
+              onClick={() => isEditing && togglePref(pref.key)}
+            >
+              <img src={pref.img} alt={pref.label} />
+              <span>{pref.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Hobbies and Description */}
         <div className="form-group full-width">
           <label>Hobbies</label>
           {isEditing && (
@@ -401,8 +359,14 @@ export default function TenantProfile() {
         </div>
 
         <div className="form-group full-width">
-          <label>Description</label>
-          <textarea name="descriptions" value={formData.descriptions} onChange={handleChange} disabled={!isEditing} rows="4" />
+          <label>About Yourself</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            disabled={!isEditing}
+            rows="4"
+          />
         </div>
 
         {isEditing && (
