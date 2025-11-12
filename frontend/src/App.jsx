@@ -11,6 +11,10 @@ import Dashboard from "./pages/Dashboard";
 import PropertyForm2 from "./pages/PropertForm2";
 import TenantProfile from "./pages/TenantProfile";
 import ViewProperties from "./pages/ViewProperties";
+import MyProperties from "./pages/MyProperties";
+import PropertyView from "./pages/PropertyView";   
+
+
 // import ViewRoommates from "./pages/ViewRoommates";
 // import ViewShared from "./pages/ViewShared";
 function App() {
@@ -28,6 +32,9 @@ function App() {
         <Route path="/propertyForm2" element={<PropertyForm2/>}/>
         <Route path="/profile" element={<TenantProfile/>}/>
          <Route path="dashboard/properties" element={<ViewProperties />} />
+         <Route path="/myproperties" element={<MyProperties />} />
+        <Route path="/property/:email/:name" element={<PropertyView />} />
+
         {/* <Route path="roommates" element={<ViewRoommates />} /> */}
         {/* <Route path="shared" element={<ViewShared />} /> */}
       </Routes>

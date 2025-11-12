@@ -160,6 +160,8 @@ const Dashboard = () => {
           </button>
           <button className="quick-btn" onClick={() => navigate("/dashboard/roommates")}>View Roommates</button>
           <button className="quick-btn" onClick={() => navigate("/dashboard/shared")}>View Shared Property</button>
+          <button className="quick-btn" onClick={() => navigate("/myproperties")}>View Your Properties</button>
+
         </div>
 
         <hr className="dashboard-hr" />

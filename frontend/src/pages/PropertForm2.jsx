@@ -6,6 +6,10 @@ import { savePreferences } from "../api/propertyform";
 import "../StyleSheets/PropertyForm.css";
 import CreatableSelect from "react-select/creatable";
 import NumberInput from "../Components/NumberInput";
+import ISO6391 from "iso-639-1";
+import Select from "react-select";
+import { countries } from "countries-list";
+
 
 export default function PropertyForm2() {
   const { user } = useAuth();
@@ -21,9 +25,9 @@ export default function PropertyForm2() {
     maritalStatus: "Any",
     family: "Any",
     foodPreference: "Any",
-    smoking: "Any",
-    alcohol: "Any",
-    pets: false,
+    smoking: true, 
+    alcohol: true, 
+    pets: true, 
     nationality: "",
     workingShift: "Any",
     professionalStatus: "Any",
@@ -37,7 +41,6 @@ export default function PropertyForm2() {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
 
-  // 🧠 Load form data from localStorage when component mounts
   useEffect(() => {
     const savedData = localStorage.getItem("tenantPreferencesFormData");
     if (savedData) {
@@ -45,29 +48,18 @@ export default function PropertyForm2() {
     }
   }, []);
 
-  // 🧩 Update formData with user info when available
-  // useEffect(() => {
-  //   if (user) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       email: user.email || prev.email,
-  //       name: user.name || prev.name,
-  //     }));
-  //   } else {
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
-
-  // 💾 Auto-save form data to localStorage on change
   useEffect(() => {
     localStorage.setItem("tenantPreferencesFormData", JSON.stringify(formData));
   }, [formData]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        name === "smoking" || name === "alcohol" || name === "pets"
+          ? value === "true" // convert string to boolean
+          : value,
     }));
   };
 
@@ -87,8 +79,15 @@ export default function PropertyForm2() {
       return;
     }
 
-    if (formData.minAge && formData.maxAge && Number(formData.minAge) > Number(formData.maxAge)) {
-      setMessage({ text: "Minimum age cannot be greater than maximum age.", type: "error" });
+    if (
+      formData.minAge &&
+      formData.maxAge &&
+      Number(formData.minAge) > Number(formData.maxAge)
+    ) {
+      setMessage({
+        text: "Minimum age cannot be greater than maximum age.",
+        type: "error",
+      });
       return;
     }
 
@@ -108,30 +107,33 @@ export default function PropertyForm2() {
         maritalStatus: formData.maritalStatus,
         family: formData.family,
         foodPreference: formData.foodPreference,
-        smoking: formData.smoking,
-        alcohol: formData.alcohol,
-        pets: formData.pets === true,
+        smoking: Boolean(formData.smoking),
+        alcohol: Boolean(formData.alcohol),
+        pets: Boolean(formData.pets),
         nationality: formData.nationality,
         workingShift: formData.workingShift,
         professionalStatus: formData.professionalStatus,
         religion: formData.religion,
         language: formData.language,
-        minStayDuration: formData.minStayDuration ? Number(formData.minStayDuration) : 0,
-        maxPeopleAllowed: formData.maxPeopleAllowed ? Number(formData.maxPeopleAllowed) : 0,
+        minStayDuration: formData.minStayDuration
+          ? Number(formData.minStayDuration)
+          : 0,
+        maxPeopleAllowed: formData.maxPeopleAllowed
+          ? Number(formData.maxPeopleAllowed)
+          : 0,
         notes: formData.notes || "",
       };
 
       const res = await savePreferences(payload);
+
       if (res.status === 200) {
         setMessage({
           text: res.data.message || "Tenant preferences saved successfully!",
           type: "success",
         });
 
-        // 🧹 Clear localStorage draft on success
+        // Clear draft and reset form
         localStorage.removeItem("tenantPreferencesFormData");
-
-        // Reset form
         setFormData({
           email: user?.email || "",
           name: user?.name || "",
@@ -142,9 +144,9 @@ export default function PropertyForm2() {
           maritalStatus: "Any",
           family: "Any",
           foodPreference: "Any",
-          smoking: "Any",
-          alcohol: "Any",
-          pets: false,
+          smoking: true,
+          alcohol: true,
+          pets: true,
           nationality: "",
           workingShift: "Any",
           professionalStatus: "Any",
@@ -154,8 +156,6 @@ export default function PropertyForm2() {
           maxPeopleAllowed: "",
           notes: "",
         });
-
-        // navigate("/usercard"); // optional redirect
       } else {
         setMessage({
           text: res.data?.message || "Unexpected response from server.",
@@ -202,7 +202,6 @@ export default function PropertyForm2() {
       />
 
       <form onSubmit={handleSubmit} className="property-form">
-        {/* 📨 Email (auto-filled, non-editable) */}
         <label>Email (auto-filled)</label>
         <input
           type="email"
@@ -216,7 +215,9 @@ export default function PropertyForm2() {
         <input
           type="text"
           value={formData.name}
-          onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, name: e.target.value }))
+          }
           placeholder="Name of Property"
           required
         />
@@ -264,7 +265,11 @@ export default function PropertyForm2() {
         />
 
         <label>Marital Status</label>
-        <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange}>
+        <select
+          name="maritalStatus"
+          value={formData.maritalStatus}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Single">Single</option>
           <option value="Married">Married</option>
@@ -278,47 +283,105 @@ export default function PropertyForm2() {
         </select>
 
         <label>Food Preference</label>
-        <select name="foodPreference" value={formData.foodPreference} onChange={handleChange}>
+        <select
+          name="foodPreference"
+          value={formData.foodPreference}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Vegetarian">Vegetarian</option>
           <option value="Non-Vegetarian">Non-Vegetarian</option>
         </select>
 
-        <label>Smoking</label>
+        <label>Smoking Preference</label>
         <select name="smoking" value={formData.smoking} onChange={handleChange}>
-          <option value="Any">Any</option>
-          <option value="Allowed">Allowed</option>
-          <option value="Not Allowed">Not Allowed</option>
+          <option value="true">Any</option>
+          <option value="false">Not Allowed</option>
         </select>
 
-        <label>Alcohol</label>
+        <label>Alcohol Preference</label>
         <select name="alcohol" value={formData.alcohol} onChange={handleChange}>
-          <option value="Any">Any</option>
-          <option value="Allowed">Allowed</option>
-          <option value="Not Allowed">Not Allowed</option>
+          <option value="true">Any</option>
+          <option value="false">Not Allowed</option>
         </select>
 
         <label>Pets Allowed</label>
-        <input
-          type="checkbox"
-          name="pets"
-          checked={formData.pets}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, pets: e.target.checked }))
-          }
-        />
+        <select name="pets" value={formData.pets} onChange={handleChange}>
+          <option value="true">Any</option>
+          <option value="false">Not Allowed</option>
+        </select>
 
-        <label>Nationality</label>
-        <input name="nationality" type="text" value={formData.nationality} onChange={handleChange} />
+<label>Nationality</label>
+<Select
+  options={Object.values(countries).map((c) => ({
+    value: c.name,
+    label: c.name,
+  }))}
+  value={
+    formData.nationality
+      ? { value: formData.nationality, label: formData.nationality }
+      : null
+  }
+  onChange={(selected) =>
+    setFormData((prev) => ({
+      ...prev,
+      nationality: selected ? selected.value : "",
+    }))
+  }
+  isClearable
+  placeholder="Select nationality"
+/>
+
 
         <label>Religion</label>
-        <input name="religion" type="text" value={formData.religion} onChange={handleChange} />
+<select
+  name="religion"
+  value={formData.religion}
+  onChange={handleChange}
+>
+  <option value="Any">Any</option>
+  <option value="Hinduism">Hinduism</option>
+  <option value="Islam">Islam</option>
+  <option value="Christianity">Christianity</option>
+  <option value="Judaism">Judaism</option>
+  <option value="Sikhism">Sikhism</option>
+  <option value="Jainism">Jainism</option>
+  <option value="Buddhism">Buddhism</option>
+  <option value="Taoism">Taoism</option>
+  <option value="Zoroastrianism">Zoroastrianism</option>
+  <option value="Atheist">Atheist</option>
+  <option value="Other">Other</option>
+</select>
 
-        <label>Language</label>
-        <input name="language" type="text" value={formData.language} onChange={handleChange} />
+
+<label>Most preferred Language</label>
+<Select
+  options={ISO6391.getAllNames().map((lang) => ({
+    value: lang,
+    label: lang,
+  }))}
+  value={
+    formData.language
+      ? { value: formData.language, label: formData.language }
+      : null
+  }
+  onChange={(selected) =>
+    setFormData((prev) => ({
+      ...prev,
+      language: selected ? selected.value : "",
+    }))
+  }
+  isClearable
+  placeholder="Select language"
+/>
+
 
         <label>Working Shift</label>
-        <select name="workingShift" value={formData.workingShift} onChange={handleChange}>
+        <select
+          name="workingShift"
+          value={formData.workingShift}
+          onChange={handleChange}
+        >
           <option value="Any">Any</option>
           <option value="Day Shift">Day Shift</option>
           <option value="Night Shift">Night Shift</option>
@@ -342,7 +405,10 @@ export default function PropertyForm2() {
           min="0"
           value={formData.minStayDuration}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, minStayDuration: e.target.value }))
+            setFormData((prev) => ({
+              ...prev,
+              minStayDuration: e.target.value,
+            }))
           }
         />
 
@@ -352,12 +418,19 @@ export default function PropertyForm2() {
           min="0"
           value={formData.maxPeopleAllowed}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, maxPeopleAllowed: e.target.value }))
+            setFormData((prev) => ({
+              ...prev,
+              maxPeopleAllowed: e.target.value,
+            }))
           }
         />
 
         <label>Notes</label>
-        <textarea name="notes" value={formData.notes} onChange={handleChange} />
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+        />
 
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Saving..." : "Save Preferences"}

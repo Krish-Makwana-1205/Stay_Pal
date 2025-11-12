@@ -257,7 +257,7 @@ useEffect(() => {
             "School",
             "College",
             "Grocery Store",
-            "Supermarket (e.g. Dmart, Big Bazaar)",
+            "Supermarket (e.g. Dmart)",
             "Park",
             "Mall",
             "Restaurant",

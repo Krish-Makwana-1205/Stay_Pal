@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Filters from "../Components/Filters";
 import { fetchproperty } from "../api/filters";
 import "../StyleSheets/Dashboard.css";
-
+import { useNavigate } from "react-router-dom";
 const ViewProperties = ({defaultCity}) => {
   const [houses, setHouses] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
-
+  const navigate = useNavigate();
   const handleFilters = async (filters) => {
     setLoadingResults(true);
     try {
@@ -20,7 +20,7 @@ const ViewProperties = ({defaultCity}) => {
       setLoadingResults(false);
     }
   };
-
+// console.log(houses);
   useEffect(() => {
     if (defaultCity) handleFilters({ city: defaultCity });
   }, [defaultCity]);
@@ -41,7 +41,8 @@ const ViewProperties = ({defaultCity}) => {
           <p>No results found</p>
         ) : (
           houses.map((item, i) => (
-            <div key={i} className="result-item">
+            <div key={i} className="result-item"  onClick={() => navigate(`/property/${item.email}/${item.name}`)}>
+              
               <h3>{item.city} — {item.BHK} BHK</h3>
               <p>Rent: ₹{item.rentLowerBound} - ₹{item.rentUpperBound}</p>
               <p>Furnishing: {item.furnishingType}</p>
