@@ -1,4 +1,4 @@
-/* UserCard.css - Blue Theme Consistent with Login Page */
+/* UserCard.css - Same Blue Theme as Login Page */
 
 * {
   margin: 0;
@@ -7,55 +7,54 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Background with Gradient + Floating Bubbles */
-body {
-  margin: 0;
+/* Page Background (Same as Login Page) */
+.usercard-page {
   height: 100vh;
   width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
-  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
   overflow: hidden;
-  padding: env(safe-area-inset);
 }
 
-body::before,
-body::after {
+/* Floating Bubbles */
+.usercard-page::before,
+.usercard-page::after {
   content: "";
   position: absolute;
   border-radius: 50%;
-  background: rgba(102, 126, 234, 0.1);
-  z-index: 0;
+  background: rgba(4, 0, 255, 0.1);
 }
 
-body::before {
+.usercard-page::before {
   width: 500px;
   height: 500px;
-  top: -200px;
-  right: -200px;
-  animation: float 6s ease-in-out infinite;
+  top: -250px;
+  right: -250px;
+  animation: float 5s ease-in-out infinite;
 }
 
-body::after {
-  width: 350px;
-  height: 350px;
+.usercard-page::after {
+  width: 300px;
+  height: 300px;
   bottom: -150px;
   left: -150px;
-  animation: float 7s ease-in-out infinite reverse;
+  animation: float 6s ease-in-out infinite reverse;
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translate(0, 0);
+    transform: translateY(0) translateX(0);
   }
   50% {
-    transform: translate(20px, -20px);
+    transform: translateY(-20px) translateX(20px);
   }
 }
 
-/* Main Container - Dark Blue Card */
+/* Dark Blue Card Container */
 .usercard-container {
   width: 750px;
   max-width: 100%;
@@ -129,7 +128,7 @@ body::after {
   margin-bottom: 2rem;
 }
 
-/* Options Container - Keep in Row Always */
+/* Options Container - Always in Row */
 .options {
   display: flex;
   flex-direction: row;
@@ -214,17 +213,11 @@ body::after {
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
-/* Responsive Design */
-
-/* Tablets (Landscape + Portrait) */
+/* Responsive Adjustments */
 @media (max-width: 1024px) {
   .usercard-container {
     width: 90%;
     min-height: 55vh;
-  }
-
-  .usercard-title {
-    font-size: 1.8rem;
   }
 
   .option-card {
@@ -232,11 +225,9 @@ body::after {
   }
 }
 
-/* Medium Devices */
 @media (max-width: 768px) {
   .usercard-container {
     width: 95%;
-    min-height: 60vh;
   }
 
   .usercard-header {
@@ -253,24 +244,12 @@ body::after {
     width: 180px;
     padding: 1.4rem;
   }
-
-  .usercard-title {
-    font-size: 1.6rem;
-  }
 }
 
-/* Small Phones */
 @media (max-width: 500px) {
-  body {
-    align-items: flex-start;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-
   .usercard-container {
     width: 100%;
     border-radius: 12px;
-    min-height: auto;
     margin-top: 3rem;
   }
 
@@ -284,51 +263,8 @@ body::after {
     width: 90%;
   }
 
-  .usercard-title {
-    font-size: 1.4rem;
-  }
-
   .logout-btn {
     padding: 8px 14px;
     font-size: 0.9rem;
   }
-}
-
-/* Very Small Devices / Foldables */
-@media (max-width: 360px) {
-  .option-card {
-    width: 95%;
-    padding: 1.2rem;
-  }
-
-  .usercard-title {
-    font-size: 1.2rem;
-  }
-
-  .option-img {
-    width: 70px;
-    height: 70px;
-  }
-}
-
-/* Loading and Not Logged States */
-.loading-text,
-.not-logged {
-  text-align: center;
-  font-size: 1rem;
-  color: #fff;
-  margin-top: 2rem;
-}
-
-.not-logged .login-link {
-  display: inline-block;
-  margin-top: 10px;
-  color: #a5b9ff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.not-logged .login-link:hover {
-  color: #c9d4ff;
-  text-decoration: underline;
 }

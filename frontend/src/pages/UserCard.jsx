@@ -44,6 +44,7 @@ export default function UserCard() {
     navigate("/RoommateForm1")
   }
   return (
+  <div className="usercard-page">
     <div className="usercard-container">
       {/* Header */}
       <header className="usercard-header">
@@ -111,5 +112,6 @@ export default function UserCard() {
         </div>
       </main>
     </div>
+  </div>
   );
 }
