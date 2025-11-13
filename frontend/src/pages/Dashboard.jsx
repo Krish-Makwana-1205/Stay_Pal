@@ -85,8 +85,7 @@ const Dashboard = () => {
           </div>
           <div className="dashboard-actions">
             <button className="btn" onClick={() => navigate("/dashboard")}>Home</button>
-            <button className="btn" onClick={() => navigate("/dashboard/properties")}>Search</button>
-            <button className="btn" onClick={() => navigate("/usercard")}>Profile</button>
+            <button className="btn" onClick={() => navigate("/profile")}>Profile</button>
             <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
           </div>
         </div>
@@ -118,7 +117,7 @@ const Dashboard = () => {
             properties.slice(0, 4).map((p, idx) => {
               const imgSrc = p.img || (p.imgLink?.length > 0 ? p.imgLink[0] : null);
               return (
-                <div key={p._id || idx} className="property-card">
+                <div key={p._id || idx} className="property-card" onClick={() => navigate(`/property/${p.email}/${p.name}`)}>
                   {imgSrc ? (
                     <img src={imgSrc} alt={p.city} className="property-img" />
                   ) : (

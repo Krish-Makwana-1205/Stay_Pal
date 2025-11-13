@@ -8,6 +8,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Country, City } from "country-state-city";
 import NumberInput from "../Components/NumberInput";
+import LocalitySelector from "../Components/LocalitySelector";
+
 export default function PropertyForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -40,8 +42,8 @@ export default function PropertyForm() {
   const fileInputRef = useRef(null);
   const [linkError, setLinkError] = useState("");
 
+   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
  // Load saved form data (if any)
 useEffect(() => {
   const savedForm = localStorage.getItem("propertyFormData");
@@ -56,9 +58,12 @@ useEffect(() => {
 
 
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
-
+    if (!authLoading) {
+      if (!user) navigate("/login");
+    }
+  }, [authLoading, user, navigate]);
+  if (authLoading) return <p>Loading...</p>;
+  if (!user) return null;
   // ---------- HANDLERS ----------
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -294,11 +299,38 @@ console.log("Address:", formData.address);
           placeholder="Select or add nearby places"
         />
 
-        <label>Pincode *</label>
-        <input type="text" name="pincode" value={formData.pincode} onChange={handleChange} required />
+       
 
-        <label>Locality *</label>
-        <input type="text" name="locality" value={formData.locality} onChange={handleChange} required />
+<label>Locality *</label>
+<LocalitySelector
+  city={formData.city}
+  value={formData.locality}
+  onChange={(loc) => {
+    const newLocality = loc;
+
+    const list = JSON.parse(
+      localStorage.getItem(`localities_${formData.city}`)
+    );
+
+    const match = list?.find((item) => item.locality === newLocality);
+{console.log(list);}
+    setFormData((prev) => ({
+      ...prev,
+      locality: newLocality,
+      pincode: match ? match.postalCode : "",
+    }));
+  }}
+/>
+<label>Pincode *</label>
+<input
+  type="text"
+  name="pincode"
+  value={formData.pincode}
+  onChange={handleChange}
+  required
+/>
+
+
 
         <label>House Type *</label>
         <select name="houseType" value={formData.houseType} onChange={handleChange} required>
@@ -394,29 +426,8 @@ console.log("Address:", formData.address);
        
 
        {/* IMAGE UPLOAD */}
-<label>Property Images (max 7) *</label>
-<input
-  ref={fileInputRef}
-  type="file"
-  name="images"
-  multiple
-  accept="image/*"
-  onChange={(e) => {
-    const selectedFiles = Array.from(e.target.files);
-    const totalFiles = images.length + selectedFiles.length;
+<label>Property Images (max 10) *</label>
 
-    if (totalFiles > 7) {
-      setImageLimitMessage("You can upload a maximum of 7 images only.");
-      const allowedFiles = selectedFiles.slice(0, 7 - images.length);
-      setImages((prev) => [...prev, ...allowedFiles]);
-      return;
-    }
-
-    setImages((prev) => [...prev, ...selectedFiles]);
-    setImageLimitMessage("");
-  }}
-  required
-/>
 
 {/* Show error if image limit exceeded */}
 {imageLimitMessage && (
@@ -437,7 +448,28 @@ console.log("Address:", formData.address);
     ))}
   </div>
 )}
+<input
+  ref={fileInputRef}
+  type="file"
+  name="images"
+  multiple
+  accept="image/*"
+  onChange={(e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const totalFiles = images.length + selectedFiles.length;
 
+    if (totalFiles > 10) {
+      setImageLimitMessage("You can upload a maximum of 10 images only.");
+      const allowedFiles = selectedFiles.slice(0, 7 - images.length);
+      setImages((prev) => [...prev, ...allowedFiles]);
+      return;
+    }
+
+    setImages((prev) => [...prev, ...selectedFiles]);
+    setImageLimitMessage("");
+  }}
+  required
+/>
 <div style={{ marginTop: 8, marginBottom: 12 }}>
   <button
     type="button"
