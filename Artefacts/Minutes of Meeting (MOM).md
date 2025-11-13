@@ -389,7 +389,7 @@ Mode: Offline
 - **Scrum Master (Aayman):** Track Sprint 2 progress and document all issues before 15 Oct.  
 
 ## Next Meeting
-Date: 15/10/2025  
+Date: 27/10/2025  
 Time: 4:00 PM – 6:00 PM  
 Agenda:  
 - Review and finalize Sprint 2.  
@@ -398,6 +398,149 @@ Agenda:
 - Plan Sprint 3 tasks.  
 
 Minutes prepared by Aayman
+
+--
+
+Date: 27/10/2025
+Time: 4:00 PM – 5:00 PM  
+Attendees: Krish, Aayman, Heet, Kosha, Meet, Namra, Shambhavi, Harshil, Yogesh  \\
+Mode: Offline
+
+## Agenda  
+- Plan development of the Landing Page  
+- Assign CSS responsibilities  
+- Begin black-box testing  
+- Start logo ideation  
+
+## Discussion
+- Backend team will build the entire Landing Page including features section, property samples, reviews, and footer.  
+- Frontend (Shambhavi & Kosha) will handle all CSS styling for these components.  
+- Improvement points for the “Get Started” page and UI were discussed.  
+- Tenant dashboard rough structure discussed (Profile, Build Profile, Search/Recommend).  
+- Team started exploring possible logo designs.  
+
+## Decisions
+- Backend starts Landing Page development immediately.  
+- CSS assigned to Shambhavi and Kosha.  
+- Aayman will begin black-box testing once modules are ready.  
+- Logo brainstorming to continue.  
+
+## Action Points
+- Backend to complete landing page routes and logic.  
+- Frontend to style landing page components.  
+- Aayman to prepare testing framework.  
+- Team continues logo search.  
+
+## Next Meeting Agenda 
+Date: 04/11/2025
+Time: 4:00 PM - 6:00 PM
+- Coordinate backend–frontend coding  
+- Continue authentication testing  
+- Begin dashboard development  
+
+**Minutes prepared by: Aayman**
+
+---
+
+Date: 05/11/2025
+Time: 10:00 AM – 6:00 PM  
+Attendees: Krish, Aayman, Heet, Kosha, Meet, Namra, Shambhavi, Harshil, Yogesh  
+
+## Agenda
+- Collaborative coding session  
+- Test authentication modules  
+- Work on dashboard development  
+
+## Discussion
+- Team coded together, solved bugs and integrated modules.  
+- Aayman completed black-box testing for Login, Signup, and Forgot Password.  
+- Tenant dashboard design discussed (Profile, Build Profile, Search/Recommend).  
+- Property Owner workflow discussed (Profile, Property Management).  
+- Backend worked on routes: property, city, country, save/enroll logic.  
+- Frontend worked on dashboard screens, profile pages, and forms.  
+
+## Decisions
+- Continue parallel backend–frontend development.  
+- Testing to extend to Forgot Password Page 2 and profile modules.  
+- Dashboard UI structure finalized.  
+
+## Action Points
+- Backend: implement property routes and save/enroll logic.  
+- Frontend: finish dashboard UI, profile screens, and form layouts.  
+- Aayman: begin extended testing.  
+- Team: help each other with debugging.  
+
+## Next Meeting Agenda 
+Date: 12/11/2025
+Time: 4:00 PM to 5:00 PM
+- Review professor’s submission requirements  
+- Finalize remaining modules  
+- Assign additional testing/documentation tasks  
+
+**Minutes prepared by: Aayman**
+
+---
+
+Date: 12/11/2025
+Time: 4:00 PM – 5:00 PM  
+Attendees: Krish, Aayman, Heet, Kosha, Meet, Namra, Shambhavi, Harshil, Yogesh  
+
+## Agenda
+- Review newly uploaded submission requirements  
+- Discuss pending development tasks  
+- Assign advanced testing responsibilities
+- Plan a meet with our Mentor Hetul
+
+## Discussion
+- Professor uploaded detailed submission guidelines.  
+  - Final Submission Date: 28 November 2025  
+  - Viva: 2 December 2025
+
+### Backend Work Planned
+- Property routes (email + property ID)  
+- Enrollment route  
+- Save property functionality  
+
+### Frontend Work Planned
+- My Property page  
+- Similar Property page  
+- Room / Roommate Register  
+- Property Owner profile additions  
+- Tenant profile improvements  
+
+- Aayman will begin advanced testing (Mutation, GUI, Unit Testing).  
+- Submission requirements discussed:
+  - FRS + NFR  
+  - Stakeholders  
+  - User Stories  
+  - EPICs + Sprint Backlogs  
+  - Class + Sequence Diagrams  
+  - System + Object Design  
+  - Test Reports  
+  - Implemented vs Non-implemented features  
+  - Complete code + screenshots  
+
+## Decisions
+- Development and testing to proceed in parallel.  
+- Property module becomes highest priority.  
+- Short meetings to be held more frequently to meet deadlines.  
+
+## Action Points
+- Backend: finish property routes + enrollment + save.  
+- Frontend: finish all property and roommate pages.  
+- Aayman: begin advanced testing.  
+- All members: begin preparing documentation for final submission.  
+
+## Next Meeting Agenda
+Date: 13/11/2025
+Time: 4:00 to 5:00 PM
+- Track backend–frontend progress  
+- Document testing + submission readiness  
+- Start arranging final submission folders
+- Meet with our Mentor Hetul
+
+**Minutes prepared by: Aayman**
+
 
 
 
