@@ -1,5 +1,7 @@
 const property = require("../model/property");
 const Tenant = require("../model/tenant");
+const Application = require("../model/application");
+const { sendEmail } = require("../utils/mailer");
 const {getSimilarity} = require("../utils/nlp");
 
 async function home(req, res) {
@@ -47,7 +49,69 @@ async function propertysend(req, res) {
   }
 }
 
+async function applyForProperty(req, res) {
+  try {
+    const tenantEmail = req.user.email;
+    const { propertyName, propertyOwnerEmail } = req.body;
 
+    if (!tenantEmail) {
+      return res.status(400).json({ success: false, message: "User not logged in" });
+    }
+
+    if (!propertyName || !propertyOwnerEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Property name & owner email required",
+      });
+    }
+
+    const tenant = await Tenant.findOne({ email: tenantEmail });
+    const foundProperty = await property.findOne({
+      name: propertyName,
+      email: propertyOwnerEmail
+    });
+
+    await Application.create({
+      tenantEmail,
+      propertyName,
+      propertyOwnerEmail
+    });
+
+    const html = `
+      <h2>New Tenant Application</h2>
+      <p>Your property <strong>${propertyName}</strong> has a new application.</p>
+
+      <h3>Tenant Details</h3>
+      <p><strong>Name:</strong> ${tenant.name}</p>
+      <p><strong>Email:</strong> ${tenant.email}</p>
+      <p><strong>Gender:</strong> ${tenant.gender}</p>
+      <p><strong>Marital Status:</strong> ${tenant.maritalStatus}</p>
+      <p><strong>Profession:</strong> ${tenant.professionalStatus}</p>
+      <p><strong>Food Preference:</strong> ${tenant.foodPreference}</p>
+      <p><strong>Work Shift:</strong> ${tenant.workingshifts}</p>
+      <p><strong>Languages:</strong> ${tenant.language}</p>
+
+      <br><p>Contact the tenant to proceed.</p>
+    `;
+
+    await sendEmail(propertyOwnerEmail, "New Tenant Application", html);
+
+    return res.status(200).json({success: true, message: "Application sent successfully" });
+
+  } catch (error) {
+    if (error.code === 11000) {
+    return res.status(400).json({
+      success: false,
+      message: "You have already applied for this property."
+    });
+  }
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
 
 async function filterProperties(req, res) {
   try {
@@ -219,4 +283,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, propertysend};
+module.exports = { home, filterProperties, propertysend,applyForProperty};
