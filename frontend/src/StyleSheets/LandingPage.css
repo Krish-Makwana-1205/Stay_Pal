@@ -1,127 +1,624 @@
-/* Landing Page Styling */
-body {
-  min-height: 100vh;
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
+/* LandingPage.css - Updated with theme changes and compact features */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #0d2a4f; /* Dark Blue */
+  --accent-color: #007bff; /* Bright Blue */
+  --secondary-color: #ffffff; /* White */
+  --bg-light: #f4f7f9; /* Lighter gray background for sections */
+  --card-bg: #ffffff; /* Explicit card background color */
+  --text-color: #333333; /* Dark Gray Text */
+  --text-color-light: #777777; /* Medium Gray Text */
+  --text-on-dark: #f0f0f0; /* Light text for dark backgrounds */
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --border-radius: 12px;
 }
 
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: radial-gradient(circle, #d8c7b9 0%, #faf6f2 100%);
-  color: #4a4a4a;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(180deg, var(--secondary-color) 0%, var(--bg-light) 100%);
+  color: var(--text-color);
+  line-height: 1.6;
 }
 
 .card {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  max-width: 960px;
-  width: 90%;
-  margin: 2rem;
-}
-
-.content-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 4rem;
-}
-
-.text-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.logo {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #2c2c2c;
-  margin-bottom: 0.5rem;
-}
-
-.tagline {
-  font-size: 1.25rem;
-  font-weight: 400;
-  margin-bottom: 2rem;
-  color: #5f5f5f;
-}
-
-.description {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-
-.description strong {
-  font-weight: 600;
-  color: #333;
-}
-
-.cta-button {
-  background-color: #c78c71;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 14px 28px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  align-self: flex-start;
-}
-
-.cta-button:hover {
-  background-color: #b97b60;
-  transform: translateY(-2px);
-}
-
-.image-gallery {
-  position: relative;
-  min-height: 400px;
-}
-
-.image-gallery img {
-  position: absolute;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
-}
-
-.img-1 {
-  width: 60%;
-  height: auto;
-  top: -40px;
-  right: 0;
-  z-index: 2;
-}
-
-.img-2 {
   width: 100%;
-  height: 65%;
-  top: 47%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- Hero Section (No changes) --- */
+.content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: flex-start; 
+  padding: 100px 8%;
+  min-height: 90vh;
+  background: var(--primary-color);
   z-index: 1;
 }
 
-.img-3 {
-  width: 65%;
-  height: 40%;
-  bottom: 10%;
-  left: -5%;
-  z-index: 3;
-  top: 70%;
+.content-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(rgba(13, 42, 79, 0.75), rgba(13, 42, 79, 0.75)),
+    url('https://images.pexels.com/photos/186077/pexels-photo-186077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+.hero-header {
+  position: absolute;
+  top: 30px; 
+  left: 8%; 
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  z-index: 20; 
+}
+
+.header-logo {
+  width: 40px; 
+  height: auto;
+}
+
+.logo {
+  font-size: 2.2rem; 
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 0; 
+  letter-spacing: -1px;
+}
+
+.text-content {
+  flex: none;
+  min-width: 300px;
+  max-width: 600px;
+  position: relative;
+  z-index: 10;
+  margin-top: -50px; 
+  text-align: left; 
+}
+
+.image-gallery {
+  display: none; 
+}
+
+.tagline {
+  font-size: 2.5rem; 
+  line-height: 1.2; 
+  color: var(--secondary-color);
+  margin-bottom: 25px;
+  font-weight: 600; 
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-on-dark);
+  margin-bottom: 35px;
+}
+
+.description strong {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.cta-button {
+  display: flex; 
+  align-items: center;
+  justify-content: space-between; 
+  width: 300px; 
+  padding: 16px 25px;
+  background-color: rgba(255, 255, 255, 0.15); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  color: var(--secondary-color); 
+  text-decoration: none;
+  border-radius: 50px; 
+  font-size: 1.1rem;
+  font-weight: 500; 
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+}
+
+.cta-button:hover {
+  background-color: rgba(255, 255, 255, 0.25); 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cta-arrow {
+  font-size: 1.4rem; 
+  margin-left: 10px; 
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--primary-color);
+  margin-bottom: 50px;
+  font-weight: 600;
+}
+
+/* --- Features Section (MODIFIED for compactness) --- */
+.features-section {
+  padding: 60px 8%; /* MODIFIED: Reduced top/bottom padding from 80px */
+  background-color: var(--bg-light); 
+}
+
+.main-features {
+  display: grid;
+  grid-template-columns: 1fr; 
+  gap: 30px; /* MODIFIED: Reduced gap from 40px */
+  margin-bottom: 50px; /* MODIFIED: Reduced margin from 60px */
+  max-width: 900px; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feature-card.large-feature-card {
+  background-color: var(--primary-color); 
+  padding: 25px; /* MODIFIED: Reduced padding from 30px */
+  border-radius: var(--border-radius);
+  text-align: left; 
+  transition: all 0.3s ease;
+  border: none; 
+  box-shadow: var(--card-shadow); 
+}
+
+.feature-card.large-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.feature-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* MODIFIED: Reduced gap from 30px */
+}
+
+.feature-content-wrapper.reverse-layout {
+  flex-direction: row-reverse; 
+}
+
+.feature-text {
+  flex: 1; 
+}
+
+.feature-text h3 {
+  font-size: 1.6rem; 
+  color: var(--secondary-color); 
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.feature-text p {
+  font-size: 1rem;
+  color: var(--text-on-dark); 
+  line-height: 1.6;
+}
+
+.feature-image-container {
+  flex: 1; 
+  height: 220px; 
+  border-radius: var(--border-radius);
+  overflow: hidden; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.feature-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  display: block;
+}
+
+/* --- Minor Features (MODIFIED for compactness) --- */
+.minor-features {
+  display: flex;
+  justify-content: center;
+  gap: 25px; /* MODIFIED: Reduced gap from 30px */
+  flex-wrap: wrap;
+}
+
+.minor-feature.small-minor-feature {
+  flex: 1;
+  min-width: 280px; 
+  max-width: 380px; 
+  background-color: var(--card-bg); 
+  padding: 20px; /* MODIFIED: Reduced padding from 25px */
+  border-radius: var(--border-radius);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  box-shadow: var(--card-shadow); 
+}
+
+.minor-feature.small-minor-feature:hover {
+  transform: scale(1.03);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.minor-feature-icon {
+  font-size: 2rem; 
+  margin-bottom: 12px;
+}
+
+.minor-feature h4 {
+  font-size: 1.2rem; 
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.minor-feature p {
+  font-size: 0.95rem; 
+  color: var(--text-color-light);
+  line-height: 1.5;
+}
+
+
+/* --- Properties Section (MODIFIED for theme) --- */
+.properties-section {
+  padding: 60px 8%; /* MODIFIED: Reduced padding from 80px */
+  background-color: var(--primary-color); /* MODIFIED: Changed background to match footer */
+}
+
+/* MODIFIED: Changed title color to be visible on dark background */
+.properties-section .section-title {
+  color: var(--secondary-color);
+}
+
+.properties-scroll {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  padding: 20px 5px;
+  scroll-behavior: smooth;
+}
+
+/* MODIFIED: Changed scrollbar for dark background */
+.properties-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.properties-scroll::-webkit-scrollbar-track {
+  background: #3a5b7e; /* Darker track for contrast */
+  border-radius: 10px;
+}
+
+.properties-scroll::-webkit-scrollbar-thumb {
+  background: var(--bg-light); /* Light thumb */
+  border-radius: 10px;
+}
+.properties-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+.property-card {
+  min-width: 320px;
+  max-width: 340px;
+  flex-shrink: 0;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.property-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.property-details {
+  padding: 20px;
+}
+
+.property-details h4 {
+  font-size: 1.25rem;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.property-location {
+  color: var(--text-color-light);
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.property-price {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.property-features {
+  display: flex;
+  gap: 15px;
+  color: var(--text-color-light);
+  font-size: 0.9rem;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* --- Reviews Section (No changes) --- */
+.reviews-section {
+  padding: 60px 8%; /* MODIFIED: Reduced padding to match other sections */
+  background-color: var(--bg-light);
+}
+
+.reviews-scroll {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  padding: 20px 5px;
+  scroll-behavior: smooth;
+}
+
+.reviews-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.reviews-scroll::-webkit-scrollbar-track {
+  background: #efefef;
+  border-radius: 10px;
+}
+
+.reviews-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.reviews-scroll::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.review-card {
+  min-width: 350px;
+  background-color: var(--card-bg);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  border: 1px solid #e0e0e0;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.reviewer-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.reviewer-info h5 {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.review-rating {
+  font-size: 0.9rem;
+}
+
+.review-text {
+  color: var(--text-color-light);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+/* --- Footer (No changes) --- */
+.footer {
+  background-color: var(--primary-color);
+  color: var(--text-on-dark);
+  padding: 60px 8% 30px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.footer-logo {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+}
+
+.footer-contact h4 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--secondary-color);
+}
+
+.footer-contact p {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.footer-contact a {
+  color: var(--text-on-dark);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 30px;
+  border-top: 1px solid #3a5b7e; 
+  color: var(--text-on-dark);
+  font-size: 0.9rem;
+}
+
+.footer-header-logo {
+  width: 60px; 
+  height: auto;
+}
+
+/* --- Responsive Design (No changes) --- */
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 60px 5%;
+    min-height: 70vh;
+    align-items: center; 
+  }
+
+  .hero-header {
+    left: 5%; 
+  }
+
+  .text-content {
+    max-width: 100%;
+    margin-top: 20px; 
+    text-align: center; 
+  }
+
+  .logo {
+    font-size: 3rem;
+  }
+
+  .tagline {
+    font-size: 1.8rem; 
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .cta-button {
+    width: 280px; 
+    padding: 14px 20px;
+    font-size: 1rem;
+    margin: 0 auto; 
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .feature-card.large-feature-card {
+    padding: 25px;
+  }
+  .feature-content-wrapper, .feature-content-wrapper.reverse-layout {
+    flex-direction: column; 
+    text-align: center; 
+  }
+  .feature-image-container {
+      width: 100%; 
+      height: 180px; 
+      margin-top: 20px; 
+  }
+  .feature-text {
+      flex: none; 
+  }
+
+
+  .properties-section,
+  .reviews-section,
+  .features-section {
+    padding: 60px 5%;
+  }
+
+  .property-card,
+  .review-card {
+    min-width: 280px;
+  }
+
+  .footer {
+    padding: 40px 5% 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-header {
+    top: 20px;
+    left: 5%;
+  }
+
+  .logo {
+    font-size: 1.8rem; 
+  }
+
+  .header-logo {
+    width: 30px;
+  }
+
+  .tagline {
+    font-size: 1.5rem;
+  }
+
+  .cta-button {
+    width: 250px;
+    font-size: 0.95rem;
+  }
+
+  .minor-feature.small-minor-feature {
+    min-width: 100%; 
+    max-width: 100%;
+  }
+
+  .property-card,
+  .review-card {
+    min-width: 260px;
+  }
 }
