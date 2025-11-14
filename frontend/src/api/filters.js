@@ -9,4 +9,3 @@ export const fetchSingleProperty = (email, name) =>API.get(`/property?email=${em
 export const fetchproperty = (filters) => API.get(`/filter`, { params: filters });
 export const fetchHome = () => API.get(`/`);
 
-export const fetchSimilarProperties = (details) =>API.get(`/similar`, { params: details });

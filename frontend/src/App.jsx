@@ -13,7 +13,8 @@ import TenantProfile from "./pages/TenantProfile";
 import ViewProperties from "./pages/ViewProperties";
 import MyProperties from "./pages/MyProperties";
 import PropertyView from "./pages/PropertyView";   
-
+import EditProperty from "./pages/EditProperty";
+import EditPreferences from "./pages/EditPreferences";
 
 // import ViewRoommates from "./pages/ViewRoommates";
 // import ViewShared from "./pages/ViewShared";
@@ -34,6 +35,8 @@ function App() {
          <Route path="dashboard/properties" element={<ViewProperties />} />
          <Route path="/myproperties" element={<MyProperties />} />
         <Route path="/property/:email/:name" element={<PropertyView />} />
+        <Route path="/editproperty/:email/:name" element={<EditProperty />} />
+        <Route path="/editpreferences/:email/:name" element={<EditPreferences />} />
 
         {/* <Route path="roommates" element={<ViewRoommates />} /> */}
         {/* <Route path="shared" element={<ViewShared />} /> */}

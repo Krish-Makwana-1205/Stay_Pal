@@ -29,10 +29,14 @@ export default function UserCard() {
       </div>
     );
   }
-  if(user.istenant){
-    navigate("/dashboard");
-  }
+  // if(user.istenant){
+  //   navigate("/dashboard");
+  // }
   const handleTenantClick = () => {
+    if (user.istenant){
+      navigate("/dashboard");
+      return;
+    }
     navigate("/tenantForm");
   };
 
@@ -53,6 +57,9 @@ export default function UserCard() {
           Logout
         </button>
       </header>
+
+
+  
 
       {/* Main Section */}
       <main className="usercard-main">

@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import Filters from "../Components/Filters";
 import { fetchproperty } from "../api/filters";
 import "../StyleSheets/Dashboard.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 const ViewProperties = ({defaultCity}) => {
   const [houses, setHouses] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get defaultCity from route state or use prop
+  const cityFromState = location.state?.defaultCity || defaultCity;
+  const [currentCity, setCurrentCity] = useState(cityFromState);
   const handleFilters = async (filters) => {
     setLoadingResults(true);
     try {
-      const finalFilters = { city: filters.city || defaultCity, ...filters };
+      const finalFilters = { city: filters.city || currentCity, ...filters };
       const { data } = await fetchproperty(finalFilters);
       setHouses(data.data || []);
     } catch (err) {
@@ -22,19 +27,19 @@ const ViewProperties = ({defaultCity}) => {
   };
 // console.log(houses);
   useEffect(() => {
-    if (defaultCity) handleFilters({ city: defaultCity });
-  }, [defaultCity]);
+    if (currentCity) handleFilters({ city: currentCity });
+  }, [currentCity]);
 
   return (
     <div className="view-properties">
       <div className="dashboard-filters">
         <h2 className="filters-title">Filters</h2>
-        <Filters onApply={handleFilters} defaultCity={defaultCity} />
+        <Filters onApply={handleFilters} defaultCity={currentCity} />
       </div>
 
       <div className="properties-results">
         <h2>
-          Results {loadingResults ? " (loading...)" : `for city: ${defaultCity || "All"}`}
+          Results {loadingResults ? " (loading...)" : `for city: ${currentCity || "All"}`}
         </h2>
 
         {houses.length === 0 ? (

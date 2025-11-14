@@ -145,7 +145,8 @@ console.log("Address:", formData.address);
       type: "success",
     });
 
-    // 🧾 Reset the form fields
+    // ⭐ Save property name for PF2 auto-fill
+
     setFormData({
       name: "",
       email: "",
@@ -175,6 +176,10 @@ console.log("Address:", formData.address);
     if (fileInputRef.current) fileInputRef.current.value = null;
 
     // 🔄 Navigate to next step
+    // IMPORTANT: force LocalitySelector to fetch localities for this city on edit page
+localStorage.removeItem(`localities_${formData.city}`);
+localStorage.setItem("propertyForm_lastName", formData.name);
+
     navigate("/PropertyForm2");
   }
 } catch (error) {
@@ -186,7 +191,7 @@ console.log("Address:", formData.address);
       error.response.data?.msg ||
       JSON.stringify(error.response.data);
 
-    console.log("🧩 Backend full error:", backendMessage);
+    console.log(" Backend full error:", backendMessage);
 
     // 🚨 Handle MongoDB duplicate key error (E11000)
     if (/E11000.*duplicate key error/i.test(backendMessage)) {

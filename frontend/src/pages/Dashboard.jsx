@@ -38,6 +38,13 @@ const Dashboard = () => {
       await logout();
       navigate("/login");
       localStorage.removeItem("defaultCity");
+      // Clear all saved filters for the logged-out user
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith("filters_")) {
+          localStorage.removeItem(key);
+        }
+      });
     } catch (err) {
       console.error("Logout failed:", err);
     }

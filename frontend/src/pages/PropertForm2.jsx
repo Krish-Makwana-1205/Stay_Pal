@@ -47,6 +47,16 @@ export default function PropertyForm2() {
       setFormData(JSON.parse(savedData));
     }
   }, []);
+useEffect(() => {
+  const lastName = localStorage.getItem("propertyForm_lastName");
+
+  if (lastName) {
+    setFormData((prev) => ({
+      ...prev,
+      name: lastName
+    }));
+  }
+}, []);
 
   useEffect(() => {
     localStorage.setItem("tenantPreferencesFormData", JSON.stringify(formData));
@@ -133,6 +143,8 @@ export default function PropertyForm2() {
         });
 
         // Clear draft and reset form
+                  navigate("/dashboard");
+
         localStorage.removeItem("tenantPreferencesFormData");
         setFormData({
           email: user?.email || "",
@@ -212,15 +224,14 @@ export default function PropertyForm2() {
         />
 
         <label>Property Name *</label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, name: e.target.value }))
-          }
-          placeholder="Name of Property"
-          required
-        />
+<input
+  type="text"
+  value={formData.name}
+  readOnly
+  style={{ backgroundColor: "#f3f3f3", color: "#555", cursor: "not-allowed" }}
+  placeholder="Name of Property"
+/>
+
 
         <label>Gender Preference</label>
         <select name="gender" value={formData.gender} onChange={handleChange}>
