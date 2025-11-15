@@ -1,6 +1,7 @@
 const property = require("../model/property");
 const Tenant = require("../model/tenant");
 const Application = require("../model/application");
+const User = require("../model/user");
 const { sendEmail } = require("../utils/mailer");
 const {getSimilarity} = require("../utils/nlp");
 
@@ -65,46 +66,127 @@ async function applyForProperty(req, res) {
       });
     }
 
-    const tenant = await Tenant.findOne({ email: tenantEmail });
-    const foundProperty = await property.findOne({
-      name: propertyName,
-      email: propertyOwnerEmail
-    });
+    if (tenantEmail === propertyOwnerEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot apply to your own property",
+      });
+    }
 
-    await Application.create({
-      tenantEmail,
-      propertyName,
-      propertyOwnerEmail
-    });
+    const [tenant, foundProperty] = await Promise.all([
+      Tenant.findOne({ email: tenantEmail }),
+      property.findOne({ name: propertyName, email: propertyOwnerEmail }),
+    ]);
 
-    const html = `
-      <h2>New Tenant Application</h2>
-      <p>Your property <strong>${propertyName}</strong> has a new application.</p>
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        message: "Tenant profile not found",
+      });
+    }
 
-      <h3>Tenant Details</h3>
-      <p><strong>Name:</strong> ${tenant.name}</p>
-      <p><strong>Email:</strong> ${tenant.email}</p>
-      <p><strong>Gender:</strong> ${tenant.gender}</p>
-      <p><strong>Marital Status:</strong> ${tenant.maritalStatus}</p>
-      <p><strong>Profession:</strong> ${tenant.professionalStatus}</p>
-      <p><strong>Food Preference:</strong> ${tenant.foodPreference}</p>
-      <p><strong>Work Shift:</strong> ${tenant.workingshifts}</p>
-      <p><strong>Languages:</strong> ${tenant.language}</p>
+    if (!foundProperty) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
 
-      <br><p>Contact the tenant to proceed.</p>
-    `;
+    await Promise.all([
+      Application.create({
+        tenantEmail,
+        propertyName,
+        propertyOwnerEmail,
+      }),
 
-    await sendEmail(propertyOwnerEmail, "New Tenant Application", html);
+      sendEmail(
+        propertyOwnerEmail,
+        "New Tenant Application",
+        `
+          <h2>New Tenant Application</h2>
+          <p>Your property <strong>${propertyName}</strong> has a new application.</p>
 
-    return res.status(200).json({success: true, message: "Application sent successfully" });
+          <h3>Tenant Details</h3>
+          <p><strong>Name:</strong> ${tenant.name}</p>
+          <p><strong>Email:</strong> ${tenant.email}</p>
+          <p><strong>Gender:</strong> ${tenant.gender}</p>
+          <p><strong>Marital Status:</strong> ${tenant.maritalStatus}</p>
+          <p><strong>Profession:</strong> ${tenant.professionalStatus}</p>
+          <p><strong>Food Preference:</strong> ${tenant.foodPreference}</p>
+          <p><strong>Work Shift:</strong> ${tenant.workingshifts}</p>
+          <p><strong>Languages:</strong> ${tenant.language}</p>
+
+          <br><p>Contact the tenant to proceed.</p>
+        `
+      )
+    ]);
+
+    return res.status(200).json({success: true, message: "Application sent successfully"});
 
   } catch (error) {
     if (error.code === 11000) {
-    return res.status(400).json({
-      success: false,
-      message: "You have already applied for this property."
-    });
+      return res.status(400).json({
+        success: false,
+        message: "You have already applied for this property.",
+      });
+    }
+
+    return res.status(500).json({success: false, message: "Server error", error: error.message});
   }
+}
+
+
+async function getOwnerApplications(req, res) {
+  try {
+    const ownerEmail = req.user.email;
+    const { propertyName } = req.query;
+
+    if (!propertyName) {
+      return res.status(400).json({
+        success: false,
+        message: "Property name is required",
+      });
+    }
+
+    const [propertyData, apps] = await Promise.all([
+      property.findOne({ name: propertyName, email: ownerEmail }),
+      Application.find({ propertyName, propertyOwnerEmail: ownerEmail }),
+    ]);
+
+    if (!propertyData) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: You do not own this property",
+      });
+    }
+
+    if (apps.length === 0) {
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        message: "0 tenants have applied for this property",
+        data: [],
+      });
+    }
+
+    const tenantEmails = apps.map((app) => app.tenantEmail);
+
+    const tenants = await Promise.all(
+      tenantEmails.map((email) => Tenant.findOne({ email }))
+    );
+
+    const result = apps.map((app, i) => ({
+      tenant: tenants[i],
+      appliedAt: app.appliedAt,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      count: result.length,
+      data: result,
+    });
+
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -283,4 +365,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, propertysend,applyForProperty};
+module.exports = { home, filterProperties, propertysend, applyForProperty, getOwnerApplications};
