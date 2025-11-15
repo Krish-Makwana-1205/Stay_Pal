@@ -7,5 +7,7 @@ const API = axios.create({
 export const fetchSingleProperty = (email, name) =>API.get(`/property?email=${email}&name=${name}`);
 
 export const fetchproperty = (filters) => API.get(`/filter`, { params: filters });
+export const applyForProperty  = (payload) => API.post("/apply", payload);
+export const getApplications =async(propertyName)=>API.get(`/owner/applications?propertyName=${propertyName}`);
 export const fetchHome = () => API.get(`/`);
 

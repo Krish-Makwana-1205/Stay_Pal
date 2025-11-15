@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchSingleProperty } from "../api/filters";
-import { fetchproperty } from "../api/filters";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchSingleProperty, fetchproperty, applyForProperty } from "../api/filters";
 import "../StyleSheets/PropertyView.css";
-const PropertyView = () => {
+
+export default function PropertyView() {
   const { email, name } = useParams();
+  const navigate = useNavigate();
+
   const [property, setProperty] = useState(null);
   const [similar, setSimilar] = useState([]);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [applyLoading, setApplyLoading] = useState(false);
+
   useEffect(() => {
-    fetchSingleProperty(email, name)
-      .then((res) => setProperty(res.data.data))
-      .catch((err) => console.error("Error fetching property:", err));
+    async function load() {
+      try {
+        const res = await fetchSingleProperty(email, name);
+        setProperty(res.data.data);
+      } catch (err) {
+        console.error("Error fetching property:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, [email, name]);
+
   const loadSimilar = async (p) => {
     try {
       const low = Math.floor(p.rent * 0.8);
@@ -27,19 +39,15 @@ const PropertyView = () => {
         parkingArea: p.parkingArea,
         transportAvailability: p.transportAvailability,
         isRoommate: p.isRoommate,
-
         locality: p.locality,
         nearbyPlaces: p.nearbyPlaces,
-
         rentLowerBound: low,
         rentUpperBound: high,
-
         areaLowerBound: p.areaSize ? Math.floor(p.areaSize * 0.7) : undefined,
         areaUpperBound: p.areaSize ? Math.ceil(p.areaSize * 1.3) : undefined,
       };
 
       const { data } = await fetchproperty(filters);
-
       const list = data.data?.filter(
         (item) => !(item.email === p.email && item.name === p.name)
       );
@@ -51,28 +59,16 @@ const PropertyView = () => {
   };
 
   useEffect(() => {
-    if (property) {
-      loadSimilar(property);
-    }
+    if (property) loadSimilar(property);
   }, [property]);
-  if (!property) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
 
-  const {
-    _id,
-    tenantPreferences,
-    createdAt,
-    updatedAt,
-    imgLink,
-    __v,
-    ...filtered
-  } = property;
+  if (loading) return <h2 style={{ padding: "20px" }}>Loading property...</h2>;
+  if (!property) return <h2 style={{ padding: "20px" }}>Property not found.</h2>;
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      {/* Title */}
-      <h1 style={{ marginBottom: "10px" }}>{property.name}</h1>
+      <h1>{property.name}</h1>
 
-      {/* Image */}
       {property.imgLink?.length > 0 && (
         <img
           src={property.imgLink[0]}
@@ -87,8 +83,8 @@ const PropertyView = () => {
         />
       )}
 
-      {/* Auto Render Property Details */}
       <h2>Property Details</h2>
+
       <div
         style={{
           marginTop: "15px",
@@ -97,56 +93,115 @@ const PropertyView = () => {
           borderRadius: "10px",
         }}
       >
-        {Object.entries(filtered).map(([key, value]) => (
-          <p key={key} style={{ marginBottom: "8px" }}>
-            <strong>{key}:</strong>{" "}
-            {key === "addressLink" ? (
-              <a
-                href={value}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "blue", textDecoration: "underline" }}
-              >
-                Open in Google Maps
-              </a>
-            ) : (
-              String(value)
-            )}
+        <div className="pv-details">
+          <p><strong>Rent:</strong> ₹{property.rent}</p>
+          <p><strong>BHK:</strong> {property.BHK}</p>
+          <p><strong>City:</strong> {property.city}</p>
+          <p><strong>Locality:</strong> {property.locality}</p>
+
+          {property.areaSize && (
+            <p><strong>Area Size:</strong> {property.areaSize} sq ft</p>
+          )}
+
+          <p><strong>House Type:</strong> {property.houseType}</p>
+          <p><strong>Furnishing:</strong> {property.furnishingType}</p>
+          <p><strong>Parking:</strong> {property.parkingArea}</p>
+
+          <p>
+            <strong>Transport Availability:</strong>{" "}
+            {property.transportAvailability ? "Yes" : "No"}
           </p>
-        ))}
-      </div>
-      {similar.length > 0 && (
-  <div className="similar-wrapper">
-    <h3>Similar Properties</h3>
 
-    <div className="similar-list">
-      {similar.map((item, idx) => {
-        const img = item.imgLink?.[0];
+          <p><strong>Description:</strong> {property.description}</p>
 
-        return (
-          <div
-            key={idx}
-            className="similar-card"
-            onClick={() =>
-              navigate(`/property/${item.email}/${item.name}`)
+          <p>
+            <strong>Nearby Places:</strong>{" "}
+            {property.nearbyPlaces?.length
+              ? property.nearbyPlaces.join(", ")
+              : "None"}
+          </p>
+
+          <p><strong>Owner Email:</strong> {property.email}</p>
+
+          <p>
+            <strong>Address:</strong>{" "}
+            {property.address.split("$*").join(", ")}
+          </p>
+
+          <p>
+            <strong>Google Maps:</strong>{" "}
+            <a href={property.addressLink} target="_blank" rel="noreferrer">
+              Open in Maps
+            </a>
+          </p>
+        </div>
+
+        <button
+          className="apply-btn"
+          disabled={applyLoading}
+          onClick={async () => {
+            try {
+              setApplyLoading(true);
+
+              const payload = {
+                propertyName: property.name,
+                propertyOwnerEmail: property.email,
+              };
+
+              await applyForProperty(payload);
+              alert("Application sent to the owner!");
+            } catch (err) {
+              console.error(err);
+              alert("Failed to apply.");
+            } finally {
+              setApplyLoading(false);
             }
-          >
-            <img src={img} alt="" className="similar-img" />
+          }}
+          style={{
+            marginTop: "20px",
+            padding: "12px 20px",
+            background: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "16px",
+            opacity: applyLoading ? 0.6 : 1,
+          }}
+        >
+          {applyLoading ? "Applying..." : "Apply"}
+        </button>
+      </div>
 
-            <div className="similar-text">
-              <h4>{item.BHK} BHK in {item.city}</h4>
-              <p>₹{item.rent}</p>
-              <p className="similar-locality">{item.locality}</p>
-            </div>
+      {similar.length > 0 && (
+        <div className="similar-wrapper">
+          <h3>Similar Properties</h3>
+
+          <div className="similar-list">
+            {similar.map((item, idx) => {
+              const img = item.imgLink?.[0];
+
+              return (
+                <div
+                  key={idx}
+                  className="similar-card"
+                  onClick={() =>
+                    navigate(`/property/${item.email}/${item.name}`)
+                  }
+                >
+                  <img src={img} alt="" className="similar-img" />
+
+                  <div className="similar-text">
+                    <h4>{item.BHK} BHK in {item.city}</h4>
+                    <p>₹{item.rent}</p>
+                    <p className="similar-locality">{item.locality}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
-    </div>
-  </div>
-)}
-
+        </div>
+      )}
     </div>
   );
-};
-
-export default PropertyView;
+}

@@ -15,7 +15,7 @@ import MyProperties from "./pages/MyProperties";
 import PropertyView from "./pages/PropertyView";   
 import EditProperty from "./pages/EditProperty";
 import EditPreferences from "./pages/EditPreferences";
-
+import ApplicationList from "./pages/ApplicationList";
 // import ViewRoommates from "./pages/ViewRoommates";
 // import ViewShared from "./pages/ViewShared";
 function App() {
@@ -37,6 +37,7 @@ function App() {
         <Route path="/property/:email/:name" element={<PropertyView />} />
         <Route path="/editproperty/:email/:name" element={<EditProperty />} />
         <Route path="/editpreferences/:email/:name" element={<EditPreferences />} />
+<Route path="/applications/:propertyName" element={<ApplicationList />} />
 
         {/* <Route path="roommates" element={<ViewRoommates />} /> */}
         {/* <Route path="shared" element={<ViewShared />} /> */}

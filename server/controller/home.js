@@ -136,7 +136,7 @@ async function applyForProperty(req, res) {
 }
 
 
-async function getOwnerApplications(req, res) {
+async function getApplicationsForOwner(req, res) {
   try {
     const ownerEmail = req.user.email;
     const { propertyName } = req.query;
@@ -365,4 +365,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, propertysend, applyForProperty, getOwnerApplications};
+module.exports = { home, filterProperties, propertysend, applyForProperty, getApplicationsForOwner};
