@@ -61,7 +61,7 @@ async function uploadProperty(req, res) {
         houseType: body.houseType,
         isRoommate: body.isRoommate,
       },
-      { new: true, timestamps: true, upsert: true }
+      {timestamps: true, upsert: true }
     );
     return res.status(200).json({ message: "Property created successfully" });
   } catch (error) {
@@ -99,7 +99,7 @@ async function addTenantPreferences(req, res) {
           notes: req.body.notes || null
         }
       },
-      { new: true }
+      { }
     );
 
     if (!updated) {

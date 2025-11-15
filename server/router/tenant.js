@@ -8,6 +8,6 @@ router.post('/form2', restrictToLoggedinUserOnly, addPreferences);
 router.post('/updateprofile', restrictToLoggedinUserOnly, fullProfile);
 router.get('/profile', restrictToLoggedinUserOnly, tenantdetails);
 router.post('/saveproperty',restrictToLoggedinUserOnly, saveProperties);
-router.post('/getsaved', restrictToLoggedinUserOnly, sendProperties);
+router.get('/getsaved', restrictToLoggedinUserOnly, sendProperties);
 
 module.exports = router;

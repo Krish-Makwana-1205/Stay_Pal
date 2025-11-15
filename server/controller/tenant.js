@@ -1,6 +1,7 @@
 const SavedProperties = require('../model/savedProperties');
 const tenant = require('../model/tenant');
 const user = require('../model/user');
+const Property = require('../model/property');
  
 const {setUser} = require('../service/auth');
 async function makeProfile(req, res){
@@ -226,7 +227,7 @@ async function sendProperties(req, res){
         if (props.length === 0) {
             return res.status(200).json({ success: true, message: 'No saved properties found' });
         }
-        const propertyNamesAndEmails = savedProperties.map(prop => ({
+        const propertyNamesAndEmails = props.map(prop => ({
             propertyName: prop.propertyName,  
             email: prop.email                 
         }));

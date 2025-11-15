@@ -17,13 +17,8 @@ const messageSchema = new mongoose.Schema(
 
 const chatSchema = new mongoose.Schema(
   {
-    sender: { 
-      type: String,   
-      required: true 
-    },
-    receiver: { 
-      type: String,   
-      required: true 
+    email: { 
+      type: [String],   
     },
     messages: [messageSchema]  
   },

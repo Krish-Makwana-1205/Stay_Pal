@@ -6,7 +6,7 @@ const tenant = require('./router/tenant.js');
 const propertyOwner = require('./router/propertyOwner.js');
 const dashboard = require('./router/home.js'); 
 const roommate = require('./router/Roommate.js'); 
-
+const chat = require('./router/message.js');
 
 const app = express();
 require('dotenv').config();
@@ -36,3 +36,4 @@ app.use("/tenant", tenant);
 app.use("/propertyOwner", propertyOwner);
 app.use("/home", dashboard); 
 app.use("/roommate", roommate);  
+app.use("/chat", chat)
