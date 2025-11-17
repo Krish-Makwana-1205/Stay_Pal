@@ -194,17 +194,17 @@ export default function Signup() {
               <span>or</span>
             </div>
 
-            <button
+             <button
               type="button"
-              onClick={handleGoogleLogin}
               className="google-btn"
+              onClick={() => navigate("/googlelogin")}
             >
               <img
-                src="https://developers.google.com/identity/images/g-logo.png"
-                alt="Google logo"
-                className="google-logo"
+                src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+                alt="Google icon"
+                className="google-icon"
               />
-              Sign up with Google
+              Continue with Google
             </button>
 
             <p className="login-link">

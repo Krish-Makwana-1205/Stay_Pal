@@ -2,22 +2,21 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     email:{
-        required:true,
-        unique:true,
-        type:String,
+        type: String,
+        required: true,
+        unique: true,
     },
     username:{
-        required:true,
-        unique:true,
-        type:String
+        type: String,
+        required: true,
     },
     password:{
-        required:true,
-        type:String
+        type: String,
+        default: null,  
     },
     profilePhoto:{
         type: String,
-        default:"",
+        default: "",
     },
     istenant:{
         type: Boolean,
@@ -26,9 +25,11 @@ const userSchema = new mongoose.Schema({
     isroommate:{
         type: Boolean,
         default: false,
+    },
+    googleId:{
+        type: String,
+        default: null,  
     }
 },{timestamps:true});
 
-const User = mongoose.model('user', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

@@ -4,6 +4,7 @@ import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import Alert from "../Components/Alert";
 import "../StyleSheets/Login.css";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const { login, user } = useAuth();
@@ -93,15 +94,16 @@ export default function Login() {
             <button
               type="button"
               className="google-btn"
-              onClick={() => (window.location.href = "http://localhost:8002/auth/google")}
+              onClick={() => navigate("/googlelogin")}
             >
               <img
                 src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
                 alt="Google icon"
                 className="google-icon"
               />
-              Login with Google
+              Continue with Google
             </button>
+            
 
             <p className="login-link">
               Don't have an account? <Link to="/signup">Signup</Link>

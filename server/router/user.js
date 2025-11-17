@@ -1,5 +1,5 @@
 const express = require('express');
-const {makeUser, loginUser, provideUser, sendOtp, logOut, forgotPasswordOtp,forgotPassword,uploadProfilePhoto} = require('../controller/user');
+const {makeUser, loginUser, provideUser, sendOtp, logOut, forgotPasswordOtp,forgotPassword,uploadProfilePhoto,googlLogin} = require('../controller/user');
 const {restrictToLoggedinUserOnly} = require('../middleware/logincheck');
 const router = express.Router();
 
@@ -16,4 +16,5 @@ router.post('/logout',restrictToLoggedinUserOnly, logOut);
 router.post('/forgotPassword/otp', forgotPasswordOtp);
 router.post('/forgotPassword', forgotPassword);
 router.post('/uploadPhoto', uploadProfilePhoto);
+router.get('/google',googlLogin);
 module.exports = router;
