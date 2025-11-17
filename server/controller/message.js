@@ -18,7 +18,7 @@ async function postMessage(req, res) {
                     messages: { senderEmail: req.user.email, body: req.body.message},
                 },
             },
-            { upsert: true }
+            { }
         );
         return res.status(200).json({success:true, message:'message sent'});
     }catch(error){
@@ -43,9 +43,26 @@ async function getChat(req, res){
         return res.status(500).json({success:false, message:'error while fetching chat', error:error});
     }
 }
-
+async function createChat(req, res){
+    try{
+        if(!req.user.email){
+            return res.status(500).json({success:false, message:'Error fetching cookie data'});
+        }
+        if(!req.body.email){
+            return res.status(400).json({success:false, message:'Provide the receiver email'});
+        }
+        req.body.email = req.body.trimEnd().toLowerCase();
+        const chatemails = [req.user.email, req.body.email].sort();
+        await Chat.create({email:chatemails});
+        return res.status(200).json({success:true, message: 'Chat created'});
+    }
+    catch(e){
+        return res.status(500).json({success:false, message:"Error while creating chat"});
+    }
+}
 
 module.exports = {
     getChat,
-    postMessage
+    postMessage,
+    createChat,
 }

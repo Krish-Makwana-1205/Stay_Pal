@@ -46,10 +46,6 @@ const tenantSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    nightOwl: {
-        type: Boolean,
-        default: false
-    },
     earlybird: {
         type: Boolean,
         default: false

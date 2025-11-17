@@ -1,0 +1,21 @@
+.profile-container { max-width: 900px; margin: 0 auto; padding: 1rem; font-family: sans-serif; }
+.profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.profile-form { display: flex; flex-direction: column; gap: 1rem; }
+.profile-photo-section { display: flex; justify-content: center; margin-bottom: 1rem; }
+.photo-container { position: relative; width: 150px; height: 150px; }
+.profile-photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #ddd; display: block; }
+.photo-placeholder { width: 150px; height: 150px; border-radius: 50%; background: #f1f1f1; border: 3px solid #ddd; }
+.photo-input { position: absolute; inset: 0; width: 150px; height: 150px; opacity: 0; cursor: pointer; }
+.photo-upload-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; color: rgba(0,0,0,0.6); font-size: 0.9rem; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.pref-icons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.pref-icon { display: inline-flex; flex-direction: column; align-items: center; padding: 0.4rem; border-radius: 8px; cursor: pointer; border: 1px solid transparent; background: transparent; }
+.pref-icon img { width: 48px; height: 48px; object-fit: contain; }
+.pref-icon.active { border-color: #888; background: rgba(0,0,0,0.03); }
+.small-pref-row { margin-bottom: 0.5rem; }
+.hobby-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.hobby-list { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.hobby-item { background: #efefef; padding: 0.25rem 0.5rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; }
+.submit-btn { padding: 0.65rem 1rem; border-radius: 6px; background: #2e7d32; color: #fff; border: none; cursor: pointer; }
+.back-btn, .edit-btn, .cancel-btn { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; }

@@ -5,6 +5,7 @@ const User = require("../model/user");
 const { sendEmail } = require("../utils/mailer");
 const {getSimilarity} = require("../utils/nlp");
 
+
 async function home(req, res) {
 
   try {
@@ -210,7 +211,10 @@ async function filterProperties(req, res) {
       page = 1,
       limit = 1000,
       description,
+      transportAvailability,
+      
     } = req.query;
+    console.log(req.query);
     if (!req.user.email) {
       return res.status(400).json({ success: false, message: "User not defined" });
     }
@@ -332,6 +336,7 @@ async function filterProperties(req, res) {
       }
       if(description && prop.description){
         let simi = await getSimilarity(description, prop.description);
+        console.log(simi);
         points += simi*18; 
       }
       return points;

@@ -4,7 +4,7 @@ const user = require('../model/user');
 const Property = require('../model/property');
  
 const {setUser} = require('../service/auth');
-async function makeProfile(req, res){
+async function makeProfileform(req, res){
     const body = req.body;
     const User = req.user;
     console.log(User);
@@ -119,6 +119,7 @@ async function fullProfile(req, res) {
     if(body.workingshifts) body.workingshifts = body.workingshifts.trimEnd();
 
     try{
+        console.log('run');
         await tenant.findOneAndUpdate(
             {email:User.email},
             {
@@ -164,13 +165,13 @@ async function fullProfile(req, res) {
             istenant:true
         });
 
-        // Re-issue token preserving username/name and istenant flag
-        const token = setUser({
-          email: User.email,
-          username: User.name || User.username || "",
-          istenant: true
-        });
-        res.cookie('uid', token);
+        // // Re-issue token preserving username/name and istenant flag
+        // const token = setUser({
+        //   email: User.email,
+        //   username: User.name || User.username || "",
+        //   istenant: true
+        // });
+        // res.cookie('uid', token);
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Error in contacting Database",error:error.message});
@@ -258,7 +259,7 @@ async function sendProperties(req, res){
 
 }
 module.exports = {
-    makeProfile,
+    makeProfileform,
     addPreferences, 
     tenantdetails,
     fullProfile,

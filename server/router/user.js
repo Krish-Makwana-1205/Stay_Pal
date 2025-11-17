@@ -15,6 +15,6 @@ router.get('/me', restrictToLoggedinUserOnly, provideUser);
 router.post('/logout',restrictToLoggedinUserOnly, logOut);
 router.post('/forgotPassword/otp', forgotPasswordOtp);
 router.post('/forgotPassword', forgotPassword);
-router.post('/uploadPhoto', uploadProfilePhoto);
+router.post('/uploadPhoto', restrictToLoggedinUserOnly, upload.single("photo"), uploadProfilePhoto);
 router.get('/google',googlLogin);
 module.exports = router;
