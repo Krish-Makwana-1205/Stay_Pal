@@ -195,6 +195,54 @@ async function getApplicationsForOwner(req, res) {
     });
   }
 }
+async function getMyApplications(req, res) {
+  try {
+    const tenantEmail = req.user.email;
+
+    if (!tenantEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "User not logged in",
+      });
+    }
+
+    const apps = await Application.find({ tenantEmail });
+
+    if (apps.length === 0) {
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        message: "You have not applied to any properties",
+        data: [],
+      });
+    }
+
+    const propertyDetails = await Promise.all(
+      apps.map(({ propertyName, propertyOwnerEmail }) =>
+        property.findOne({ name: propertyName, email: propertyOwnerEmail })
+      )
+    );
+
+    const result = apps.map((app, i) => ({
+      property: propertyDetails[i],
+      appliedAt: app.appliedAt,
+    }));
+
+    return res.status(200).json({
+  success: true,
+  count: result?.length || 0,
+  data: result || [],
+});
+
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
 
 async function filterProperties(req, res) {
   try {
@@ -370,4 +418,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, propertysend, applyForProperty, getApplicationsForOwner};
+module.exports = { home, filterProperties, propertysend, applyForProperty, getApplicationsForOwner,getMyApplications };

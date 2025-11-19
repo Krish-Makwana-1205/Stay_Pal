@@ -2,29 +2,20 @@ const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema(
   {
-    senderEmail: { 
-      type: String,  
-      required: true 
-    },
-    body: { 
-      type: String,   
-      required: true 
-    }
+    senderEmail: { type: String, required: true },
+    body: { type: String, required: true }
   },
-  { timestamps: true }  
+  { timestamps: true }
 );
-
 
 const chatSchema = new mongoose.Schema(
   {
-    email: { 
-      type: [String],   
-    },
-    messages: [messageSchema]  
+    chatId: { type: String, required: true, unique: true }, // UNIQUE KEY
+    email: { type: [String], required: true },               // BOTH EMAILS
+    messages: [messageSchema]
   },
-  { timestamps: true }  
+  { timestamps: true }
 );
 
-chatSchema.index({ sender: 1, receiver: 1 }, { unique: true });
-
+// No unique index on email array
 module.exports = mongoose.model("Chat", chatSchema);

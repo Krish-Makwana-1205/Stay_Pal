@@ -1,68 +1,89 @@
+const { get } = require('http');
 const Chat = require('../model/chat');
 
 async function postMessage(req, res) {
+  try {
+    const sender = req.user.email;
+    const receiver = req.body.email;
+
+    if (!receiver) {
+      return res.status(400).json({ success: false, message: "Receiver email required" });
+    }
+    if (!req.body.message) {
+      return res.status(400).json({ success: false, message: "Message required" });
+    }
+
+    const cleanReceiver = receiver.trim().toLowerCase();
+    const emails = [sender, cleanReceiver].sort();
+    const chatId = emails.join("-");
+
+    const updatedChat = await Chat.findOneAndUpdate(
+      { chatId },   // THIS FIXES EVERYTHING
+      {
+        $setOnInsert: { chatId, email: emails },
+        $push: {
+          messages: {
+            senderEmail: sender,
+            body: req.body.message
+          }
+        }
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({ success: true, data: updatedChat });
+
+  } catch (error) {
+    console.log("🔥 POST MESSAGE ERROR:", error);
+    res.status(500).json({ success: false, error });
+  }
+}
+
+
+async function getChat(req, res) {
     try {
-        if(!req.body.email){
-            return res.status(400).json({success:false, message:'Provide the receiver email'});
+        const sender = req.user.email;
+        const receiver = req.query.email;
+
+        if (!receiver) {
+            return res.status(400).json({ success: false, message: "Receiver email required" });
         }
-        if(!req.body.message){
-            return res.status(400).json({success:false, message:'Provide the message to be sent'});
-        }
-        req.body.email = req.body.trimEnd().toLowerCase();
-        const chatemails = [req.user.email, req.body.email].sort();
-        await Chat.findOneAndUpdate(
-            { email: chatemails },
-            {
-                $setOnInsert: { email: chatemails },
-                $push: {
-                    messages: { senderEmail: req.user.email, body: req.body.message},
-                },
-            },
-            { }
-        );
-        return res.status(200).json({success:true, message:'message sent'});
-    }catch(error){
-        return res.status(500).json({success:false, message:'error while sending message', error:error});
+
+        const emails = [sender, receiver].sort();
+        const chatId = emails.join("-");
+
+        const chat = await Chat.findOne({ chatId });
+
+        res.status(200).json({ success: true, data: chat });
+
+    } catch (error) {
+        console.log("🔥 GET CHAT ERROR:", error);
+        res.status(500).json({ success: false, error });
     }
-    
 }
 
-async function getChat(req, res){
-    try{
-        if(!req.body.email){
-            return res.status(400).json({success:false, message:'Provide the other users email'});
-        }
-        req.body.email = req.body.trimEnd().toLowerCase();
-        const chatemails = [req.user.email, req.body.email].sort();
-        const result = await Chat.findOne({email : chatemails});
+// KEEP createChat if you want manual chat creation
+async function getChatList(req, res) {
+    try {
+        const email = req.user.email;
 
-        return res.status(200).json({success:true, message: 'chat fetched', data:result})
-        
-    }
-    catch(error){
-        return res.status(500).json({success:false, message:'error while fetching chat', error:error});
-    }
-}
-async function createChat(req, res){
-    try{
-        if(!req.user.email){
-            return res.status(500).json({success:false, message:'Error fetching cookie data'});
-        }
-        if(!req.body.email){
-            return res.status(400).json({success:false, message:'Provide the receiver email'});
-        }
-        req.body.email = req.body.trimEnd().toLowerCase();
-        const chatemails = [req.user.email, req.body.email].sort();
-        await Chat.create({email:chatemails});
-        return res.status(200).json({success:true, message: 'Chat created'});
-    }
-    catch(e){
-        return res.status(500).json({success:false, message:"Error while creating chat"});
+        const chats = await Chat.find({ email: email });
+
+        res.status(200).json({
+            success: true,
+            data: chats
+        });
+
+    } catch (error) {
+        console.log("🔥 CHAT LIST ERROR:", error);
+        res.status(500).json({ success: false, error });
     }
 }
+
+
 
 module.exports = {
     getChat,
     postMessage,
-    createChat,
-}
+    getChatList
+};

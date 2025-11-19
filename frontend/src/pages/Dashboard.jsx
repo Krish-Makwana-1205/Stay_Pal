@@ -38,7 +38,6 @@ const Dashboard = () => {
       await logout();
       navigate("/login");
       localStorage.removeItem("defaultCity");
-      // Clear all saved filters for the logged-out user
       const keys = Object.keys(localStorage);
       keys.forEach(key => {
         if (key.startsWith("filters_")) {
@@ -167,6 +166,8 @@ const Dashboard = () => {
           <button className="quick-btn" onClick={() => navigate("/dashboard/roommates")}>View Roommates</button>
           <button className="quick-btn" onClick={() => navigate("/dashboard/shared")}>View Shared Property</button>
           <button className="quick-btn" onClick={() => navigate("/myproperties")}>View Your Properties</button>
+          <button className="quick-btn" onClick={() => navigate("/tenant/my-applications")}>Applied properties</button>
+
 
         </div>
 

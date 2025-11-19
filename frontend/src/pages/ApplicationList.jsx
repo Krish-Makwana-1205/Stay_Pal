@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
 import { getApplications } from "../api/filters";
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import ChatPage from "./ChatPage";
 export default function ApplicationList() {
   const { propertyName } = useParams();
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     async function load() {
       try {
@@ -26,6 +27,9 @@ export default function ApplicationList() {
 
   return (
     <div style={{padding:"20px"}}>
+      <button onClick={() => navigate("/my-chats")}>
+      Chats
+    </button>
       <h2>Applications for {propertyName}</h2>
 
       {apps.map((a, i) => (

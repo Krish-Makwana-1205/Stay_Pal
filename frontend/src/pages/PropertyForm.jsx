@@ -6,7 +6,7 @@ import "../StyleSheets/PropertyForm.css";
 import Alert from "../Components/Alert";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Country, City } from "country-state-city";
+import { City } from "country-state-city";
 import NumberInput from "../Components/NumberInput";
 import LocalitySelector from "../Components/LocalitySelector";
 
@@ -42,36 +42,34 @@ export default function PropertyForm() {
   const fileInputRef = useRef(null);
   const [linkError, setLinkError] = useState("");
 
-   const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
- // Load saved form data (if any)
-useEffect(() => {
-  const savedForm = localStorage.getItem("propertyFormData");
-  if (savedForm) {
-    setFormData(JSON.parse(savedForm));
-  }
-}, []);
-// Save form data automatically on every change
-useEffect(() => {
-  localStorage.setItem("propertyFormData", JSON.stringify(formData));
-}, [formData]);
 
+  // Load saved draft
+  useEffect(() => {
+    const savedForm = localStorage.getItem("propertyFormData");
+    if (savedForm) setFormData(JSON.parse(savedForm));
+  }, []);
 
+  // Autosave draft
+  useEffect(() => {
+    localStorage.setItem("propertyFormData", JSON.stringify(formData));
+  }, [formData]);
+
+  // Auth check
   useEffect(() => {
     if (!authLoading) {
       if (!user) navigate("/login");
     }
   }, [authLoading, user, navigate]);
+
   if (authLoading) return <p>Loading...</p>;
   if (!user) return null;
-  // ---------- HANDLERS ----------
+
+  // Handlers -----------------------------------
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setFormData({ ...formData, [name]: checked });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
   const handleCityChange = (selected) => {
@@ -81,7 +79,9 @@ useEffect(() => {
   const handleNearbyPlacesChange = (selectedOptions) => {
     setFormData({
       ...formData,
-      nearbyPlaces: selectedOptions ? selectedOptions.map((opt) => opt.value) : [],
+      nearbyPlaces: selectedOptions
+        ? selectedOptions.map((opt) => opt.value)
+        : [],
     });
   };
 
@@ -91,10 +91,11 @@ useEffect(() => {
 
     if (totalFiles > 10) {
       setImageLimitMessage("You can upload a maximum of 10 images only.");
-      const allowedFiles = selectedFiles.slice(0, 10 - images.length);
-      setImages((prev) => [...prev, ...allowedFiles]);
+      const allowed = selectedFiles.slice(0, 10 - images.length);
+      setImages((prev) => [...prev, ...allowed]);
       return;
     }
+
     setImages((prev) => [...prev, ...selectedFiles]);
     setImageLimitMessage("");
   };
@@ -110,18 +111,22 @@ useEffect(() => {
     e.preventDefault();
 
     if (!formData.rent || Number(formData.rent) <= 0) {
-      setMessage({ text: "Please enter a valid rent amount.", type: "error" });
+      setMessage({
+        text: "Please enter a valid rent amount.",
+        type: "error",
+      });
       return;
     }
-    if(linkError){
+    if (linkError) {
       setMessage({ text: "Enter Valid Link", type: "error" });
       return;
     }
 
     setLoading(true);
     setMessage({ text: "", type: "" });
-formData.address = `${formData.houseNumber || ""}$*${formData.street || ""}$*${formData.areaOrLandmark || ""}`;
-console.log("Address:", formData.address);
+
+    formData.address = `${formData.houseNumber || ""}$*${formData.street || ""}$*${formData.areaOrLandmark || ""}`;
+
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       if (Array.isArray(formData[key])) {
@@ -132,95 +137,81 @@ console.log("Address:", formData.address);
     });
     images.forEach((img) => data.append("images", img));
 
-   try {
-  const res = await uploadProperty(data);
+    try {
+      const res = await uploadProperty(data);
 
-  if (res.status === 200) {
-    // 🧹 Clear saved draft data
-    localStorage.removeItem("propertyFormData");
+      if (res.status === 200) {
+        localStorage.removeItem("propertyFormData");
 
-    // ✅ Success message
-    setMessage({
-      text: res.data.message || "Property uploaded successfully!",
-      type: "success",
-    });
+        setMessage({
+          text: res.data.message || "Property uploaded successfully!",
+          type: "success",
+        });
 
-    // ⭐ Save property name for PF2 auto-fill
+        setFormData({
+          name: "",
+          email: "",
+          description: "",
+          BHK: "",
+          rent: "",
+          nation: "India",
+          pincode: "",
+          city: "",
+          locality: "",
+          houseType: "",
+          furnishingType: "Any",
+          areaSize: "",
+          address: "",
+          addressLink: "",
+          nearbyPlaces: [],
+          parkingArea: "None",
+          transportAvailability: false,
+          isRoommate: false,
+          houseNumber: "",
+          street: "",
+          areaOrLandmark: "",
+        });
 
-    setFormData({
-      name: "",
-      email: "",
-      description: "",
-      BHK: "",
-      rent: "",
-      nation: "India",
-      pincode: "",
-      city: "",
-      locality: "",
-      houseType: "",
-      furnishingType: "Any",
-      areaSize: "",
-      address: "",
-      addressLink: "",
-      nearbyPlaces: [],
-      parkingArea: "None",
-      transportAvailability: false,
-      isRoommate: false,
-      houseNumber: "",
-      street: "",
-      areaOrLandmark: "",
-    });
+        setImages([]);
+        if (fileInputRef.current) fileInputRef.current.value = null;
 
-    // 🖼️ Reset images
-    setImages([]);
-    if (fileInputRef.current) fileInputRef.current.value = null;
+        localStorage.removeItem(`localities_${formData.city}`);
+        localStorage.setItem("propertyForm_lastName", formData.name);
 
-    // 🔄 Navigate to next step
-    // IMPORTANT: force LocalitySelector to fetch localities for this city on edit page
-localStorage.removeItem(`localities_${formData.city}`);
-localStorage.setItem("propertyForm_lastName", formData.name);
+        navigate("/PropertyForm2");
+      }
+    } catch (error) {
+      console.error("Error uploading:", error);
 
-    navigate("/PropertyForm2");
-  }
-} catch (error) {
-  console.error("Error uploading property:", error);
+      if (error.response) {
+        const backendMessage =
+          error.response.data?.message ||
+          error.response.data?.msg ||
+          JSON.stringify(error.response.data);
 
-  if (error.response) {
-    const backendMessage =
-      error.response.data?.message ||
-      error.response.data?.msg ||
-      JSON.stringify(error.response.data);
-
-    console.log(" Backend full error:", backendMessage);
-
-    // 🚨 Handle MongoDB duplicate key error (E11000)
-    if (/E11000.*duplicate key error/i.test(backendMessage)) {
-      setMessage({
-        text: "A property with this name already exists. Please choose a unique name.",
-        type: "error",
-      });
-    } else if (backendMessage.includes("ValidationError")) {
-      setMessage({
-        text: "Please fill all required fields correctly.",
-        type: "error",
-      });
-    } else {
-      setMessage({
-        text: backendMessage || "Server error.",
-        type: "error",
-      });
+        if (/E11000.*duplicate key/.test(backendMessage)) {
+          setMessage({
+            text: "A property with this name already exists.",
+            type: "error",
+          });
+        } else {
+          setMessage({
+            text: backendMessage || "Server error.",
+            type: "error",
+          });
+        }
+      } else {
+        setMessage({
+          text: "Network error. Check connection.",
+          type: "error",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-  } else {
-    // 🌐 Network issue or request not reaching backend
-    setMessage({ text: "Network error. Please check your connection.", type: "error" });
-  }
-} finally {
-  // ⏳ Stop loader in all cases
-  setLoading(false);
-}
   };
 
-  // ---------- OPTIONS ----------
+  // Options -----------------------------------
   const nearbyOptions = [
     { value: "Market", label: "Market" },
     { value: "Bus Stop", label: "Bus Stop" },
@@ -244,262 +235,281 @@ localStorage.setItem("propertyForm_lastName", formData.name);
     { value: "More", label: "More" },
   ];
 
-  // Fetch all Indian cities from country-state-city
-  const cityOptions = City.getCitiesOfCountry("IN").map((city) => ({
-    value: city.name,
-    label: city.name,
+  const cityOptions = City.getCitiesOfCountry("IN").map((c) => ({
+    value: c.name,
+    label: c.name,
   }));
 
-  // ---------- JSX ----------
+  // --------------------------------------------
   return (
     <div className="property-form-container">
-      <h2 className="form-title">Upload Property</h2>
 
-      <form onSubmit={handleSubmit} className="property-form" encType="multipart/form-data">
-        {/* BASIC FIELDS */}
-        <label>Property Name *</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+      <div className="property-form-wrapper">
+        
+        {/* LEFT SIDE */}
+        <div className="property-form-left">
+          <h2 className="property-form-title">Upload Property</h2>
+          <img
+            src="/house.png"
+            className="left-side-image"
+            alt="House Illustration"
+          />
+        </div>
 
-        <label>Description *</label>
-        <textarea name="description" value={formData.description} onChange={handleChange} required />
+        {/* RIGHT SIDE */}
+        <div className="property-form-right">
 
- <label>BHK *</label>
-<NumberInput
-  name="BHK"
-  max="100"
-  value={formData.BHK}
-  onChange={(e) => setFormData({ ...formData, BHK: e.target.value })}
-  required
-/>
+          <form
+            onSubmit={handleSubmit}
+            className="property-form"
+            encType="multipart/form-data"
+          >
+            {/* BASIC FIELDS */}
+            <label>Property Name *</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
 
+            <label>Description *</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+            />
 
-<label>Rent (₹) *</label>
-<NumberInput
-  name="rent"
-  max="100000000"
-  value={formData.rent}
-  onChange={(e) => setFormData({ ...formData, rent: e.target.value })}
-  required
-/>
+            <label>BHK *</label>
+            <NumberInput
+              name="BHK"
+              max="100"
+              value={formData.BHK}
+              onChange={(e) =>
+                setFormData({ ...formData, BHK: e.target.value })
+              }
+              required
+            />
 
+            <label>Rent (₹) *</label>
+            <NumberInput
+              name="rent"
+              max="100000000"
+              value={formData.rent}
+              onChange={(e) =>
+                setFormData({ ...formData, rent: e.target.value })
+              }
+              required
+            />
 
+            {/* CITY */}
+            <label>City *</label>
+            <Select
+              options={cityOptions}
+              value={cityOptions.find((c) => c.value === formData.city) || null}
+              onChange={handleCityChange}
+              placeholder="Select your city"
+              isClearable
+            />
 
-        {/* CITY DROPDOWN */}
-        <label>City *</label>
-        <Select
-          options={cityOptions}
-          value={cityOptions.find((c) => c.value === formData.city) || null}
-          onChange={handleCityChange}
-          placeholder="Select your city"
-          isClearable
-        />
+            {/* NEARBY */}
+            <label style={{ marginTop: "10px" }}>Nearby Places</label>
+            <CreatableSelect
+              isMulti
+              options={nearbyOptions}
+              value={formData.nearbyPlaces.map((p) => ({
+                value: p,
+                label: p,
+              }))}
+              onChange={handleNearbyPlacesChange}
+              placeholder="Select or add nearby places"
+            />
 
-        {/* NEARBY PLACES */}
-        <label style={{ marginTop: "10px" }}>Nearby Places</label>
-        <CreatableSelect
-          isMulti
-          options={nearbyOptions}
-          value={formData.nearbyPlaces.map((p) => ({ value: p, label: p }))}
-          onChange={handleNearbyPlacesChange}
-          placeholder="Select or add nearby places"
-        />
+            {/* LOCALITY */}
+            <label>Locality *</label>
+            <LocalitySelector
+              city={formData.city}
+              value={formData.locality}
+              onChange={(loc) => {
+                const list = JSON.parse(
+                  localStorage.getItem(`localities_${formData.city}`)
+                );
+                const match = list?.find((item) => item.locality === loc);
 
-       
+                setFormData((prev) => ({
+                  ...prev,
+                  locality: loc,
+                  pincode: match ? match.postalCode : "",
+                }));
+              }}
+            />
 
-<label>Locality *</label>
-<LocalitySelector
-  city={formData.city}
-  value={formData.locality}
-  onChange={(loc) => {
-    const newLocality = loc;
+            <label>Pincode *</label>
+            <input
+              type="text"
+              name="pincode"
+              value={formData.pincode}
+              onChange={handleChange}
+              required
+            />
 
-    const list = JSON.parse(
-      localStorage.getItem(`localities_${formData.city}`)
-    );
+            <label>House Type *</label>
+            <select
+              name="houseType"
+              value={formData.houseType}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select</option>
+              <option value="Apartment">Apartment</option>
+              <option value="Tenament">Tenament</option>
+              <option value="Bungalow">Bungalow</option>
+              <option value="Studio">Studio</option>
+              <option value="Condo">Condo</option>
+              <option value="Other">Other</option>
+            </select>
 
-    const match = list?.find((item) => item.locality === newLocality);
-{console.log(list);}
-    setFormData((prev) => ({
-      ...prev,
-      locality: newLocality,
-      pincode: match ? match.postalCode : "",
-    }));
-  }}
-/>
-<label>Pincode *</label>
-<input
-  type="text"
-  name="pincode"
-  value={formData.pincode}
-  onChange={handleChange}
-  required
-/>
+            <label>Furnishing Type</label>
+            <select
+              name="furnishingType"
+              value={formData.furnishingType}
+              onChange={handleChange}
+            >
+              <option value="Fully Furnished">Fully Furnished</option>
+              <option value="Semi Furnished">Semi Furnished</option>
+              <option value="Unfurnished">Unfurnished</option>
+              <option value="Any">Any</option>
+            </select>
 
+            <label>Area Size (sq ft)</label>
+            <NumberInput
+              name="areaSize"
+              max="1000000"
+              value={formData.areaSize}
+              onChange={(e) =>
+                setFormData({ ...formData, areaSize: e.target.value })
+              }
+            />
 
+            {/* ADDRESS */}
+            <label>Address Details</label>
+            <div className="address-fields">
+              <input
+                type="text"
+                name="houseNumber"
+                placeholder="House / Flat No."
+                value={formData.houseNumber}
+                onChange={handleChange}
+              />
 
-        <label>House Type *</label>
-        <select name="houseType" value={formData.houseType} onChange={handleChange} required>
-          <option value="">Select</option>
-          <option value="Apartment">Apartment</option>
-          <option value="Tenament">Tenament</option>
-          <option value="Bungalow">Bungalow</option>
-          <option value="Studio">Studio</option>
-          <option value="Condo">Condo</option>
-          <option value="Other">Other</option>
-        </select>
+              <input
+                type="text"
+                name="street"
+                placeholder="Street / Road Name"
+                value={formData.street}
+                onChange={handleChange}
+              />
 
-        <label>Furnishing Type</label>
-        <select name="furnishingType" value={formData.furnishingType} onChange={handleChange}>
-          <option value="Fully Furnished">Fully Furnished</option>
-          <option value="Semi Furnished">Semi Furnished</option>
-          <option value="Unfurnished">Unfurnished</option>
-          <option value="Any">Any</option>
-        </select>
+              <input
+                type="text"
+                name="areaOrLandmark"
+                placeholder="Area / Landmark"
+                value={formData.areaOrLandmark}
+                onChange={handleChange}
+              />
+            </div>
 
-       <label>Area Size (sq ft)</label>
-<NumberInput
-  name="areaSize"
-  max="1000000"
-  value={formData.areaSize}
-  onChange={(e) => setFormData({ ...formData, areaSize: e.target.value })}
-/>
+            <label>Address Link</label>
+            <input
+              type="text"
+              name="addressLink"
+              value={formData.addressLink}
+              placeholder="Paste Google Maps link"
+              onChange={(e) => {
+                const val = e.target.value.trim();
+                setFormData({ ...formData, addressLink: val });
 
+                const valid = /^(https?:\/\/)?(www\.)?(google\.com\/maps\/(place|@)|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+/;
+                setLinkError(val && !valid.test(val) ? "Please enter a valid Google Maps link." : "");
+              }}
+            />
 
-       {/* ADDRESS SECTION */}
-<label>Address Details</label>
+            {linkError && (
+              <p style={{ color: "red", fontSize: "0.9rem" }}>{linkError}</p>
+            )}
 
-<div className="address-fields">
-  <input
-    type="text"
-    name="houseNumber"
-    placeholder="House / Flat No."
-    value={formData.houseNumber}
-    onChange={handleChange}
-  />
+            <label>Parking Area *</label>
+            <Select
+              options={parkingOptions}
+              value={parkingOptions.find((p) => p.value === formData.parkingArea) || null}
+              onChange={(selected) =>
+                setFormData({
+                  ...formData,
+                  parkingArea: selected ? selected.value : "None",
+                })
+              }
+              placeholder="Select Parking Option"
+            />
 
-  <input
-    type="text"
-    name="street"
-    placeholder="Street / Road Name"
-    value={formData.street}
-    onChange={handleChange}
-  />
+            {/* IMAGE UPLOAD */}
+            <label>Property Images (max 10) *</label>
 
-  <input
-    type="text"
-    name="areaOrLandmark"
-    placeholder="Area / Landmark"
-    value={formData.areaOrLandmark}
-    onChange={handleChange}
-  />
-</div>
+            {imageLimitMessage && (
+              <p style={{ color: "red" }}>{imageLimitMessage}</p>
+            )}
 
+            {images.length > 0 && (
+              <div className="image-preview-container">
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={URL.createObjectURL(img)}
+                    className="preview-thumb"
+                    alt=""
+                  />
+                ))}
+              </div>
+            )}
 
-       <label>Address Link</label>
-<input
-  type="text"
-  name="addressLink"
-  value={formData.addressLink}
-  placeholder="Paste Google Maps link"
-  onChange={(e) => {
-    const val = e.target.value.trim();
-    setFormData({ ...formData, addressLink: val });
+            <input
+              ref={fileInputRef}
+              type="file"
+              name="images"
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+            />
 
-    const googleMapsPattern = /^(https?:\/\/)?(www\.)?(google\.com\/maps\/(place|@)|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+/;
+            <div style={{ marginTop: 8 }}>
+              <button
+                type="button"
+                onClick={handleClearImages}
+                disabled={images.length === 0}
+                className="clear-images-btn"
+              >
+                Clear Selected Images
+              </button>
 
-    if (val && !googleMapsPattern.test(val)) {
-      setLinkError("Please enter a valid Google Maps link.");
-    } else {
-      setLinkError("");
-    }
-  }}
-/>
+              <span style={{ marginLeft: 12 }}>
+                {images.length > 0
+                  ? `${images.length} image(s) selected`
+                  : "No images selected"}
+              </span>
+            </div>
 
-{linkError && <p style={{ color: "red", fontSize: "0.9rem" }}>{linkError}</p>}
-
-
-        <label>Parking Area *</label>
-        <Select
-          options={parkingOptions}
-          value={parkingOptions.find((p) => p.value === formData.parkingArea) || null}
-          onChange={(selected) =>
-            setFormData({ ...formData, parkingArea: selected ? selected.value : "None" })
-          }
-          placeholder="Select Parking Option"
-        />
-
-       
-
-       {/* IMAGE UPLOAD */}
-<label>Property Images (max 10) *</label>
-
-
-{/* Show error if image limit exceeded */}
-{imageLimitMessage && (
-  <p style={{ color: "red", fontSize: "0.9rem" }}>{imageLimitMessage}</p>
-)}
-
-{/* Show thumbnails of uploaded images */}
-{images.length > 0 && (
-  <div className="image-preview-container">
-    {images.map((img, index) => (
-      <div key={index} className="image-preview">
-        <img
-          src={URL.createObjectURL(img)}
-          alt={`Preview ${index}`}
-          className="preview-thumb"
-        />
+            <button
+              type="submit"
+              className="property-submit-btn"
+              disabled={loading}
+            >
+              {loading ? "Uploading..." : "Upload Property"}
+            </button>
+          </form>
+        </div>
       </div>
-    ))}
-  </div>
-)}
-<input
-  ref={fileInputRef}
-  type="file"
-  name="images"
-  multiple
-  accept="image/*"
-  onChange={(e) => {
-    const selectedFiles = Array.from(e.target.files);
-    const totalFiles = images.length + selectedFiles.length;
-
-    if (totalFiles > 10) {
-      setImageLimitMessage("You can upload a maximum of 10 images only.");
-      const allowedFiles = selectedFiles.slice(0, 7 - images.length);
-      setImages((prev) => [...prev, ...allowedFiles]);
-      return;
-    }
-
-    setImages((prev) => [...prev, ...selectedFiles]);
-    setImageLimitMessage("");
-  }}
-  required
-/>
-<div style={{ marginTop: 8, marginBottom: 12 }}>
-  <button
-    type="button"
-    onClick={(e) => {
-      e.preventDefault();
-      setImages([]);
-      setImageLimitMessage("");
-      if (fileInputRef.current) fileInputRef.current.value = null;
-    }}
-    disabled={images.length === 0}
-    className="clear-images-btn"
-  >
-    Clear Selected Images
-  </button>
-
-  <span style={{ marginLeft: 12 }}>
-    {images.length > 0 ? `${images.length} image(s) selected` : "No images selected"}
-  </span>
-</div>
-
-
-        <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? "Uploading..." : "Upload Property"}
-        </button>
-      </form>
 
       <Alert
         message={message.text}

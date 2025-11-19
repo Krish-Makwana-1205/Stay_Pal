@@ -10,7 +10,6 @@ import ISO6391 from "iso-639-1";
 import Select from "react-select";
 import { countries } from "countries-list";
 
-
 export default function PropertyForm2() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,9 +24,9 @@ export default function PropertyForm2() {
     maritalStatus: "Any",
     family: "Any",
     foodPreference: "Any",
-    smoking: true, 
-    alcohol: true, 
-    pets: true, 
+    smoking: true,
+    alcohol: true,
+    pets: true,
     nationality: "",
     workingShift: "Any",
     professionalStatus: "Any",
@@ -47,16 +46,16 @@ export default function PropertyForm2() {
       setFormData(JSON.parse(savedData));
     }
   }, []);
-useEffect(() => {
-  const lastName = localStorage.getItem("propertyForm_lastName");
 
-  if (lastName) {
-    setFormData((prev) => ({
-      ...prev,
-      name: lastName
-    }));
-  }
-}, []);
+  useEffect(() => {
+    const lastName = localStorage.getItem("propertyForm_lastName");
+    if (lastName) {
+      setFormData((prev) => ({
+        ...prev,
+        name: lastName,
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("tenantPreferencesFormData", JSON.stringify(formData));
@@ -68,7 +67,7 @@ useEffect(() => {
       ...prev,
       [name]:
         name === "smoking" || name === "alcohol" || name === "pets"
-          ? value === "true" // convert string to boolean
+          ? value === "true"
           : value,
     }));
   };
@@ -102,6 +101,7 @@ useEffect(() => {
     }
 
     setLoading(true);
+
     try {
       const payload = {
         email: formData.email,
@@ -142,10 +142,10 @@ useEffect(() => {
           type: "success",
         });
 
-        // Clear draft and reset form
-                  navigate("/dashboard");
+        navigate("/dashboard");
 
         localStorage.removeItem("tenantPreferencesFormData");
+
         setFormData({
           email: user?.email || "",
           name: user?.name || "",
@@ -170,7 +170,7 @@ useEffect(() => {
         });
       } else {
         setMessage({
-          text: res.data?.message || "Unexpected response from server.",
+          text: res.data?.message || "Unexpected server response.",
           type: "error",
         });
       }
@@ -205,248 +205,254 @@ useEffect(() => {
 
   return (
     <div className="property-form-container">
-      <h2 className="form-title">Tenant Preferences for Property</h2>
 
-      <Alert
-        message={message.text}
-        type={message.type}
-        onClose={() => setMessage({ text: "", type: "" })}
-      />
+      <div className="property-form-wrapper">
 
-      <form onSubmit={handleSubmit} className="property-form">
-        <label>Email (auto-filled)</label>
-        <input
-          type="email"
-          value={formData.email}
-          readOnly
-          disabled
-          style={{ backgroundColor: "#f3f3f3", color: "#666" }}
-        />
-
-        <label>Property Name *</label>
-<input
-  type="text"
-  value={formData.name}
-  readOnly
-  style={{ backgroundColor: "#f3f3f3", color: "#555", cursor: "not-allowed" }}
-  placeholder="Name of Property"
-/>
-
-
-        <label>Gender Preference</label>
-        <select name="gender" value={formData.gender} onChange={handleChange}>
-          <option value="Any">Any</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-
-        <label>Age Range</label>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <NumberInput
-            name="minAge"
-            placeholder="Min Age"
-            value={formData.minAge}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, minAge: e.target.value }))
-            }
-            min="0"
-          />
-          <NumberInput
-            name="maxAge"
-            placeholder="Max Age"
-            value={formData.maxAge}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, maxAge: e.target.value }))
-            }
-            min="0"
-          />
+        {/* LEFT PANEL */}
+        <div className="property-form-left">
+          <h2 className="property-form-title">Tenant Preferences</h2>
         </div>
 
-        <label>Occupation</label>
-        <CreatableSelect
-          options={occupationOptions}
-          value={
-            formData.occupation
-              ? { value: formData.occupation, label: formData.occupation }
-              : null
-          }
-          onChange={handleOccupationChange}
-          placeholder="Select or type occupation"
-          isClearable
-        />
+        {/* RIGHT PANEL */}
+        <div className="property-form-right">
 
-        <label>Marital Status</label>
-        <select
-          name="maritalStatus"
-          value={formData.maritalStatus}
-          onChange={handleChange}
-        >
-          <option value="Any">Any</option>
-          <option value="Single">Single</option>
-          <option value="Married">Married</option>
-        </select>
+          <Alert
+            message={message.text}
+            type={message.type}
+            onClose={() => setMessage({ text: "", type: "" })}
+          />
 
-        <label>Family</label>
-        <select name="family" value={formData.family} onChange={handleChange}>
-          <option value="Any">Any</option>
-          <option value="Allowed">Allowed</option>
-          <option value="Not Allowed">Not Allowed</option>
-        </select>
+          <form onSubmit={handleSubmit} className="property-form">
 
-        <label>Food Preference</label>
-        <select
-          name="foodPreference"
-          value={formData.foodPreference}
-          onChange={handleChange}
-        >
-          <option value="Any">Any</option>
-          <option value="Vegetarian">Vegetarian</option>
-          <option value="Non-Vegetarian">Non-Vegetarian</option>
-        </select>
+            <label>Email (auto-filled)</label>
+            <input
+              type="email"
+              value={formData.email}
+              readOnly
+              disabled
+              style={{ backgroundColor: "#f3f3f3", color: "#666" }}
+            />
 
-        <label>Smoking Preference</label>
-        <select name="smoking" value={formData.smoking} onChange={handleChange}>
-          <option value="true">Any</option>
-          <option value="false">Not Allowed</option>
-        </select>
+            <label>Property Name *</label>
+            <input
+              type="text"
+              value={formData.name}
+              readOnly
+              style={{ backgroundColor: "#f3f3f3", color: "#555", cursor: "not-allowed" }}
+            />
 
-        <label>Alcohol Preference</label>
-        <select name="alcohol" value={formData.alcohol} onChange={handleChange}>
-          <option value="true">Any</option>
-          <option value="false">Not Allowed</option>
-        </select>
+            <label>Gender Preference</label>
+            <select name="gender" value={formData.gender} onChange={handleChange}>
+              <option value="Any">Any</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
 
-        <label>Pets Allowed</label>
-        <select name="pets" value={formData.pets} onChange={handleChange}>
-          <option value="true">Any</option>
-          <option value="false">Not Allowed</option>
-        </select>
+            <label>Age Range</label>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <NumberInput
+                name="minAge"
+                placeholder="Min Age"
+                value={formData.minAge}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, minAge: e.target.value }))
+                }
+                min="0"
+              />
+              <NumberInput
+                name="maxAge"
+                placeholder="Max Age"
+                value={formData.maxAge}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, maxAge: e.target.value }))
+                }
+                min="0"
+              />
+            </div>
 
-<label>Nationality</label>
-<Select
-  options={Object.values(countries).map((c) => ({
-    value: c.name,
-    label: c.name,
-  }))}
-  value={
-    formData.nationality
-      ? { value: formData.nationality, label: formData.nationality }
-      : null
-  }
-  onChange={(selected) =>
-    setFormData((prev) => ({
-      ...prev,
-      nationality: selected ? selected.value : "",
-    }))
-  }
-  isClearable
-  placeholder="Select nationality"
-/>
+            <label>Occupation</label>
+            <CreatableSelect
+              options={occupationOptions}
+              value={
+                formData.occupation
+                  ? { value: formData.occupation, label: formData.occupation }
+                  : null
+              }
+              onChange={handleOccupationChange}
+              placeholder="Select or type occupation"
+              isClearable
+            />
 
+            <label>Marital Status</label>
+            <select
+              name="maritalStatus"
+              value={formData.maritalStatus}
+              onChange={handleChange}
+            >
+              <option value="Any">Any</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+            </select>
 
-        <label>Religion</label>
-<select
-  name="religion"
-  value={formData.religion}
-  onChange={handleChange}
->
-  <option value="Any">Any</option>
-  <option value="Hinduism">Hinduism</option>
-  <option value="Islam">Islam</option>
-  <option value="Christianity">Christianity</option>
-  <option value="Judaism">Judaism</option>
-  <option value="Sikhism">Sikhism</option>
-  <option value="Jainism">Jainism</option>
-  <option value="Buddhism">Buddhism</option>
-  <option value="Taoism">Taoism</option>
-  <option value="Zoroastrianism">Zoroastrianism</option>
-  <option value="Atheist">Atheist</option>
-  <option value="Other">Other</option>
-</select>
+            <label>Family</label>
+            <select name="family" value={formData.family} onChange={handleChange}>
+              <option value="Any">Any</option>
+              <option value="Allowed">Allowed</option>
+              <option value="Not Allowed">Not Allowed</option>
+            </select>
 
+            <label>Food Preference</label>
+            <select
+              name="foodPreference"
+              value={formData.foodPreference}
+              onChange={handleChange}
+            >
+              <option value="Any">Any</option>
+              <option value="Vegetarian">Vegetarian</option>
+              <option value="Non-Vegetarian">Non-Vegetarian</option>
+            </select>
 
-<label>Most preferred Language</label>
-<Select
-  options={ISO6391.getAllNames().map((lang) => ({
-    value: lang,
-    label: lang,
-  }))}
-  value={
-    formData.language
-      ? { value: formData.language, label: formData.language }
-      : null
-  }
-  onChange={(selected) =>
-    setFormData((prev) => ({
-      ...prev,
-      language: selected ? selected.value : "",
-    }))
-  }
-  isClearable
-  placeholder="Select language"
-/>
+            <label>Smoking Preference</label>
+            <select name="smoking" value={formData.smoking} onChange={handleChange}>
+              <option value="true">Any</option>
+              <option value="false">Not Allowed</option>
+            </select>
 
+            <label>Alcohol Preference</label>
+            <select name="alcohol" value={formData.alcohol} onChange={handleChange}>
+              <option value="true">Any</option>
+              <option value="false">Not Allowed</option>
+            </select>
 
-        <label>Working Shift</label>
-        <select
-          name="workingShift"
-          value={formData.workingShift}
-          onChange={handleChange}
-        >
-          <option value="Any">Any</option>
-          <option value="Day Shift">Day Shift</option>
-          <option value="Night Shift">Night Shift</option>
-        </select>
+            <label>Pets Allowed</label>
+            <select name="pets" value={formData.pets} onChange={handleChange}>
+              <option value="true">Any</option>
+              <option value="false">Not Allowed</option>
+            </select>
 
-        <label>Professional Status</label>
-        <select
-          name="professionalStatus"
-          value={formData.professionalStatus}
-          onChange={handleChange}
-        >
-          <option value="Any">Any</option>
-          <option value="Student">Student</option>
-          <option value="Employed">Employed</option>
-          <option value="Self-Employed">Self-Employed</option>
-        </select>
+            <label>Nationality</label>
+            <Select
+              options={Object.values(countries).map((c) => ({
+                value: c.name,
+                label: c.name,
+              }))}
+              value={
+                formData.nationality
+                  ? { value: formData.nationality, label: formData.nationality }
+                  : null
+              }
+              onChange={(selected) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  nationality: selected ? selected.value : "",
+                }))
+              }
+              isClearable
+            />
 
-        <label>Minimum Stay Duration (months)</label>
-        <NumberInput
-          name="minStayDuration"
-          min="0"
-          value={formData.minStayDuration}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              minStayDuration: e.target.value,
-            }))
-          }
-        />
+            <label>Religion</label>
+            <select
+              name="religion"
+              value={formData.religion}
+              onChange={handleChange}
+            >
+              <option value="Any">Any</option>
+              <option value="Hinduism">Hinduism</option>
+              <option value="Islam">Islam</option>
+              <option value="Christianity">Christianity</option>
+              <option value="Judaism">Judaism</option>
+              <option value="Sikhism">Sikhism</option>
+              <option value="Jainism">Jainism</option>
+              <option value="Buddhism">Buddhism</option>
+              <option value="Taoism">Taoism</option>
+              <option value="Zoroastrianism">Zoroastrianism</option>
+              <option value="Atheist">Atheist</option>
+              <option value="Other">Other</option>
+            </select>
 
-        <label>Max People Allowed</label>
-        <NumberInput
-          name="maxPeopleAllowed"
-          min="0"
-          value={formData.maxPeopleAllowed}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              maxPeopleAllowed: e.target.value,
-            }))
-          }
-        />
+            <label>Most Preferred Language</label>
+            <Select
+              options={ISO6391.getAllNames().map((lang) => ({
+                value: lang,
+                label: lang,
+              }))}
+              value={
+                formData.language
+                  ? { value: formData.language, label: formData.language }
+                  : null
+              }
+              onChange={(selected) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  language: selected ? selected.value : "",
+                }))
+              }
+              isClearable
+            />
 
-        <label>Notes</label>
-        <textarea
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-        />
+            <label>Working Shift</label>
+            <select
+              name="workingShift"
+              value={formData.workingShift}
+              onChange={handleChange}
+            >
+              <option value="Any">Any</option>
+              <option value="Day Shift">Day Shift</option>
+              <option value="Night Shift">Night Shift</option>
+            </select>
 
-        <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? "Saving..." : "Save Preferences"}
-        </button>
-      </form>
+            <label>Professional Status</label>
+            <select
+              name="professionalStatus"
+              value={formData.professionalStatus}
+              onChange={handleChange}
+            >
+              <option value="Any">Any</option>
+              <option value="Student">Student</option>
+              <option value="Employed">Employed</option>
+              <option value="Self-Employed">Self-Employed</option>
+            </select>
+
+            <label>Minimum Stay Duration (months)</label>
+            <NumberInput
+              name="minStayDuration"
+              min="0"
+              value={formData.minStayDuration}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  minStayDuration: e.target.value,
+                }))
+              }
+            />
+
+            <label>Max People Allowed</label>
+            <NumberInput
+              name="maxPeopleAllowed"
+              min="0"
+              value={formData.maxPeopleAllowed}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  maxPeopleAllowed: e.target.value,
+                }))
+              }
+            />
+
+            <label>Notes</label>
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+            />
+
+            <button type="submit" className="property-submit-btn" disabled={loading}>
+              {loading ? "Saving..." : "Save Preferences"}
+            </button>
+          </form>
+
+        </div>
+      </div>
     </div>
   );
 }

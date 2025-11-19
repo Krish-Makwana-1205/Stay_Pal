@@ -122,6 +122,22 @@ export default function PropertyView() {
           </p>
 
           <p><strong>Owner Email:</strong> {property.email}</p>
+          <button
+  style={{
+    marginTop: "10px",
+    padding: "12px 20px",
+    background: "green",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "16px"
+  }}
+  onClick={() => navigate(`/chat/${property.email}`)}
+>
+  Chat with Owner
+</button>
+
 
           <p>
             <strong>Address:</strong>{" "}
