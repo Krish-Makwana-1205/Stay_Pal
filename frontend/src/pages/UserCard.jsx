@@ -6,9 +6,19 @@ export default function UserCard() {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
 
-  const handleLogout = async () => {
+    const handleLogout = async () => {
     try {
       await logout();
+
+      // Optional: clear stored filters/city like Dashboard does
+      localStorage.removeItem("defaultCity");
+      const keys = Object.keys(localStorage);
+      keys.forEach((key) => {
+        if (key.startsWith("filters_")) {
+          localStorage.removeItem(key);
+        }
+      });
+
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -51,11 +61,38 @@ export default function UserCard() {
   <div className="usercard-page">
     <div className="usercard-container">
       {/* Header */}
-      <header className="usercard-header">
-        <h2 className="usercard-greeting">Hi, {user.username || "User"} 👋</h2>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+           <header className="usercard-header">
+        <div className="usercard-left">
+          <h2 className="usercard-greeting">
+            Hi, {user.username || "User"} 
+          </h2>
+        </div>
+
+        <nav className="usercard-nav">
+          <button
+            type="button"
+            className="usercard-nav-link"
+            onClick={() => navigate("/dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            type="button"
+            className="usercard-nav-link"
+            onClick={() => navigate("/profile")}
+          >
+            Profile
+          </button>
+
+          <button
+            type="button"
+            className="usercard-nav-link usercard-nav-logout"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </nav>
       </header>
 
 

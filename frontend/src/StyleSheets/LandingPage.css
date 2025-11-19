@@ -63,14 +63,48 @@ body {
 
 .hero-header {
   position: absolute;
-  top: 30px; 
-  left: 8%; 
+  top: 30px;
+  left: 8%;
+  right: 8%;
   display: flex;
   align-items: center;
-  gap: 10px; 
-  z-index: 20; 
+  justify-content: space-between; /* brand left, buttons right */
+  z-index: 20;
+}
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-link {
+  border-radius: 999px;
+  padding: 6px 14px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
 .header-logo {
   width: 40px; 
   height: auto;
@@ -83,7 +117,53 @@ body {
   margin-bottom: 0; 
   letter-spacing: -1px;
 }
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Links & button share the same look */
+.nav-link {
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Logout has a slightly stronger emphasis */
+.nav-logout {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.nav-logout:hover {
+  background-color: #e55353;
+  border-color: #e55353;
+  color: #ffffff;
+} 
 .text-content {
   flex: none;
   min-width: 300px;

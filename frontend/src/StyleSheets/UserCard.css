@@ -85,6 +85,52 @@
   flex-wrap: wrap;
   text-align: center;
 }
+.usercard-left {
+  display: flex;
+  align-items: center;
+}
+
+/* Right side navbar inside UserCard */
+.usercard-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Buttons: Dashboard / Profile / Logout */
+.usercard-nav-link {
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.usercard-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+  border-color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Make Logout a bit stronger visually */
+.usercard-nav-logout {
+  background: linear-gradient(135deg, #ff4b4b 0%, #ff6a6a 100%);
+  border-color: transparent;
+}
+
+.usercard-nav-logout:hover {
+  background: linear-gradient(135deg, #ff3434 0%, #ff6666 100%);
+}
 
 .usercard-greeting {
   font-size: 1.5rem;

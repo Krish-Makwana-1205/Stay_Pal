@@ -2,20 +2,55 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import "../StyleSheets/LandingPage.css";
 import { Link } from "react-router-dom";
-import StayPalLogo from "../assets/logo_blue.png"; 
+import StayPalLogo from "../assets/logo_blue.png";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
 
   const getStartedLink = user ? "/usercard" : "/signup";
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      // Same cleanup logic as on Dashboard
+      localStorage.removeItem("defaultCity");
+      const keys = Object.keys(localStorage);
+      keys.forEach((key) => {
+        if (key.startsWith("filters_")) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed from landing page:", err);
+    }
+  }; 
   return (
     <main className="card">
       {/* Hero Section */}
       <div className="content-wrapper">
-        <header className="hero-header">
-          <img src={StayPalLogo} alt="StayPal Logo" className="header-logo" />
-          <h1 className="logo">StayPal</h1>
+                <header className="hero-header">
+          {/* Left: Brand only */}
+          <div className="hero-brand">
+            <img
+              src={StayPalLogo}
+              alt="StayPal Logo"
+              className="header-logo"
+            />
+            <h1 className="logo">StayPal</h1>
+          </div>
+
+          {/* Right: only Login & Signup for visitors */}
+          <nav className="nav-links">
+            <Link to="/login" className="nav-link">
+              Login
+            </Link>
+            <Link to="/signup" className="nav-link">
+              Sign up
+            </Link>
+          </nav>
         </header>
 
         <div className="text-content">
