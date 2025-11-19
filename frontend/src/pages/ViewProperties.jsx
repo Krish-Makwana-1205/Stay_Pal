@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Filters from "../Components/Filters";
 import { fetchproperty } from "../api/filters";
-import "../StyleSheets/Dashboard.css";
+import "../StyleSheets/ViewProperty.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const ViewProperties = ({ defaultCity }) => {

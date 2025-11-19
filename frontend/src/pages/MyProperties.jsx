@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchMyProperties } from "../api/property";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-// import "../StyleSheets/MyProperties.css"; // <-- IMPORTANT
+import "../StyleSheets/MyProperties.css"; 
 
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);

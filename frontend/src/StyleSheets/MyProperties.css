@@ -1,0 +1,206 @@
+/* =========================================
+   PAGE CONTAINER — FIX DOUBLE SCROLL
+========================================= */
+.my-properties-container {
+  min-height: 100vh;
+  height: auto;                 /* FIX: allow page to grow */
+  width: 100%;
+  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
+  padding: 20px 15px;           /* Smaller padding */
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;           /* Only horizontal hidden */
+  overflow-y: auto;             /* FIX: allow scrolling */
+  z-index: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Floating Bubbles */
+.my-properties-container::before,
+.my-properties-container::after {
+  content: "";
+  position: absolute;
+  background: rgba(4, 0, 255, 0.08);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.my-properties-container::before {
+  width: 380px;          /* Smaller bubble */
+  height: 380px;
+  top: -150px;
+  right: -150px;
+  animation: float 6s ease-in-out infinite;
+}
+
+.my-properties-container::after {
+  width: 230px;          /* Smaller bubble */
+  height: 230px;
+  bottom: -80px;
+  left: -80px;
+  animation: float 7s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0,0); }
+  50% { transform: translate(15px, -15px); }
+}
+
+/* =========================================
+   TITLE
+========================================= */
+.page-title {
+  text-align: center;
+  font-size: 28px;          /* Smaller */
+  font-weight: 700;
+  color: #1e3c72;
+  margin-bottom: 25px;
+}
+
+/* =========================================
+   PROPERTY CARD — COMPACT VERSION
+========================================= */
+.property-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);  /* Smaller blur */
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  padding: 22px;              /* Smaller padding */
+  margin-bottom: 22px;
+
+  max-width: 1000px;          /* Smaller width */
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: grid;
+  grid-template-columns: 1fr 280px; /* Smaller sidebar */
+  gap: 25px;                        /* Smaller gap */
+  align-items: start;
+}
+
+/* ==============================
+   CARD HEADER
+============================== */
+.card-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.card-header h3 {
+  font-size: 22px;
+  margin: 0;
+  color: #1e3c72;
+}
+
+/* ==============================
+   LEFT COLUMN IMAGE
+============================== */
+.image-wrapper img {
+  width: 100%;
+  height: 210px;                 /* FIX: smaller image */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 15px;
+}
+
+/* ==============================
+   DETAILS GRID — compact
+============================== */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px 10px;
+  margin-bottom: 12px;
+}
+
+.details-grid p {
+  margin: 0;
+  font-size: 13px;         /* Smaller text */
+  color: #444;
+}
+
+.details-grid strong {
+  color: #1e3c72;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ==============================
+   DESCRIPTION BOX
+============================== */
+.description-box,
+.notes-box {
+  background: #f1f5f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+/* ==============================
+   RIGHT SIDEBAR
+============================== */
+.preferences-section {
+  background: #f8f9fa;
+  border: 1px solid #eef2f6;
+  border-radius: 14px;
+  padding: 16px;                /* Compact */
+}
+
+.pref-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 6px;
+}
+
+.pref-header h4 {
+  font-size: 16px;             /* Smaller */
+  margin: 0;
+  color: #1e3c72;
+}
+
+.preferences-section .details-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.preferences-section .details-grid p {
+  font-size: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #ddd;
+}
+
+/* ==============================
+   BUTTONS
+============================== */
+.action-btn,
+.primary-btn {
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 7px;
+}
+
+.primary-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ==============================
+   RESPONSIVE FIX
+============================== */
+@media (max-width: 900px) {
+  .property-card {
+    grid-template-columns: 1fr;
+  }
+}
