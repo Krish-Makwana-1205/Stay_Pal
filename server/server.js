@@ -7,6 +7,7 @@ const propertyOwner = require('./router/propertyOwner.js');
 const dashboard = require('./router/home.js'); 
 const roommate = require('./router/Roommate.js'); 
 const chat = require('./router/message.js');
+require("./cron/deleteotp.js");
 
 const app = express();
 require('dotenv').config();

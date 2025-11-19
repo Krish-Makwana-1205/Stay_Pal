@@ -1,4 +1,6 @@
 const property = require("../model/property");
+const sendMail = require("../utils/mailer");
+
 // const { getCoordinates } = require("../utils/geocode.js");
 
 // require("dotenv").config();
@@ -170,10 +172,59 @@ async function yourProperties(req, res) {
 // }
 
 
+async function deleteProperty(req, res) {
+    try {
+        const email = req.user.email;  
+
+        // TAKE PROPERTY NAME FROM REQ BODY
+        const { propertyName } = req.body;
+
+        if (!email || !propertyName) {
+            return res.status(400).json({
+                success: false,
+                message: "Email (from user) and Property Name (from body) are required"
+            });
+        }
+
+        // DELETE PROPERTY
+        const deleted = await property.findOneAndDelete({
+            email: email,
+            name: propertyName
+        });
+
+        if (!deleted) {
+            return res.status(404).json({
+                success: false,
+                message: "Property not found"
+            });
+        }
+ 
+        await sendMail(
+            email,
+            "Property Deleted",
+            `Your property "${propertyName}" has been successfully deleted from your StayPal account.`
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Property deleted & email sent successfully!"
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error
+        });
+    }
+}
+
 
 module.exports = {
   uploadProperty,
   addTenantPreferences,
   yourProperties,
+  deleteProperty,
   // findNearestProperty
 };
