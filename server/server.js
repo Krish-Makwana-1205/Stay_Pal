@@ -7,6 +7,7 @@ const propertyOwner = require('./router/propertyOwner.js');
 const dashboard = require('./router/home.js'); 
 const roommate = require('./router/Roommate.js'); 
 const chat = require('./router/message.js');
+const predictionRoutes = require('./router/predictionRoutes.js');
 require("./cron/deleteotp.js");
 
 const app = express();
@@ -37,4 +38,5 @@ app.use("/tenant", tenant);
 app.use("/propertyOwner", propertyOwner);
 app.use("/home", dashboard); 
 app.use("/roommate", roommate);  
-app.use("/chat", chat)
+app.use("/chat", chat);
+app.use("/prediction", predictionRoutes);

@@ -7,7 +7,6 @@ require("dotenv").config();
 
 
 async function uploadProperty(req, res) {
-  console.log('hello');
   try {
     const imgUrls = req.files.map(file => file.path);
     let body = req.body;
