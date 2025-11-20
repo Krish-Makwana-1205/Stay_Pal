@@ -20,16 +20,17 @@ export default function Filters({ onApply, defaultCity }) {
   const [BHK, setBHK] = useState("");
   const [furnishingType, setFurnishingType] = useState("");
   const [areaSize, setAreaSize] = useState("");
-  const [transportAvailability, setTransportAvailability] = useState(null);
+  const [transportAvailability, setTransportAvailability] = useState("Any");
   const [houseType, setHouseType] = useState("");
   const [nearbyPlaces, setNearbyPlaces] = useState("");
   const [description, setDescription] = useState("");
+  const [googleLink, setGoogleLink] = useState("");
 
   // Load saved filters on component mount
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
-      
+
       if (saved.city) {
         setSelectedCity({ value: saved.city, label: saved.city });
       }
@@ -41,23 +42,23 @@ export default function Filters({ onApply, defaultCity }) {
       if (saved.areaSize !== undefined) setAreaSize(String(saved.areaSize));
       if (saved.transportAvailability !== undefined) setTransportAvailability(saved.transportAvailability);
       if (saved.houseType) setHouseType(saved.houseType);
-      if (saved.nearbyPlaces) setNearbyPlaces(saved.nearbyPlaces);
+      if (saved.nearbyPlaces !== undefined) setNearbyPlaces(saved.nearbyPlaces);
       if (saved.description) setDescription(saved.description);
+      if (saved.googleLink) setGoogleLink(saved.googleLink);
     } catch (e) {
       console.error("Error loading saved filters:", e);
     }
   }, [storageKey]);
 
   // Override city if defaultCity prop is provided
- useEffect(() => {
-  if (defaultCity) {
-    // overwrite local cache to force fresh locality fetch
-    localStorage.removeItem(`localities_${defaultCity}`);
-    setSelectedCity({ value: defaultCity, label: defaultCity });
-    setLocality(""); // reset locality
-  }
-}, [defaultCity]);
-
+  useEffect(() => {
+    if (defaultCity) {
+      // overwrite local cache to force fresh locality fetch
+      localStorage.removeItem(`localities_${defaultCity}`);
+      setSelectedCity({ value: defaultCity, label: defaultCity });
+      setLocality(""); // reset locality
+    }
+  }, [defaultCity]);
 
   const furnishingOptions = ["Fully Furnished", "Semi Furnished", "Unfurnished"];
   const houseTypeOptions = ["Apartment", "Independent House", "Villa", "PG / Hostel"];
@@ -91,6 +92,7 @@ export default function Filters({ onApply, defaultCity }) {
       houseType,
       nearbyPlaces,
       description,
+      googleLink,
     };
     try {
       localStorage.setItem(storageKey, JSON.stringify(payload));
@@ -110,6 +112,7 @@ export default function Filters({ onApply, defaultCity }) {
     houseType,
     nearbyPlaces,
     description,
+    googleLink,
   ]);
 
   // ---------- city loader (unchanged) ----------
@@ -161,6 +164,7 @@ export default function Filters({ onApply, defaultCity }) {
       houseType: houseType || undefined,
       nearbyPlaces: nearbyPlaces || undefined,
       description: description || undefined,
+      googleLink: googleLink || undefined,
       page: 1,
       limit: 20,
     };
@@ -181,7 +185,8 @@ export default function Filters({ onApply, defaultCity }) {
     setHouseType("");
     setNearbyPlaces("");
     setDescription("");
-    
+    setGoogleLink("");
+
     // Clear localStorage
     try {
       localStorage.removeItem(storageKey);
@@ -240,17 +245,30 @@ export default function Filters({ onApply, defaultCity }) {
         <LocalitySelector city={selectedCity?.value} value={locality} onChange={setLocality} />
       </div>
 
-      {/* BHK */}
-      <div className="filter-group">
-        <label>BHK</label>
-        <input
-          type="number"
-          min="1"
-          max="10"
-          value={BHK}
-          onChange={(e) => setBHK(e.target.value)}
-          placeholder="Enter number of BHK"
-        />
+      {/* BHK + AREA (side-by-side) */}
+      <div className="filter-group" style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+        <div style={{ flex: 1 }}>
+          <label>BHK</label>
+          <input
+            type="number"
+            min="1"
+            max="10"
+            value={BHK}
+            onChange={(e) => setBHK(e.target.value)}
+            placeholder="Enter number of BHK"
+          />
+        </div>
+
+        <div style={{ width: 150 }}>
+          <label>Area Size (sq ft)</label>
+          <input
+            type="number"
+            min="0"
+            value={areaSize}
+            onChange={(e) => setAreaSize(e.target.value)}
+            placeholder="sq ft"
+          />
+        </div>
       </div>
 
       {/* RENT */}
@@ -341,27 +359,26 @@ export default function Filters({ onApply, defaultCity }) {
         </select>
       </div>
 
-      {/* AREA */}
-      <div className="filter-group">
-        <label>Area Size (sq ft)</label>
-        <input type="number" min="0" value={areaSize} onChange={(e) => setAreaSize(e.target.value)} placeholder="Enter area size" />
-      </div>
-
+      {/* TRANSPORT */}
       {/* TRANSPORT */}
       <div className="filter-group">
         <label>Transport Availability</label>
-        <div className="radio-group">
-          <label>
-            <input type="radio" name="transport" checked={transportAvailability === true} onChange={() => setTransportAvailability(true)} /> Yes
-          </label>
-          <label>
-            <input type="radio" name="transport" checked={transportAvailability === false} onChange={() => setTransportAvailability(false)} /> No
-          </label>
-          <label>
-            <input type="radio" name="transport" checked={transportAvailability === null} onChange={() => setTransportAvailability(null)} /> Any
-          </label>
-        </div>
+        <select
+          value={transportAvailability === null ? "" : transportAvailability}
+          onChange={(e) => {
+            if (e.target.value === "") {
+              setTransportAvailability(null); // means no selection
+            } else {
+              setTransportAvailability(e.target.value === "true"); // convert to boolean
+            }
+          }}
+        >
+          <option value="">Select</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
       </div>
+
 
       {/* HOUSE TYPE */}
       <div className="filter-group">
@@ -393,8 +410,19 @@ export default function Filters({ onApply, defaultCity }) {
 
       {/* DESCRIPTION */}
       <div className="filter-group">
-        <label>Description Match</label>
+        <label>Describe your dream property</label>
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the kind of property you want..." rows="3" />
+      </div>
+
+      {/* GOOGLE LINK */}
+      <div className="filter-group">
+        <label>Location near which you want your home</label>
+        <input
+          type="text"
+          value={googleLink}
+          onChange={(e) => setGoogleLink(e.target.value)}
+          placeholder="Paste Google Maps or listing URL (optional)"
+        />
       </div>
 
       {/* APPLY & RESET */}

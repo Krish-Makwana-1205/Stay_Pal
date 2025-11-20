@@ -1,15 +1,17 @@
 const property = require("../model/property");
 const sendMail = require("../utils/mailer");
 
-// const { getCoordinates } = require("../utils/geocode.js");
+const { getCoordinates } = require("../utils/geocode.js");
 
-// require("dotenv").config();
+require("dotenv").config();
 
 
 async function uploadProperty(req, res) {
+  console.log('hello');
   try {
     const imgUrls = req.files.map(file => file.path);
     let body = req.body;
+    console.log('hi');
     // Trim trailing spaces AND convert to lowercase for relevant fields
     if (body.description) body.description = body.description.trimEnd().toLowerCase();
     if (body.rent) body.rent = body.rent;
@@ -27,18 +29,22 @@ async function uploadProperty(req, res) {
       return res.status(400).json({ message: "Required fields missing" });
     }
                                 
-    // let latitude, longitude;
+    let latitude, longitude;
 
-    // try {
-    //   const coords = await getCoordinates(body.address, body.addressLink);
-    //   latitude = coords.latitude;
-    //   longitude = coords.longitude;
-    // } catch (error) {
-    //   console.error("Coordinate error:", error.message);
-    //   return res.status(500).json({ message: "Unable to fetch location coordinates" });
-    // }
+    try {
+      const coords = await getCoordinates(body.addressLink);
+      latitude = coords.latitude;
+      longitude = coords.longitude;
+    } catch (error) {
+      console.error("Coordinate error:", error.message);
+      return res.status(500).json({ message: "Unable to fetch location coordinates" });
+    }
     if(!req.user.email){
         return res.status(400).json({ message: "User is not logged in" });
+    }
+    if(latitude< -90 || latitude > 90 || longitude < -180 || longitude > 180){
+      latitude= null;
+      longitude = null;
     }
     const Property = await property.findOneAndUpdate(
       { email: req.user.email, name: body.name },
@@ -62,12 +68,15 @@ async function uploadProperty(req, res) {
         parkingArea: body.parkingArea,
         houseType: body.houseType,
         isRoommate: body.isRoommate,
+        latitude:latitude,
+        longitude:longitude
       },
       {timestamps: true, upsert: true }
     );
     return res.status(200).json({ message: "Property created successfully" });
   } catch (error) {
-    console.error("Error uploading property:", error.message);
+    console.log('error');
+    console.log("Error uploading property:", error.message);
     return res.status(500).json({ message: "Error uploading property", error: error.message });
   }
 }
@@ -131,45 +140,45 @@ async function yourProperties(req, res) {
   }
 }
 
-// async function findNearestProperty(req, res) {
-//   try {
-//     const { addressLink } = req.body; 
+async function findNearestProperty(req, res) {
+  try {
+    const { addressLink } = req.body; 
 
-//     if (!addressLink) {
-//       return res.status(400).json({ message: "Address link is required" });
-//     }
+    if (!addressLink) {
+      return res.status(400).json({ message: "Address link is required" });
+    }
 
     
-//     const coordMatch = addressLink.match(/(-?\d{1,3}\.\d+)[ ,]+(-?\d{1,3}\.\d+)/);
-//     if (!coordMatch) {
-//       return res.status(400).json({ message: "Could not extract coordinates from address link" });
-//     }
+    const coordMatch = addressLink.match(/(-?\d{1,3}\.\d+)[ ,]+(-?\d{1,3}\.\d+)/);
+    if (!coordMatch) {
+      return res.status(400).json({ message: "Could not extract coordinates from address link" });
+    }
 
-//     const latitude = parseFloat(coordMatch[1]);
-//     const longitude = parseFloat(coordMatch[2]);
+    const latitude = parseFloat(coordMatch[1]);
+    const longitude = parseFloat(coordMatch[2]);
 
-//     const nearest = await property.find({
-//       location: {
-//         $near: {
-//           $geometry: {
-//             type: "Point",
-//             coordinates: [longitude, latitude],
-//           },
-//           $maxDistance: 10000, // 10 km radius
-//         },
-//       },
-//     });
+    const nearest = await property.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude],
+          },
+          $maxDistance: 10000, // 10 km radius
+        },
+      },
+    });
 
-//     if (nearest.length === 0) {
-//       return res.status(404).json({ message: "No nearby properties found" });
-//     }
+    if (nearest.length === 0) {
+      return res.status(404).json({ message: "No nearby properties found" });
+    }
 
-//     res.status(200).json({ message: "Nearby properties found", properties: nearest });
-//   } catch (error) {
-//     console.error("Error finding nearby properties:", error);
-//     res.status(500).json({ message: "Error finding nearby properties", error: error.message });
-//   }
-// }
+    res.status(200).json({ message: "Nearby properties found", properties: nearest });
+  } catch (error) {
+    console.error("Error finding nearby properties:", error);
+    res.status(500).json({ message: "Error finding nearby properties", error: error.message });
+  }
+}
 
 
 async function deleteProperty(req, res) {
@@ -226,5 +235,5 @@ module.exports = {
   addTenantPreferences,
   yourProperties,
   deleteProperty,
-  // findNearestProperty
+  findNearestProperty
 };

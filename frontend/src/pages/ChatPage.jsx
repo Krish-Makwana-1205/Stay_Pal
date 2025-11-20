@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchChat, sendChatMessage } from "../api/chat";
+import Header from '../Components/Header';
 
 export default function ChatPage() {
   const { receiverEmail } = useParams();
@@ -31,6 +32,8 @@ export default function ChatPage() {
   }, [receiverEmail]);
 
   return (
+    <>
+    <Header user={user} onNavigate={navigate} onLogout={handleLogout}/>
     <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
       <h2>Chat with: {receiverEmail}</h2>
 
@@ -100,5 +103,6 @@ export default function ChatPage() {
         </button>
       </div>
     </div>
+    </>
   );
 }

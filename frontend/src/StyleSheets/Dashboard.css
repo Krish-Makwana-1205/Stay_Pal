@@ -5,12 +5,19 @@
   gap: 1rem;
   padding: 20px;
   font-family: Arial, sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;  /* keeps bubbles from creating scrollbars */
 }
 
 /* Main content area */
 .dashboard-main {
   flex: 3;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.55); /* translucent white */
+  backdrop-filter: blur(6px); /* elegant glass effect */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
@@ -19,7 +26,8 @@
 /* Sidebar */
 .dashboard-right {
   flex: 1;
-  background: #f7f7f7;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(6px);
   padding: 20px;
   border-radius: 8px;
   height: fit-content;
@@ -206,6 +214,41 @@
   background: #fff;
 }
 
+.dashboard-container::before,
+.dashboard-container::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(4, 0, 255, 0.1);
+}
+
+.dashboard-container::before {
+  width: 500px;
+  height: 500px;
+  top: -250px;
+  right: -250px;
+  animation: float 5s ease-in-out infinite;
+}
+
+.dashboard-container::after {
+  width: 300px;
+  height: 300px;
+  bottom: -150px;
+  left: -150px;
+  animation: float 6s ease-in-out infinite reverse;
+}
+
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(20px);
+  }
+}
+
+
 /* Responsive */
 @media (max-width: 900px) {
   .dashboard-container {
@@ -221,3 +264,7 @@
     width: 100%;
   }
 }
+
+
+/*Back ground */
+

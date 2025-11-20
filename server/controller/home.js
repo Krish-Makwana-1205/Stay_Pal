@@ -3,7 +3,8 @@ const Tenant = require("../model/tenant");
 const Application = require("../model/application");
 const User = require("../model/user");
 const { sendEmail } = require("../utils/mailer");
-const {getSimilarity} = require("../utils/nlp");
+const { getSimilarity } = require("../utils/nlp");
+const { getCoordinates, distance_Scoring } = require("../utils/geocode.js");
 
 
 async function home(req, res) {
@@ -33,14 +34,14 @@ async function propertysend(req, res) {
 
     const foundProperty = await property.findOne({ email, name });
 
-    if (!foundProperty) { 
-      return res.status(404).json({ success: false, message: "No property found "});
+    if (!foundProperty) {
+      return res.status(404).json({ success: false, message: "No property found " });
     }
 
-    return res.status(200).json({ 
+    return res.status(200).json({
       success: true, message: "Property fetched successfully", data: foundProperty,
     });
-  } 
+  }
   catch (error) {
     console.log("Error fetching property:", error.message);
     return res.status(500).json({
@@ -122,7 +123,7 @@ async function applyForProperty(req, res) {
       )
     ]);
 
-    return res.status(200).json({success: true, message: "Application sent successfully"});
+    return res.status(200).json({ success: true, message: "Application sent successfully" });
 
   } catch (error) {
     if (error.code === 11000) {
@@ -132,7 +133,7 @@ async function applyForProperty(req, res) {
       });
     }
 
-    return res.status(500).json({success: false, message: "Server error", error: error.message});
+    return res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 }
 
@@ -229,10 +230,10 @@ async function getMyApplications(req, res) {
     }));
 
     return res.status(200).json({
-  success: true,
-  count: result?.length || 0,
-  data: result || [],
-});
+      success: true,
+      count: result?.length || 0,
+      data: result || [],
+    });
 
 
   } catch (error) {
@@ -243,6 +244,8 @@ async function getMyApplications(req, res) {
     });
   }
 }
+
+
 
 async function filterProperties(req, res) {
   try {
@@ -260,19 +263,38 @@ async function filterProperties(req, res) {
       limit = 1000,
       description,
       transportAvailability,
-      
+      googleLink
     } = req.query;
-    console.log(req.query);
     if (!req.user.email) {
       return res.status(400).json({ success: false, message: "User not defined" });
     }
-    if(!rentLowerBound){
+    if (!rentLowerBound) {
       rentLowerBound = 0;
     }
     if (!city) {
       return res.status(400).json({ success: false, message: "City not provided" });
     }
     city = city.trimEnd().toLowerCase();
+
+    let linkpres = false;
+    let coords;
+    let lat2, long2;
+    if (googleLink) {
+      try {
+        coords = await getCoordinates(googleLink);
+        linkpres = true;
+      } catch (error) {
+        linkpres = false;
+      }
+      lat2 = coords.latitude;
+      long2 = coords.longitude;
+      if (lat2 < -90 || lat2 > 90 || long2 < -180 || long2 > 180) {
+        linkpres = false;
+      }
+    }
+    else{
+
+    }
 
     const filterCriteria = { city };
 
@@ -286,7 +308,6 @@ async function filterProperties(req, res) {
     } else if (rentUpperBound) {
       filterCriteria.rent = { $lte: Number(rentUpperBound) };
     }
-    console.log(filterCriteria);
 
     const skip = (page - 1) * Number(limit);
 
@@ -321,9 +342,18 @@ async function filterProperties(req, res) {
         }
       }
 
+      if(transportAvailability && prop.transportAvailability && transportAvailability != 'Any'){
+         if(transportAvailability == 'true' && prop.transportAvailability){
+             points += 3;
+         }
+         else{
+            points -= 3;
+         } 
+      }
+
       if (areaSize && prop.areaSize) {
         const diff = prop.areaSize - areaSize;
-        points += Math.max(0, 10 + diff / 100);
+        points += Math.max(0, 10 + diff / 100); // the more the better
       }
 
       if (nearbyPlaces && prop.nearbyPlaces) {
@@ -352,20 +382,20 @@ async function filterProperties(req, res) {
         if (tenantPreferences.family && prefs.family !== "Any") {
           if (tenantPreferences.family === prefs.family) points += 2;
         }
-        
+
 
         if (tenantPreferences.foodPreference && prefs.foodPreference !== "Any") {
           if (tenantPreferences.foodPreference === prefs.foodPreference) points += 1;
         }
 
-        if(!prefs.smoking){
-          if(tenantPreferences.smoking){
+        if (!prefs.smoking) {
+          if (tenantPreferences.smoking) {
             points -= 3;
           }
         }
 
-        if(!prefs.alcohol){
-          if(tenantPreferences.alcohol){
+        if (!prefs.alcohol) {
+          if (tenantPreferences.alcohol) {
             points -= 3;
           }
         }
@@ -382,11 +412,18 @@ async function filterProperties(req, res) {
           if (tenantPreferences.language === prefs.language) points += 2;
         }
       }
-      if(description && prop.description){
+      if (description && prop.description) {
         let simi = await getSimilarity(description, prop.description);
         console.log(simi);
-        points += simi*18; 
+        points += simi * 18;
       }
+      let lat1 = prop.latitude;
+      let long1 = prop.longitude;
+      if (lat1 && long1 && linkpres) {
+        points += await distance_Scoring(lat1, long1, lat2, long2);
+      }
+      console.log(prop.name);
+      console.log(points);
       return points;
     };
 
@@ -418,4 +455,4 @@ async function filterProperties(req, res) {
 }
 
 
-module.exports = { home, filterProperties, propertysend, applyForProperty, getApplicationsForOwner,getMyApplications };
+module.exports = { home, filterProperties, propertysend, applyForProperty, getApplicationsForOwner, getMyApplications };

@@ -87,7 +87,7 @@ const ViewProperties = ({ defaultCity }) => {
 
                 <div className="extra-info-grid">
                   <p>
-                    <strong>Rent:</strong> ₹{item.rentLowerBound} - ₹{item.rentUpperBound}
+                    <strong>Rent:</strong> ₹{item.rent}
                   </p>
                   <p><strong>Furnishing:</strong> {item.furnishingType}</p>
                   <p style={{ fontWeight: 600 }}>{item.city}</p>
