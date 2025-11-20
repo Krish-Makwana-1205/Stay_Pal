@@ -1,7 +1,7 @@
 const Tenant = require("../model/tenant");
 const Roommate = require("../model/roommate");
-const {getSimilarity} = require("../utils/nlp");
-const roommate = require("../model/roommate");
+const { getSimilarity } = require("../utils/nlp");
+
 
 async function roommateSearch(req, res) {
     let query = req.query;
@@ -193,7 +193,7 @@ async function roommateSearch(req, res) {
         // Night Owl / Early Bird
         if (typeof query.nightOwl === 'boolean' && typeof room.nightOwl === 'boolean') {
             if (query.nightOwl === room.nightOwl) {
-                points += 3; 
+                points += 3;
             } else {
             }
         }
@@ -224,7 +224,7 @@ async function roommateSearch(req, res) {
         }
         else {
             if (!room.Pet_lover) {
-                
+
             }
             else {
                 points -= 3;
@@ -312,7 +312,7 @@ async function roommateSearch(req, res) {
         // allergies
         if (query.allergies && Array.isArray(query.allergies) && Array.isArray(room.allergies)) {
             const commonallergies = query.allergies.filter(hobby => room.allergies.includes(allergies));
-            points += commonallergies.length * 3; 
+            points += commonallergies.length * 3;
         }
 
         // Min Stay Duration
@@ -323,9 +323,9 @@ async function roommateSearch(req, res) {
 
             }
         }
-        if(query.description && room.description){
+        if (query.description && room.description) {
             let tem = await getSimilarity(query.description, room.description);
-            tem = tem*15;
+            tem = tem * 15;
             points += tem;
         }
         return points;
@@ -341,47 +341,118 @@ async function roommateSearch(req, res) {
     scoredRoommates.sort((a, b) => b.points - a.points);
 }
 
-async function roommateUpload(req, res){
-  try {
-    const body = req.body;
+async function roommateUpload(req, res) {
+    try {
+        const body = req.body;
 
-    // Required fields
-    if (!body.rentupper || !body.rentlower || !body.city) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Required fields not filled" });
+        // Required fields
+        if (!body.rentupper || !body.rentlower || !body.city) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Required fields not filled" });
+        }
+
+        if (!req.user?.email) {
+            return res
+                .status(500)
+                .json({ success: false, message: "Cookie data not received" });
+        }
+
+        // Normalize city input
+        const city = body.city.trim().toLowerCase();
+
+        // Create the roommate listing
+        await Roommate.create({
+            email: req.user.email,
+            city,
+            rentlower: body.rentlower,
+            rentupper: body.rentupper,
+        });
+
+        return res
+            .status(200)
+            .json({ success: true, message: "Roommate listing created" });
+
+    } catch (error) {
+        console.error("Roommate upload failed:", error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Could not post roommate property" });
     }
-
-    if (!req.user?.email) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Cookie data not received" });
-    }
-
-    // Normalize city input
-    const city = body.city.trim().toLowerCase();
-
-    // Create the roommate listing
-    await roommate.create({
-      email: req.user.email,
-      city,
-      rentlower: body.rentlower,
-      rentupper: body.rentupper,
-    });
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Roommate listing created" });
-
-  } catch (error) {
-    console.error("Roommate upload failed:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Could not post roommate property" });
-  }
 }
 
+async function getlistings(req, res) {
+    if (!req.user.email) {
+        return res.status(500).json({ success: false, message: 'Error while fetching cookie data' });
+    }
+
+    try {
+        const listings = Roommate.find({ email: req.user.email });
+
+        return res.status(200).json({ success: true, message: 'fetch successfull', data: listings });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, error: e, message: 'error while fetching data' });
+    }
+
+}
+
+async function updatelisting(req, res) {
+    try {
+        const body = req.body;
+
+        // Required fields
+        if (!body.rentupper || !body.rentlower || !body.city) {
+            return res.status(400).json({ success: false, message: "Required fields not filled" });
+        }
+
+        if (!req.user?.email) {
+            return res.status(500).json({ success: false, message: "Cookie data not received" });
+        }
+
+        // Normalize city input
+        const city = body.city.trim().toLowerCase();
+
+        // Create the roommate listing
+        await Roommate.findOneAndUpdate({email:req.user.email, city:body.city},{
+            email: req.user.email,
+            city,
+            rentlower: body.rentlower,
+            rentupper: body.rentupper,
+        });
+
+        return res.status(200).json({ success: true, message: "Roommate listing updated" });
+
+    } catch (error) {
+        console.error("Roommate upload failed:", error);
+        return res.status(500).json({ success: false, message: "Could not post roommate property", error:error });
+    }
+}
+async function deletelisting(req, res){
+    try {
+        const body = req.body;
+
+        if (!req.user?.email) {
+            return res.status(500).json({ success: false, message: "Cookie data not received" });
+        }
+
+        // Normalize city input
+        const city = body.city.trim().toLowerCase();
+
+        // Create the roommate listing
+        await Roommate.findOneAndDelete({email:req.user.email, city:body.city});
+
+        return res.status(200).json({ success: true, message: "Roommate listing deleted" });
+
+    } catch (error) {
+        console.error("Roommate delete failed:", error);
+        return res.status(500).json({ success: false, message: "Could not delete roommate property", error:error });
+    }
+}
 module.exports = {
     roommateUpload,
     roommateSearch,
+    getlistings,
+    updatelisting,
+    deletelisting,
 }
