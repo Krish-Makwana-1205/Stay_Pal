@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { City } from "country-state-city"; 
+import { City } from "country-state-city";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { fetchproperty } from "../api/filters"; 
+import { fetchproperty } from "../api/filters";
 import "../StyleSheets/Dashboard.css";
+
+import Header from '../Components/Header';
+import FeaturedProperties from "../Components/FeaturedProperties";
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,7 +21,7 @@ const Dashboard = () => {
   const [properties, setProperties] = useState([]);
   const [loadingProps, setLoadingProps] = useState(false);
   const [error, setError] = useState(null);
-  const [cityOptions, setCityOptions] = useState([]); 
+  const [cityOptions, setCityOptions] = useState([]);
 
   useEffect(() => {
     const allCities = City.getCitiesOfCountry("IN");
@@ -50,20 +54,20 @@ const Dashboard = () => {
   };
 
   const fetchProperties = async (selectedCity) => {
-  if (!selectedCity) return;
-  setLoadingProps(true);
-  setError(null);
-  try {
-    const { data } = await fetchproperty({ city: selectedCity }); 
-    setProperties(data?.data || []);
-  } catch (err) {
-    console.error("City fetch error:", err);
-    setError("Could not fetch properties for this city.");
-    setProperties([]);
-  } finally {
-    setLoadingProps(false);
-  }
-};
+    if (!selectedCity) return;
+    setLoadingProps(true);
+    setError(null);
+    try {
+      const { data } = await fetchproperty({ city: selectedCity });
+      setProperties(data?.data || []);
+    } catch (err) {
+      console.error("City fetch error:", err);
+      setError("Could not fetch properties for this city.");
+      setProperties([]);
+    } finally {
+      setLoadingProps(false);
+    }
+  };
 
   useEffect(() => {
     if (defaultCity) {
@@ -81,40 +85,38 @@ const Dashboard = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-main">
-        {/* Header */}
-        <div className="dashboard-header">
-          <div>
-            <h1>Dashboard</h1>
-            <p>Welcome, {user?.username || "User"}</p>
-          </div>
-          <div className="dashboard-actions">
-            <button className="btn" onClick={() => navigate("/dashboard")}>Home</button>
-            <button className="btn" onClick={() => navigate("/profile")}>Profile</button>
-            <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
-          </div>
-        </div>
+    <>
+      <Header user={user} onNavigate={navigate} onLogout={handleLogout} active="home" />
+      <div className="dashboard-container">
 
-        <hr className="dashboard-hr" />
+        <div className="dashboard-main">
+          <hr className="dashboard-hr" />
 
-        <div className="city-select-section">
-          <h2>Select a City</h2>
-          <Select
-            options={cityOptions}
-            placeholder="Choose your city..."
-            value={
-              defaultCity
-                ? { value: defaultCity, label: defaultCity }
-                : null
-            }
-            onChange={handleCityChange}
-            className="city-dropdown"
-            isSearchable
+          <div className="city-select-section">
+            <h2>Select a City</h2>
+            <Select
+              options={cityOptions}
+              placeholder="Choose your city..."
+              value={
+                defaultCity
+                  ? { value: defaultCity, label: defaultCity }
+                  : null
+              }
+              onChange={handleCityChange}
+              className="city-dropdown"
+              isSearchable
+            />
+          </div>
+
+
+          <FeaturedProperties
+            loading={loadingProps}
+            error={error}
+            properties={properties}
+            onPropertyClick={(p) => navigate(`/property/${p.email}/${p.name}`)}
           />
-        </div>
 
-        <div className="featured-properties">
+          {/* {<div className="featured-properties">
           {loadingProps ? (
             <p>Loading properties…</p>
           ) : error ? (
@@ -130,9 +132,22 @@ const Dashboard = () => {
                     <div className="property-img-placeholder" />
                   )}
                   <div className="card-body">
+                    <h2>{p.name}</h2>
                     <h3>{p.city} — {p.BHK} BHK</h3>
-                    <p>Rent: ₹{p.rentLowerBound} - ₹{p.rentUpperBound}</p>
-                    <p>{p.furnishingType}</p>
+                    <p>Rent: ₹{p.rent}</p>
+                    <div><img
+                      src="/location-icon.png"
+                      alt="Clickable"
+                      style={{ width: "20px", cursor: "pointer" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (p?.addressLink) {
+                          window.open(p.addressLink, "_blank", "noopener,noreferrer");
+                        } 
+                      }}
+                      role="button"
+                      tabIndex={0}
+                    /></div>
                   </div>
                 </div>
               );
@@ -140,43 +155,21 @@ const Dashboard = () => {
           ) : (
             <p>Select a city to view available properties.</p>
           )}
+        </div>} */}
+          {properties.length > 0 && (
+            <div className="see-more-wrap">
+              <button
+                className="see-more-btn"
+                onClick={() => navigate("/dashboard/properties", { state: { defaultCity } })}
+              >
+                See More Properties
+              </button>
+            </div>
+          )}
         </div>
 
-        {properties.length > 0 && (
-          <div className="see-more-wrap">
-            <button
-              className="see-more-btn"
-              onClick={() => navigate("/dashboard/properties", { state: { defaultCity } })}
-            >
-              See More Properties
-            </button>
-          </div>
-        )}
       </div>
-
-      <div className="dashboard-right">
-        <h3>Quick Links</h3>
-        <div className="quick-buttons">
-          <button
-            className="quick-btn"
-            onClick={() => navigate("/dashboard/properties", { state: { defaultCity } })}
-          >
-            View Properties
-          </button>
-          <button className="quick-btn" onClick={() => navigate("/dashboard/roommates")}>View Roommates</button>
-          <button className="quick-btn" onClick={() => navigate("/dashboard/shared")}>View Shared Property</button>
-          <button className="quick-btn" onClick={() => navigate("/myproperties")}>View Your Properties</button>
-          <button className="quick-btn" onClick={() => navigate("/tenant/my-applications")}>Applied properties</button>
-
-
-        </div>
-
-        <hr className="dashboard-hr" />
-        <Link to="/propertyForm" className="link-block">
-          <button className="sidebar-btn">Add Property</button>
-        </Link>
-      </div>
-    </div>
+    </>
   );
 };
 

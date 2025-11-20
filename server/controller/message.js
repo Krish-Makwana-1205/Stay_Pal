@@ -5,7 +5,6 @@ async function postMessage(req, res) {
   try {
     const sender = req.user.email;
     const receiver = req.body.email;
-
     if (!receiver) {
       return res.status(400).json({ success: false, message: "Receiver email required" });
     }
@@ -18,7 +17,7 @@ async function postMessage(req, res) {
     const chatId = emails.join("-");
 
     const updatedChat = await Chat.findOneAndUpdate(
-      { chatId },   // THIS FIXES EVERYTHING
+      { chatId },   
       {
         $setOnInsert: { chatId, email: emails },
         $push: {
@@ -34,7 +33,7 @@ async function postMessage(req, res) {
     res.status(200).json({ success: true, data: updatedChat });
 
   } catch (error) {
-    console.log("🔥 POST MESSAGE ERROR:", error);
+    console.log("POST MESSAGE ERROR:", error);
     res.status(500).json({ success: false, error });
   }
 }
@@ -57,7 +56,7 @@ async function getChat(req, res) {
         res.status(200).json({ success: true, data: chat });
 
     } catch (error) {
-        console.log("🔥 GET CHAT ERROR:", error);
+        console.log("GET CHAT ERROR:", error);
         res.status(500).json({ success: false, error });
     }
 }

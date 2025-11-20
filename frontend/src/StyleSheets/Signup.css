@@ -7,17 +7,18 @@
 }
 
 .signup-container {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 20px;
   position: relative;
+
+  /* Important: keep background elements from causing page scroll */
   overflow: hidden;
 }
-
 /* Floating Circles */
 .signup-container::before {
   content: "";
@@ -44,14 +45,29 @@
 /* WRAPPER (CARD) */
 .signup-wrapper {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  max-width: 780px; /* MUCH SMALLER */
+  max-width: 780px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+
+  /* NEW: scroll only when necessary, and contain overscroll */
+  overflow-y: auto;
+  max-height: 100vh;
+  overscroll-behavior: contain;
+
+  animation: slideUp 0.6s ease-out;
+  z-index: 1;
 }
 
+.signup-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.signup-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 4px;
+}
 /* LEFT SIDE */
 .login-left {
   flex: 1;

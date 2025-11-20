@@ -1,6 +1,6 @@
 const Tenant = require("../model/tenant");
 const Roommate = require("../model/roommate");
-const { getSimilarity } = require("../utils/nlp");
+const {getSimilarity} = require("../utils/nlp");
 const roommate = require("../model/roommate");
 
 async function roommateSearch(req, res) {
@@ -193,7 +193,7 @@ async function roommateSearch(req, res) {
         // Night Owl / Early Bird
         if (typeof query.nightOwl === 'boolean' && typeof room.nightOwl === 'boolean') {
             if (query.nightOwl === room.nightOwl) {
-                points += 3;
+                points += 3; 
             } else {
             }
         }
@@ -224,7 +224,7 @@ async function roommateSearch(req, res) {
         }
         else {
             if (!room.Pet_lover) {
-
+                
             }
             else {
                 points -= 3;
@@ -312,20 +312,20 @@ async function roommateSearch(req, res) {
         // allergies
         if (query.allergies && Array.isArray(query.allergies) && Array.isArray(room.allergies)) {
             const commonallergies = query.allergies.filter(hobby => room.allergies.includes(allergies));
-            points += commonallergies.length * 3;
+            points += commonallergies.length * 3; 
         }
 
         // Min Stay Duration
         if (query.minStayDuration && room.minStayDuration) {
-            if (query.minStayDuration >= room.minStayDuration) {
+            if (query.minStayDuration <= room.minStayDuration) {
                 points += 5;
             } else {
 
             }
         }
-        if (query.description && room.description) {
+        if(query.description && room.description){
             let tem = await getSimilarity(query.description, room.description);
-            tem = tem * 15;
+            tem = tem*15;
             points += tem;
         }
         return points;
@@ -341,77 +341,44 @@ async function roommateSearch(req, res) {
     scoredRoommates.sort((a, b) => b.points - a.points);
 }
 
-async function roommateUpload(req, res) {
-    async function roommateUpload(req, res) {
-        try {
-            const body = req.body;
+async function roommateUpload(req, res){
+  try {
+    const body = req.body;
 
-            // Required fields
-            if (!body.rentupper || !body.rentlower || !body.city) {
-                return res
-                    .status(400)
-                    .json({ success: false, message: "Required fields not filled" });
-            }
-
-            if (!req.user?.email) {
-                return res
-                    .status(500)
-                    .json({ success: false, message: "Cookie data not received" });
-            }
-
-            // Normalize city input
-            const city = body.city.trim().toLowerCase();
-
-            // Build roommate preference object safely
-            const prefs = {
-                gender: body.gender || "Any",
-                upperagelimit: body.upperagelimit || null,
-                loweragelimit: body.loweragelimit || null,
-                occupation: body.occupation || null,
-                maritalStatus: body.maritalStatus || "Any",
-                family: body.family || "Any",
-                foodPreference: body.foodPreference || "Any",
-                smoking: body.smoking ?? false,
-                alcohol: body.alcohol ?? false,
-                pets: body.pets ?? false,
-                nationality: body.nationality || "Any",
-                workingShift: body.workingShift || "Any",
-                professionalStatus: body.professionalStatus || "Any",
-                religion: body.religion || "Any",
-                language: body.language || "Any",
-                minStayDuration: body.minStayDuration || 0,
-                notes: body.notes || "",
-                earlyBird: body.earlyBird ?? false,
-                nightOwl: body.nightOwl ?? false,
-                studious: body.studious ?? false,
-                fitness_freak: body.fitness_freak ?? false,
-                sporty: body.sporty ?? false,
-                wanderer: body.wanderer ?? false,
-                party_lover: body.party_lover ?? false,
-                hobbies: Array.isArray(body.hobbies) ? body.hobbies : [],
-            };
-
-            // Create the roommate listing
-            await roommate.create({
-                email: req.user.email,
-                city,
-                rentlower: body.rentlower,
-                rentupper: body.rentupper,
-                roommatepreference: prefs,
-            });
-
-            return res
-                .status(200)
-                .json({ success: true, message: "Roommate listing created" });
-
-        } catch (error) {
-            console.error("Roommate upload failed:", error);
-            return res
-                .status(500)
-                .json({ success: false, message: "Could not post roommate property" });
-        }
+    // Required fields
+    if (!body.rentupper || !body.rentlower || !body.city) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Required fields not filled" });
     }
 
+    if (!req.user?.email) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Cookie data not received" });
+    }
+
+    // Normalize city input
+    const city = body.city.trim().toLowerCase();
+
+    // Create the roommate listing
+    await roommate.create({
+      email: req.user.email,
+      city,
+      rentlower: body.rentlower,
+      rentupper: body.rentupper,
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Roommate listing created" });
+
+  } catch (error) {
+    console.error("Roommate upload failed:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Could not post roommate property" });
+  }
 }
 
 module.exports = {

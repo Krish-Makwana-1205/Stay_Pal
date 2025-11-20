@@ -1,0 +1,14 @@
+.featured-properties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.featured-properties p {
+  font-size: 16px;
+  color: #475569;
+  padding: 10px 0;
+}

@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePhoto:{
         type: String,
-        default: "",
+        default: "../public/profile-pic.jpg",
     },
     istenant:{
         type: Boolean,

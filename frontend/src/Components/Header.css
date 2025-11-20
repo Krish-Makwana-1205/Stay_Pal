@@ -1,0 +1,187 @@
+/* ---------------- Header Full-Width Blue/Black Theme ---------------- */
+
+:root {
+  --hdr-blue-1: #1e3c72;
+  --hdr-blue-2: #2a5298;
+  --hdr-accent: #667eea;
+  --hdr-black: #0b1220;
+  --hdr-white: #ffffff;
+}
+
+/* Full width fixed header */
+.dashboard-header {
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(90deg, var(--hdr-blue-1), var(--hdr-blue-2));
+  color: var(--hdr-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  position: sticky;   /* stays at top when scrolling */
+  top: 0;
+  z-index: 50;
+}
+
+/* Left text */
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+}
+
+
+/* ---------------- ACTION BUTTONS ---------------- */
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Base button style */
+.dashboard-actions .btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--hdr-white);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.dashboard-actions .btn:hover {
+  background: rgba(255,255,255,0.20);
+  transform: translateY(-1px);
+}
+
+/* Logout (danger) */
+.dashboard-actions .btn-danger {
+  background: var(--hdr-black);
+  color: var(--hdr-accent);
+  border: 1px solid rgba(102,126,234,0.25);
+}
+
+.dashboard-actions .btn-danger:hover {
+  background: rgba(11,18,32,0.85);
+}
+
+
+/* ---------------- ACTIVE TAB (Home highlighted) ---------------- */
+
+/* When on Dashboard, Home should look selected */
+/* .dashboard-actions .btn:first-child {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+} */
+
+/* Optional: make active button darker on hover */
+/* .dashboard-actions .btn:first-child:hover {
+  background: #5868df;
+} */
+/* ACTIVE HEADER BUTTON */
+.dashboard-actions .btn.active {
+  background: var(--hdr-accent);
+  border: none;
+  color: white !important;
+  box-shadow: 0 0 8px rgba(102,126,234,0.4);
+  transform: translateY(-1px);
+}
+.header-profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.6);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.header-profile-pic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Profile picture wrapper */
+.header-profile-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Profile image */
+.header-profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.6);
+}
+
+/* Dropdown menu */
+.header-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #0f1724;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  z-index: 999;
+}
+
+.header-dropdown button {
+  width: 100%;
+  background: transparent;
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+}
+
+.header-dropdown button:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+
+/* Default dropdown button state */
+.header-dropdown button {
+  width: 100%;
+  background: transparent;
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+/* Hover - default buttons (Profile, Your Properties, Applied) */
+.header-dropdown button:hover {
+  background: rgba(39, 57, 71, 0.2);
+}
+
+/* Hover - Add Property & Add Roommate (light turquoise green) */
+.header-dropdown button.add-action:hover {
+  background: rgba(0, 255, 200, 0.38); /* turquoise green tint */
+}
+
+/* Hover - Logout (light red) */
+.header-dropdown button.logout:hover {
+  background: rgba(255, 80, 80, 0.32); /* soft red tint */
+}

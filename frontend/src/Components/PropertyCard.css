@@ -1,0 +1,90 @@
+:root {
+  --pc-bg: #ffffff;
+  --pc-border: rgba(30, 60, 114, 0.10); /* soft blue border */
+  --pc-blue-light: #96addc; /* light blue background */
+  --pc-blue-hover: #dbe7ff; /* slightly stronger blue */
+  --pc-blue-accent: #384d98; /* accent text/icons */
+  --pc-text-dark: #0f172a;
+  --pc-text-muted: #475569;
+}
+
+/* ---------- CARD WRAPPER ---------- */
+.property-card {
+  width: 100%;
+  max-width: 320px;
+  background: var(--pc-bg);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+
+  /* light blue border like Apple iCloud theme */
+  border: 1px solid var(--pc-border);
+
+  /* soft shadow */
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.10);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+              border-color 0.15s ease, background 0.15s ease;
+  margin: 12px;
+}
+
+/* Hover — slightly elevated + blue outline glow */
+.property-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(76, 115, 255, 0.4);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
+  background: var(--pc-blue-light);
+}
+
+/* ---------- IMAGE ---------- */
+.property-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.property-img-placeholder {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(180deg, #edf2ff, #d6e4ff);
+}
+
+/* ---------- BODY ---------- */
+.card-body {
+  padding: 14px 16px;
+}
+
+/* Property Name */
+.card-body h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--pc-text-dark);
+}
+
+/* City + BHK */
+.card-body h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: var(--pc-text-muted);
+}
+
+/* Rent */
+.card-body p {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: var(--pc-text-dark);
+  font-weight: 600;
+}
+
+/* ---------- LOCATION ICON ---------- */
+.property-location-icon img {
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.property-location-icon img:hover {
+  transform: scale(1.08);
+  opacity: 1;
+}
