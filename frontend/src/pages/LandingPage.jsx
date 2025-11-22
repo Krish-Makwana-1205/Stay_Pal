@@ -119,7 +119,7 @@ export default function LandingPage() {
                     </p>
                 </div>
                 <div className="feature-image-container">
-                    <img src="https://images.pexels.com/photos/7075778/pexels-photo-7075778.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="People interacting" className="feature-image"/>
+                    <img src="https://i.pinimg.com/736x/aa/5f/5b/aa5f5bc605ded26696868cbd6b28aea7.jpg" alt="People interacting" className="feature-image"/>
                 </div>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function LandingPage() {
                     </p>
                 </div>
                 <div className="feature-image-container">
-                    <img src="https://images.pexels.com/photos/101808/pexels-photo-101808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Moving boxes" className="feature-image"/>
+                    <img src="https://i.pinimg.com/1200x/84/20/fd/8420fd62d778c883078397db505fb288.jpg" alt="Moving boxes" className="feature-image"/>
                 </div>
             </div>
           </div>

@@ -64,7 +64,7 @@ export default function UserCard() {
            <header className="usercard-header">
         <div className="usercard-left">
           <h2 className="usercard-greeting">
-            Hi, {user.username || "User"} 
+            Hello, {user.username || "User"} 
           </h2>
         </div>
 
@@ -100,7 +100,7 @@ export default function UserCard() {
 
       {/* Main Section */}
       <main className="usercard-main">
-        <h3 className="usercard-title">Who are You?</h3>
+        <h3 className="usercard-title">Select Your Profile</h3>
 
         <div className="options">
           {/* Tenant Option */}
@@ -115,7 +115,7 @@ export default function UserCard() {
               className="option-img"
             />
             <p className="option-desc">
-              Looking for a new nest? Find your next perfect home.
+              Looking for a new nest? Discover homes and flatmates that match your needs.
             </p>
             {/* stopPropagation prevents double trigger */}
             <button
@@ -141,7 +141,7 @@ export default function UserCard() {
               className="option-img"
             />
             <p className="option-desc">
-              Have a space to offer? Connect with the right tenants.
+              Have a space to offer? Connect with tenants who are the right match for your property.
             </p>
             <button
               className="option-btn"

@@ -1,4 +1,19 @@
-/* UserCard.css  */
+/* UserCard.css - Combined & Optimized */
+
+/* --- Theme Variables (From Code 2) --- */
+:root {
+  --primary-color: #0d2a4f;
+  --accent-color: #007bff;
+  --secondary-color: #ffffff;
+  --bg-light: #f4f7f9;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-color-light: #777777;
+  --text-on-dark: #f0f0f0;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --border-radius: 12px;
+}
 
 * {
   margin: 0;
@@ -7,310 +22,400 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Page Background  */
+/* --- Page Background (From Code 2 - Animated) --- */
 .usercard-page {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Dynamic animated gradient */
+  background: linear-gradient(-45deg, var(--primary-color), #1a4a8a, #0056b3, var(--bg-light));
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   padding: 20px;
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
-/* Floating Bubbles */
+/* Floating Particles Background Effect */
 .usercard-page::before,
 .usercard-page::after {
-  content: "";
+  content: '';
   position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 50%;
-  background: rgba(4, 0, 255, 0.1);
+  z-index: 0;
+  animation: floatOrb 10s infinite linear;
 }
 
 .usercard-page::before {
-  width: 500px;
-  height: 500px;
-  top: -250px;
-  right: -250px;
-  animation: float 5s ease-in-out infinite;
+  top: -50px;
+  left: -50px;
 }
 
 .usercard-page::after {
-  width: 300px;
-  height: 300px;
-  bottom: -150px;
-  left: -150px;
-  animation: float 6s ease-in-out infinite reverse;
+  bottom: -50px;
+  right: -50px;
+  animation-delay: -5s;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(-20px) translateX(20px);
-  }
-}
-
-/* Dark Blue Card Container */
+/* --- Main Container (Glassmorphism style from Code 2) --- */
 .usercard-container {
-  width: 750px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1000px;
   min-height: 60vh;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   z-index: 1;
-  animation: slideUp 0.6s ease-out;
+  /* Using Code 2's popIn animation */
+  animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Header */
+/* --- Header Section --- */
 .usercard-header {
-  background: transparent;
-  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 30px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: slideDown 0.8s 0.5s forwards ease-out;
   flex-wrap: wrap;
-  text-align: center;
 }
+
 .usercard-left {
   display: flex;
   align-items: center;
 }
 
-/* Right side navbar inside UserCard */
+.usercard-greeting {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  font-weight: 700;
+  margin: 0;
+  padding-left: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* --- Navigation Links (Merged from Code 1) --- */
 .usercard-nav {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* Buttons: Dashboard / Profile / Logout */
 .usercard-nav-link {
   border-radius: 999px;
   padding: 6px 14px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  color: #ffffff;
+  /* Adapted border color for light glass header */
+  border: 1px solid var(--primary-color); 
+  color: var(--primary-color);
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   outline: none;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
+    color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease;
+  text-decoration: none;
 }
 
 .usercard-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.18);
-  border-color: #ffffff;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Make Logout a bit stronger visually */
-.usercard-nav-logout {
-  background: linear-gradient(135deg, #ff4b4b 0%, #ff6a6a 100%);
-  border-color: transparent;
-}
-
-.usercard-nav-logout:hover {
-  background: linear-gradient(135deg, #ff3434 0%, #ff6666 100%);
-}
-
-.usercard-greeting {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
+/* Logout Button Styling */
+.usercard-nav-logout, 
 .logout-btn {
-  background: linear-gradient(135deg, #ff4b4b 0%, #ff6a6a 100%);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
+  background: transparent;
+  border: 2px solid #ff4b4b; /* Red accent for logout */
+  color: #ff4b4b;
+  padding: 8px 20px;
+  border-radius: 30px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(255, 75, 75, 0.4);
   transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(255, 75, 75, 0.6);
-}
-
-/* Main Section */
-.usercard-main {
-  flex: 1;
-  padding: 3rem 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-}
-
-.usercard-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 2rem;
-}
-
-/* Options Container - Always in Row */
-.options {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  justify-content: center;
-  align-items: stretch;
-  flex-wrap: wrap;
-}
-
-/* Individual Option Cards */
-.option-card {
-  background: white;
-  border-radius: 16px;
-  width: 240px;
-  padding: 1.8rem;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.option-card::before {
-  content: "";
-  position: absolute;
-  width: 160%;
-  height: 160%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
-  top: -80%;
-  left: -30%;
-  border-radius: 50%;
-  transition: all 0.4s ease;
-  z-index: 0;
+.usercard-nav-logout:hover,
+.logout-btn:hover {
+  background: linear-gradient(135deg, #ff4b4b 0%, #ff6a6a 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(255, 75, 75, 0.3);
+  transform: translateY(-2px);
+}
+
+/* --- Main Content Area --- */
+.usercard-main {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.usercard-title {
+  font-size: 2.5rem;
+  color: var(--secondary-color);
+  margin-bottom: 50px;
+  font-weight: 800;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+  animation: fadeIn 1s 0.8s forwards;
   opacity: 0;
 }
 
-.option-card:hover::before {
-  opacity: 1;
-  transform: scale(1.05);
+/* --- Options Grid (3D Spotlight Effect from Code 2) --- */
+.options {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  perspective: 1000px; /* Essential for 3D transforms */
+  flex-wrap: wrap;
+}
+
+/* Unique Interaction: Hovering the container dims non-hovered items */
+.options:hover .option-card:not(:hover) {
+  filter: blur(4px) grayscale(60%);
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+.option-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 320px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255,255,255,0.2);
+  overflow: hidden;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: cardDeal 0.8s 1s forwards ease-out;
+}
+
+.option-card:nth-child(2) {
+  animation-delay: 1.2s;
 }
 
 .option-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25);
+  transform: translateY(-15px) scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  border-color: var(--accent-color);
+  z-index: 10;
 }
 
-/* Inside Cards */
+/* Option Card Internal Elements */
 .option-img {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
   object-fit: contain;
+  animation: floatImg 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
   z-index: 1;
+}
+
+.option-card:nth-child(2) .option-img {
+  animation-delay: 1.5s;
 }
 
 .option-desc {
-  margin-top: 10px;
-  font-size: 0.95rem;
-  color: #555;
+  color: var(--text-color-light);
+  font-size: 1rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
   text-align: center;
   z-index: 1;
-  min-height: 2.5rem;
 }
 
 .option-btn {
-  margin-top: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--primary-color);
+  color: var(--secondary-color);
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
   z-index: 1;
 }
 
-.option-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+.option-card:hover .option-btn {
+  background: var(--accent-color);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+  animation: pulseBtn 1.5s infinite;
 }
 
-/* Responsive Adjustments */
+/* Loading & Not Logged States */
+.loading-text, .not-logged {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 20vh;
+  font-weight: 600;
+}
+
+.not-logged .login-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 30px;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.not-logged .login-link:hover {
+  transform: scale(1.1);
+}
+
+/* --- Animations --- */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(50px, 50px) rotate(180deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideDown {
+  0% { opacity: 0; transform: translateY(-50px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cardDeal {
+  from { opacity: 0; transform: translateY(100px) rotateX(-20deg); }
+  to { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+
+@keyframes floatImg {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseBtn {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* --- Responsive Design --- */
 @media (max-width: 1024px) {
   .usercard-container {
     width: 90%;
     min-height: 55vh;
   }
-
   .option-card {
-    width: 200px;
+    width: 280px;
   }
 }
 
 @media (max-width: 768px) {
+  .usercard-page {
+    padding: 10px;
+    background: var(--bg-light); /* Simplifies bg on mobile for performance */
+    animation: none;
+  }
+  
   .usercard-container {
+    margin-top: 20px;
     width: 95%;
   }
 
   .usercard-header {
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
   }
 
-  .options {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .option-card {
-    width: 180px;
-    padding: 1.4rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .usercard-container {
-    width: 100%;
-    border-radius: 12px;
-    margin-top: 3rem;
+  .usercard-greeting {
+    font-size: 1.2rem;
   }
 
   .options {
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 20px;
+  }
+
+  /* Remove complex hover interactions on mobile for better UX */
+  .options:hover .option-card:not(:hover) {
+    filter: none;
+    transform: none;
+    opacity: 1;
   }
 
   .option-card {
-    width: 90%;
+    width: 100%;
+    max-width: 350px;
+    padding: 25px;
+    /* Card enters from side on mobile */
+    animation: slideInSide 0.6s forwards; 
   }
 
-  .logout-btn {
-    padding: 8px 14px;
-    font-size: 0.9rem;
+  @keyframes slideInSide {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .usercard-title {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    text-shadow: none;
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 500px) {
+  .option-card {
+    width: 90%;
+  }
+  
+  .usercard-nav {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }

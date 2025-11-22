@@ -319,7 +319,7 @@ body {
   flex: 1;
   min-width: 280px; 
   max-width: 380px; 
-  background-color: var(--card-bg); 
+  background-color: #d4eaf6; 
   padding: 20px; /* MODIFIED: Reduced padding from 25px */
   border-radius: var(--border-radius);
   text-align: center;
