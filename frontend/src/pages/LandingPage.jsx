@@ -163,20 +163,20 @@ export default function LandingPage() {
       </section>
 
       {/* ... (rest of your component remains the same) ... */}
-      <section className="properties-section">
+      <section className="ftproperties-section">
         <h2 className="section-title">Featured Properties</h2>
-        <div className="properties-scroll">
-          <div className="property-card">
+        <div className="ftproperties-scroll">
+          <div className="ftproperty-card">
             <img
               src="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg"
               alt="Modern apartment"
-              className="property-image"
+              className="ftproperty-image"
             />
-            <div className="property-details">
+            <div className="ftproperty-details">
               <h4>Modern 2BHK Apartment</h4>
-              <p className="property-location">📍 Downtown, Mumbai</p>
-              <p className="property-price">₹25,000/month</p>
-              <div className="property-features">
+              <p className="ftproperty-location">📍 Downtown, Mumbai</p>
+              <p className="ftproperty-price">₹25,000/month</p>
+              <div className="ftproperty-features">
                 <span>🛏️ 2 Beds</span>
                 <span>🚿 2 Baths</span>
                 <span>📏 1200 sq ft</span>
@@ -184,17 +184,17 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="property-card">
+          <div className="ftproperty-card">
             <img
               src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"
               alt="Cozy studio"
-              className="property-image"
+              className="ftproperty-image"
             />
-            <div className="property-details">
+            <div className="ftproperty-details">
               <h4>Cozy Studio Apartment</h4>
-              <p className="property-location">📍 Koramangala, Bangalore</p>
-              <p className="property-price">₹18,000/month</p>
-              <div className="property-features">
+              <p className="ftproperty-location">📍 Koramangala, Bangalore</p>
+              <p className="ftproperty-price">₹18,000/month</p>
+              <div className="ftproperty-features">
                 <span>🛏️ 1 Bed</span>
                 <span>🚿 1 Bath</span>
                 <span>📏 650 sq ft</span>
@@ -202,17 +202,17 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="property-card">
+          <div className="ftproperty-card">
             <img
               src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"
               alt="Spacious villa"
-              className="property-image"
+              className="ftproperty-image"
             />
-            <div className="property-details">
+            <div className="ftproperty-details">
               <h4>Spacious 3BHK Villa</h4>
-              <p className="property-location">📍 Gurgaon, Delhi NCR</p>
-              <p className="property-price">₹45,000/month</p>
-              <div className="property-features">
+              <p className="ftproperty-location">📍 Gurgaon, Delhi NCR</p>
+              <p className="ftproperty-price">₹45,000/month</p>
+              <div className="ftproperty-features">
                 <span>🛏️ 3 Beds</span>
                 <span>🚿 3 Baths</span>
                 <span>📏 2000 sq ft</span>
@@ -220,17 +220,17 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="property-card">
+          <div className="ftproperty-card">
             <img
               src="https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg"
               alt="Luxury penthouse"
-              className="property-image"
+              className="ftproperty-image"
             />
-            <div className="property-details">
+            <div className="ftproperty-details">
               <h4>Luxury Penthouse</h4>
-              <p className="property-location">📍 Bandra West, Mumbai</p>
-              <p className="property-price">₹85,000/month</p>
-              <div className="property-features">
+              <p className="ftproperty-location">📍 Bandra West, Mumbai</p>
+              <p className="ftproperty-price">₹85,000/month</p>
+              <div className="ftproperty-features">
                 <span>🛏️ 4 Beds</span>
                 <span>🚿 4 Baths</span>
                 <span>📏 3500 sq ft</span>
@@ -238,17 +238,17 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="property-card">
+          <div className="ftproperty-card">
             <img
               src="https://images.pexels.com/photos/2079234/pexels-photo-2079234.jpeg"
               alt="Budget friendly flat"
-              className="property-image"
+              className="ftproperty-image"
             />
-            <div className="property-details">
+            <div className="ftproperty-details">
               <h4>Budget-Friendly 1BHK</h4>
-              <p className="property-location">📍 Whitefield, Bangalore</p>
-              <p className="property-price">₹12,000/month</p>
-              <div className="property-features">
+              <p className="ftproperty-location">📍 Whitefield, Bangalore</p>
+              <p className="ftproperty-price">₹12,000/month</p>
+              <div className="ftproperty-features">
                 <span>🛏️ 1 Bed</span>
                 <span>🚿 1 Bath</span>
                 <span>📏 550 sq ft</span>
