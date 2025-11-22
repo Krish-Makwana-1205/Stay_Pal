@@ -1,206 +1,310 @@
-/* =========================================
-   PAGE CONTAINER — FIX DOUBLE SCROLL
-========================================= */
-.my-properties-container {
+/* =========================================================
+   SHARED THEME — EXACT MATCH WITH PROPERTY FORM
+========================================================= */
+:root {
+  --property-primary: #0d2a4f;
+  --property-accent: #007bff;
+  --property-bg: #f4f7f9;
+  --property-white: #ffffff;
+  --property-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* =========================================================
+   1. PAGE CONTAINER + BACKGROUND GRID
+========================================================= */
+.mp-my-properties-container {
   min-height: 100vh;
-  height: auto;                 /* FIX: allow page to grow */
   width: 100%;
-  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
-  padding: 20px 15px;           /* Smaller padding */
+  padding: 40px 20px;
   box-sizing: border-box;
   position: relative;
-  overflow-x: hidden;           /* Only horizontal hidden */
-  overflow-y: auto;             /* FIX: allow scrolling */
-  z-index: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  background-color: var(--property-bg);
+  background-image:
+    linear-gradient(var(--property-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Floating Bubbles */
-.my-properties-container::before,
-.my-properties-container::after {
+/* Icon Watermark Layer */
+.mp-my-properties-container::before {
   content: "";
   position: absolute;
-  background: rgba(4, 0, 255, 0.08);
-  border-radius: 50%;
-  z-index: -1;
+  inset: 0;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position: 0px 0px, 25px 25px, 50px 0px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: bgPan 60s linear infinite;
 }
 
-.my-properties-container::before {
-  width: 380px;          /* Smaller bubble */
-  height: 380px;
-  top: -150px;
-  right: -150px;
-  animation: float 6s ease-in-out infinite;
+/* =========================================================
+   2. PAGE TITLE
+========================================================= */
+.mp-header-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
-.my-properties-container::after {
-  width: 230px;          /* Smaller bubble */
-  height: 230px;
-  bottom: -80px;
-  left: -80px;
-  animation: float 7s ease-in-out infinite reverse;
-}
-
-@keyframes float {
-  0%, 100% { transform: translate(0,0); }
-  50% { transform: translate(15px, -15px); }
-}
-
-/* =========================================
-   TITLE
-========================================= */
-.page-title {
+.mp-page-title {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--property-primary);
   text-align: center;
-  font-size: 28px;          /* Smaller */
-  font-weight: 700;
-  color: #1e3c72;
-  margin-bottom: 25px;
+  border-bottom: 4px solid var(--property-primary);
+  padding: 10px 30px 15px;
+  background: var(--property-white);
+  box-shadow: 5px 5px 0 var(--property-primary);
+  z-index: 2;
 }
 
-/* =========================================
-   PROPERTY CARD — COMPACT VERSION
-========================================= */
-.property-card {
+.mp-header-box .mp-page-title {
+  width: fit-content;
+  max-width: 600px;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);  /* Smaller blur */
-  border-radius: 16px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-  padding: 22px;              /* Smaller padding */
-  margin-bottom: 22px;
-
-  max-width: 1000px;          /* Smaller width */
-  width: 96%;
-  margin-left: auto;
-  margin-right: auto;
-
-  display: grid;
-  grid-template-columns: 1fr 280px; /* Smaller sidebar */
-  gap: 25px;                        /* Smaller gap */
-  align-items: start;
+  border: 2px solid var(--property-primary);
+  box-shadow: 8px 8px 0 var(--property-primary);
+  padding: 12px 35px;
 }
 
-/* ==============================
-   CARD HEADER
-============================== */
-.card-header {
+/* =========================================================
+   3. PROPERTY CARD
+========================================================= */
+.mp-property-card {
+  position: relative;
+  background: white;
+  width: 90%;
+  max-width: 900px;
+  padding: 35px;
+  border: 2px solid var(--property-primary);
+  box-shadow: 12px 12px 0 var(--property-primary);
+  margin: 25px auto;
+  display: grid;
+  gap: 35px;
+  animation: propertyPopUp 0.6s ease forwards;
+}
+
+.mp-property-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 8px;
+}
+
+/* =========================================================
+   4. CARD STRUCTURE
+========================================================= */
+.mp-card-header {
   grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 2px dashed #ccc;
+  margin-bottom: 20px;
 }
 
-.card-header h3 {
-  font-size: 22px;
+.mp-card-header h3 {
+  font-size: 1.6rem;
+  color: var(--property-primary);
   margin: 0;
-  color: #1e3c72;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
-/* ==============================
-   LEFT COLUMN IMAGE
-============================== */
-.image-wrapper img {
+.mp-card-body {
+  grid-column: 1 / 2;
+}
+
+/* =========================================================
+   5. BUTTONS
+========================================================= */
+.mp-action-btn {
+  background: none;
+  color: var(--property-primary);
+  border: 1px solid var(--property-primary);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.mp-action-btn:hover {
+  background: var(--property-primary);
+  color: var(--property-white);
+}
+
+.mp-action-btn.small {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mp-primary-btn {
   width: 100%;
-  height: 210px;                 /* FIX: smaller image */
+  padding: 14px;
+  margin-top: 15px;
+  background: var(--property-primary);
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  font-weight: 900;
+  cursor: pointer;
+
+  background-image: linear-gradient(
+    45deg,
+    rgba(255,255,255,0.1) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.1) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+}
+
+.mp-primary-btn:hover {
+  background-color: var(--property-accent);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--property-primary);
+}
+
+/* =========================================================
+   6. IMAGE + DETAILS
+========================================================= */
+.mp-image-wrapper img {
+  width: 100%;
+  height: 220px;
   object-fit: cover;
+  border: 2px solid var(--property-primary);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 6px 6px 0 var(--property-primary);
   margin-bottom: 15px;
 }
 
-/* ==============================
-   DETAILS GRID — compact
-============================== */
-.details-grid {
+.mp-details-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 8px 10px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px 15px;
+  margin-bottom: 15px;
 }
 
-.details-grid p {
+.mp-details-grid p {
   margin: 0;
-  font-size: 13px;         /* Smaller text */
-  color: #444;
+  font-size: 0.9rem;
+  color: #333;
 }
 
-.details-grid strong {
-  color: #1e3c72;
+.mp-details-grid strong {
+  color: var(--property-primary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
 }
 
-.full-width {
-  grid-column: 1 / -1;
+.mp-full-width { grid-column: 1 / -1; }
+
+.mp-map-link {
+  color: var(--property-accent);
+  text-decoration: underline;
+  font-weight: 600;
+}
+.mp-map-link:hover {
+  color: var(--property-primary);
 }
 
-/* ==============================
-   DESCRIPTION BOX
-============================== */
-.description-box,
-.notes-box {
-  background: #f1f5f9;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-size: 13px;
+.mp-description-box {
+  background: #eef2f6;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid var(--property-primary);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
 }
 
-/* ==============================
-   RIGHT SIDEBAR
-============================== */
-.preferences-section {
+.mp-notes-box {
   background: #f8f9fa;
-  border: 1px solid #eef2f6;
-  border-radius: 14px;
-  padding: 16px;                /* Compact */
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid var(--property-accent);
+  font-size: 0.9rem;
+  margin-top: 15px;
 }
 
-.pref-header {
+/* =========================================================
+   7. PREFERENCES SIDEBAR
+========================================================= */
+.mp-preferences-section {
+  grid-column: 2 / 3;
+  background: #f8f9fa;
+  border: 2px solid var(--property-primary);
+  padding: 20px;
+  box-shadow: 6px 6px 0 var(--property-primary);
+}
+
+.mp-pref-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
-  border-bottom: 1px solid #e0e0e0;
   padding-bottom: 6px;
+  border-bottom: 2px dashed #ccc;
 }
 
-.pref-header h4 {
-  font-size: 16px;             /* Smaller */
+.mp-pref-header h4 {
+  font-size: 1.1rem;
   margin: 0;
-  color: #1e3c72;
+  font-weight: 700;
+  color: var(--property-primary);
+  text-transform: uppercase;
 }
 
-.preferences-section .details-grid {
+.mp-preferences-section .mp-details-grid {
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
-.preferences-section .details-grid p {
-  font-size: 12px;
-  padding-bottom: 4px;
-  border-bottom: 1px dashed #ddd;
+.mp-preferences-section .mp-details-grid p {
+  font-size: 0.85rem;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 5px;
+  margin: 0;
 }
 
-/* ==============================
-   BUTTONS
-============================== */
-.action-btn,
-.primary-btn {
-  font-size: 13px;
-  padding: 7px 14px;
-  border-radius: 7px;
-}
-
-.primary-btn {
-  width: 100%;
-  margin-top: 8px;
-}
-
-/* ==============================
-   RESPONSIVE FIX
-============================== */
+/* =========================================================
+   8. RESPONSIVE
+========================================================= */
 @media (max-width: 900px) {
-  .property-card {
+  .mp-property-card {
     grid-template-columns: 1fr;
   }
+  .mp-card-body,
+  .mp-preferences-section {
+    grid-column: 1 / -1;
+  }
+}
+
+/* =========================================================
+   9. ANIMATIONS
+========================================================= */
+@keyframes bgPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+@keyframes propertyPopUp {
+  0% { opacity: 0; transform: scale(0.9) translateY(50px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }

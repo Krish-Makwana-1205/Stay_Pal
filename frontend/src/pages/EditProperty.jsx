@@ -8,7 +8,7 @@ import LocalitySelector from "../Components/LocalitySelector";
 import { fetchSingleProperty } from "../api/filters";
 import { uploadProperty } from "../api/propertyform";
 import Alert from "../Components/Alert";
-import "../StyleSheets/PropertyForm.css";
+import "../StyleSheets/EditProperty.css";
 
 export default function EditProperty() {
   const { email, name } = useParams();
@@ -149,10 +149,10 @@ export default function EditProperty() {
   };
 
   return (
-    <div className="property-form-container">
-      <h2 className="form-title">Edit Property</h2>
+    <div className="ep-property-form-container">
+      <h2 className="ep-form-title">Edit Property</h2>
 
-      <form onSubmit={handleSave} className="property-form">
+      <form onSubmit={handleSave} className="ep-property-form">
 
         <label>Property Name *</label>
         <input value={formData.name} name="name" onChange={handleChange} />
@@ -212,14 +212,14 @@ export default function EditProperty() {
         </select>
 
         <label>Existing Images</label>
-        <div className="image-preview-container">
+        <div className="ep-image-preview-container">
           {existingImages.map((img, i) => (
-            <img key={i} src={img} className="preview-thumb" />
+            <img key={i} src={img} className="ep-preview-thumb" />
           ))}
         </div>
 
         <label>New Images</label>
-        <button type="button" className="clear-images-btn" onClick={triggerFileInput}>
+        <button type="button" className="ep-clear-images-btn" onClick={triggerFileInput}>
           Upload New Images
         </button>
 
@@ -233,14 +233,14 @@ export default function EditProperty() {
         />
 
         {images.length > 0 && (
-          <div className="image-preview-container">
+          <div className="ep-image-preview-container">
             {images.map((img, i) => (
-              <img key={i} src={URL.createObjectURL(img)} className="preview-thumb" />
+              <img key={i} src={URL.createObjectURL(img)} className="ep-preview-thumb" />
             ))}
           </div>
         )}
 
-        <button className="submit-btn" type="submit" disabled={loading}>
+        <button className="ep-submit-btn" type="submit" disabled={loading}>
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </form>

@@ -1,0 +1,242 @@
+/* =========================================
+   1. THEME (Matches My Properties)
+========================================= */
+:root {
+  --property-primary: #0d2a4f;
+  --property-accent: #007bff;
+  --property-bg: #f4f7f9;
+  --property-white: #ffffff;
+  --property-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* =========================================
+   2. PAGE CONTAINER (Grid Background)
+========================================= */
+.ep-property-form-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* White background with property grid */
+  background-color: var(--property-bg);
+  background-image:
+    linear-gradient(var(--property-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  position: relative;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Watermark layer */
+.ep-property-form-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position:
+    0px 0px,
+    25px 25px,
+    50px 0px;
+  opacity: 0.15;
+  pointer-events: none;
+  animation: bgPan 60s linear infinite;
+  z-index: 0;
+}
+
+/* =========================================
+   3. PAGE TITLE (Same as My Properties)
+========================================= */
+.ep-form-title {
+  font-size: 2.2rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--property-primary);
+  text-align: center;
+
+  background: var(--property-white);
+  padding: 12px 35px;
+  border: 2px solid var(--property-primary);
+  box-shadow: 8px 8px 0 var(--property-primary);
+
+  margin-bottom: 35px;
+  z-index: 2;
+}
+
+/* =========================================
+   4. FORM CARD (Pure White Opaque)
+========================================= */
+.ep-property-form {
+  width: 90%;
+  max-width: 900px;
+
+  background: var(--property-white); /* FULL WHITE */
+  border: 2px solid var(--property-primary);
+  box-shadow: 12px 12px 0 var(--property-primary);
+
+  padding: 35px;
+  margin-bottom: 40px;
+  z-index: 2;
+  animation: propertyPopUp 0.6s ease forwards;
+}
+
+/* =========================================
+   5. INPUTS + LABELS
+========================================= */
+.ep-property-form label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--property-primary);
+  text-transform: uppercase;
+}
+
+.ep-property-form input,
+.ep-property-form textarea,
+.ep-property-form select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--property-primary);
+  border-radius: 8px;
+  font-size: 15px;
+  background: #eef2f6;
+  transition: 0.2s;
+}
+
+.ep-property-form input:focus,
+.ep-property-form textarea:focus,
+.ep-property-form select:focus {
+  background: white;
+  box-shadow: 5px 5px 0 var(--property-primary);
+  outline: none;
+}
+
+.ep-property-form textarea {
+  min-height: 120px;
+}
+
+/* react-select fix */
+div[class*="-control"] {
+  border: 2px solid var(--property-primary) !important;
+  background: #eef2f6 !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+}
+div[class*="-control--is-focused"] {
+  background: white !important;
+  box-shadow: 5px 5px 0 var(--property-primary) !important;
+}
+
+/* =========================================
+   6. IMAGE PREVIEW
+========================================= */
+.ep-image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  border: 2px dashed var(--property-primary);
+  padding: 10px;
+  border-radius: 10px;
+  background: #eef2f6;
+}
+
+.ep-image-preview-container img {
+  width: 95px;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid var(--property-primary);
+  box-shadow: 4px 4px 0 var(--property-primary);
+}
+
+/* =========================================
+   7. BUTTONS
+========================================= */
+.ep-clear-images-btn {
+  padding: 10px 15px;
+  background: var(--property-primary);
+  color: white;
+  border: none;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.ep-clear-images-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--property-primary);
+}
+
+.ep-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--property-primary);
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: 900;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 25px;
+  text-transform: uppercase;
+  box-shadow: 6px 6px 0 var(--property-primary);
+  transition: 0.2s;
+}
+.ep-submit-btn:hover {
+  background: var(--property-accent);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--property-primary);
+}
+
+/* =========================================
+   8. ALERTS
+========================================= */
+.alert {
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  max-width: 600px;
+  width: 100%;
+}
+.alert[type="success"] {
+  background: #e6ffed;
+  border: 2px solid #2fb45a;
+}
+.alert[type="error"] {
+  background: #ffe6e6;
+  border: 2px solid #d9534f;
+}
+
+/* =========================================
+   9. ANIMATIONS
+========================================= */
+@keyframes bgPan {
+  from { background-position: 0 0, 25px 25px, 50px 0; }
+  to   { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+@keyframes propertyPopUp {
+  0% { opacity: 0; transform: scale(0.95) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* =========================================
+   10. RESPONSIVE
+========================================= */
+@media (max-width: 900px) {
+  .ep-property-form { padding: 25px; }
+}
+
+@media (max-width: 480px) {
+  .ep-form-title { font-size: 1.6rem; }
+  .ep-property-form { padding: 20px; }
+}
