@@ -1,80 +1,262 @@
+/* TenantForm.css - "Architectural Pop" Theme - Revisions for Visibility & Background */
+
+:root {
+  --primary-color: #0d2a4f;
+  --accent-color: #007bff;
+  --secondary-color: #ffffff;
+  --bg-light: #f4f7f9;
+  --text-color: #333333;
+  --grid-color: rgba(13, 42, 79, 0.05);
+  --label-text-color: #f0f0f0; /* Changed for visibility against primary-color label background */
+  --input-text-color: #0d2a4f; /* Ensure input text is dark for readability */
+}
+
+/* --- 1. Background: Grid + Icon Watermark Pattern --- */
 .tenant-form-container {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 25px 30px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-
-  /* keep form usable when viewport is short */
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: var(--bg-light);
+  /* Blueprint Grid Pattern */
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+  overflow: hidden;
+  padding: 40px 20px;
 }
 
-.form-title {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+/* New Background with Repeating Graphic Icons */
+.tenant-form-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Image Layer: Small, subtle housing icons */
+  background-image: 
+    url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg'); /* Building */
+  background-repeat: repeat;
+  background-size: 50px 50px; /* Size of individual icons */
+  background-position: 
+    0px 0px, 
+    25px 25px, 
+    50px 0px; /* Offset for a staggered pattern */
+  opacity: 0.15; /* Very subtle watermark */
+  pointer-events: none;
+  z-index: 0;
+  animation: bgPan 60s linear infinite; /* Slow background pan */
 }
 
+/* --- 2. The Card: Stacked Paper Effect --- */
 .tenant-form {
+  position: relative;
+  background: var(--secondary-color);
+  width: 100%;
+  max-width: 500px;
+  padding: 50px 40px;
+  border: 2px solid var(--primary-color);
+  border-radius: 0; /* Sharp corners for graphic look */
+  z-index: 1;
+  
+  /* The "Pop Art" Hard Shadow */
+  box-shadow: 15px 15px 0px var(--primary-color); 
+  
+  /* Entrance Animation */
+  animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  
+  /* Layout support */
   display: flex;
   flex-direction: column;
   gap: 15px;
-  min-height: 100%;
+}
+
+/* A decorative colorful bar at the top */
+.tenant-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--primary-color) 0%,
+    var(--primary-color) 20%,
+    var(--accent-color) 20%,
+    var(--accent-color) 40%
+  );
+}
+
+/* A "Folded Corner" graphic element */
+.tenant-form::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 40px 40px;
+  border-color: transparent transparent var(--accent-color) transparent;
+  z-index: 2;
+  filter: drop-shadow(-2px -2px 2px rgba(0,0,0,0.2));
+  animation: foldIn 1s ease-out forwards;
+}
+
+/* --- 3. Typography --- */
+.form-title {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #0d2a4f !important;
+  margin-bottom: 10px;
+  text-align: center;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 15px;
+  background: white;
+  padding: 10px 30px;
+  box-shadow: 5px 5px 0 var(--primary-color);
+  z-index: 2;
 }
 
 label {
-  font-weight: 500;
-  color: #444;
+  display: inline-block;
+  background: var(--primary-color);
+  color: #ffffff !important; /* Changed to light color for contrast */
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); /* Angled edge */
 }
 
 .required {
-  color: red;
+  color: #ff4757; /* Bright Red for contrast */
+  font-weight: bold;
+  margin-left: 5px;
 }
 
-input,
-select {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
+/* --- 4. Inputs: Architectural Lines --- */
+input[type="date"],
+select,
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 12px 0; /* No side padding, just bottom border */
+  border: none;
+  border-bottom: 3px solid #e0e0e0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--input-text-color); /* Ensure text is dark */
+  border-radius: 0;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
-  border-color: #007bff;
+  border-bottom-color: var(--accent-color);
+  background: linear-gradient(to top, rgba(0, 123, 255, 0.05), transparent);
+  padding-left: 10px; /* Text shifts slightly on focus */
 }
 
-.submit-btn {
-  background-color: #007bff;
-  color: white;
+/* React Select Overrides for "Boxy" look */
+div[class*="-control"] {
+  border: 2px solid #e0e0e0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: white !important;
+  min-height: 48px;
+  margin-top: 5px;
+  transition: 0.2s;
+  color: var(--input-text-color);
+}
+
+div[class*="-control"]:focus-within {
+  border-color: var(--primary-color) !important;
+  box-shadow: 4px 4px 0 rgba(13, 42, 79, 0.2) !important;
+  transform: translate(-2px, -2px);
+}
+
+div[class*="-value-container"] {
+  color: var(--input-text-color) !important;
+}
+
+div[class*="-placeholder"] {
+  color: #999 !important;
+}
+
+div[class*="-menu"] {
+  border-radius: 0 !important;
+  border: 2px solid var(--primary-color) !important;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.1) !important;
+  margin-top: 8px !important;
+}
+
+/* --- 5. The "Call to Action" Button --- */
+.submit-btn,
+.profile-save-btn {
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px;
+  background-color: var(--primary-color) !important;
+  border-radius: 0 !important;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  font-weight: 800 !important;
+  text-transform: uppercase;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: 500;
   cursor: pointer;
-  transition: 0.3s ease;
+  background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
 }
 
-.submit-btn:hover {
-  background-color: #0056b3;
+.submit-btn:hover,
+.profile-save-btn:hover {
+  background-color: var(--accent-color) !important;
+  box-shadow: 5px 5px 0 var(--primary-color) !important;
+  transform: translate(-3px, -3px);
 }
 
-.response-message {
-  text-align: center;
-  margin-top: 15px;
-  font-weight: 500;
-  color: #333;
+/* --- 6. Alert Message Styling --- */
+.tenant-form-container > div:not(.tenant-form) {
+  margin-top: 30px;
+  padding: 15px 20px;
+  background: white;
+  border-left: 5px solid var(--primary-color);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  font-family: monospace;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.photo-upload-section {
-  margin-bottom: 1.5rem;
+/* --- 7. Loading Text --- */
+.loading-text {
+  font-size: 3rem;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--primary-color);
+  animation: pulseText 1s infinite alternate;
 }
 
-/* keep existing .photo-preview rules */
+/* --- 8. Additional Components (Photo & Preferences) --- */
+
+/* Photo Preview */
 .photo-preview {
   margin-top: 1rem;
   text-align: center;
@@ -90,19 +272,7 @@ select:focus {
   border: 2px solid #e2e8f0;
 }
 
-.photo-input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px dashed #cbd5e1;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.photo-input:hover {
-  border-color: #3b82f6;
-}
-
-/* local file input for TenantForm2 (not absolute, won't capture whole page) */
+/* Local file input */
 .photo-input-local {
   display: block;
   width: 100%;
@@ -113,9 +283,10 @@ select:focus {
   background: white;
   cursor: pointer;
   box-sizing: border-box;
+  margin-top: 10px;
 }
 
-/* Preference icons row */
+/* Preference Icons Row */
 .pref-icons {
   display: flex;
   gap: 12px;
@@ -143,77 +314,21 @@ select:focus {
   height: 44px;
   object-fit: contain;
   opacity: 0.85;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .pref-icon span {
   font-size: 0.75rem;
 }
 
-/* active state */
 .pref-icon.active {
   background: #eff6ff;
   border-color: #bfdbfe;
   box-shadow: 0 2px 8px rgba(59,130,246,0.08);
 }
 
-/* Make the form container scrollable on small screens */
-.tenant-form-container {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 25px 30px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-
-  /* keep form usable when viewport is short */
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Ensure the local input cannot be hijacked by global .photo-input rules.
-   This scopes behavior to the tenant form and prevents invisible overlays
-   from capturing touch/scroll events. */
-.tenant-form-container .photo-input,
-.tenant-form-container .photo-input-local {
-  position: static !important;
-  width: 100% !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  height: auto !important;
-  padding: 0.5rem;
-  box-sizing: border-box;
-}
-
-/* small tweak: make sure submit sticks to bottom if form longer */
-.tenant-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  min-height: 100%;
-}
-
-/* keep the photo preview area from expanding too much on small screens */
-.photo-preview img {
-  max-width: 120px;
-  max-height: 120px;
-  width: auto;
-  height: auto;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e2e8f0;
-}
-
-/* small screen adjustments */
-@media (max-width: 480px) {
-  .tenant-form-container {
-    margin: 20px 12px;
-    padding: 18px;
-    max-height: calc(100vh - 48px);
-  }
-}
-
-/* small pref row keeps replacement checkboxes exactly where they were */
+/* Small Pref Row (Inline Checkboxes) */
 .small-pref-row {
   display: flex;
   gap: 8px;
@@ -221,9 +336,8 @@ select:focus {
   margin: 6px 0 12px;
 }
 
-/* reuse pref-icon styling but slightly smaller for inline controls */
 .pref-icon.small {
-  width: 110px;          /* small card to sit inline with label */
+  width: 110px;
   padding: 6px;
   border-radius: 8px;
   display: inline-flex;
@@ -247,23 +361,80 @@ select:focus {
   color: #374151;
 }
 
-/* keep same active appearance but slightly stronger for the small ones */
 .pref-icon.small.active {
   background: #eef2ff;
   border-color: #c7ddff;
   box-shadow: 0 2px 6px rgba(59,130,246,0.08);
 }
 
-/* keep button accessible and remove default button styles */
-.pref-icon,
-.pref-icon.small {
-  border: none;
-  background: transparent;
+/* Scoped Input Fixes */
+.tenant-form-container .photo-input,
+.tenant-form-container .photo-input-local {
+  position: static !important;
+  width: 100% !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  height: auto !important;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 
-/* ensure images are not selectable (UX nicety) */
-.pref-icon img,
-.pref-icon.small img {
-  -webkit-user-drag: none;
-  user-select: none;
+/* --- 9. Animations --- */
+@keyframes popUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(50px);
+    box-shadow: 0 0 0 var(--primary-color);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: 15px 15px 0px var(--primary-color);
+  }
+}
+
+@keyframes foldIn {
+  from { border-width: 0 0 0 0; }
+  to { border-width: 0 0 40px 40px; }
+}
+
+@keyframes pulseText {
+  from { transform: scale(1); opacity: 0.5; }
+  to { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes bgPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+/* --- 10. Responsive Design --- */
+@media (max-width: 768px) {
+  .tenant-form-container::before {
+    background-size: 35px 35px;
+    opacity: 0.05;
+    animation: bgPan 40s linear infinite;
+  }
+
+  .tenant-form {
+    padding: 30px 20px;
+    box-shadow: 8px 8px 0px var(--primary-color);
+  }
+
+  .form-title {
+    font-size: 1.8rem;
+  }
+
+  .submit-btn:hover,
+  .profile-save-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .tenant-form-container {
+    padding: 20px 15px;
+    /* Ensure content fits on very small screens without breaking the theme */
+  }
 }
