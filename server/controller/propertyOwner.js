@@ -10,7 +10,6 @@ async function uploadProperty(req, res) {
   try {
     const imgUrls = req.files.map(file => file.path);
     let body = req.body;
-    console.log('hi');
     // Trim trailing spaces AND convert to lowercase for relevant fields
     if (body.description) body.description = body.description.trimEnd().toLowerCase();
     if (body.rent) body.rent = body.rent;
@@ -27,7 +26,7 @@ async function uploadProperty(req, res) {
     ) {
       return res.status(400).json({ message: "Required fields missing" });
     }
-                                
+
     let latitude, longitude;
 
     try {
@@ -38,11 +37,11 @@ async function uploadProperty(req, res) {
       console.error("Coordinate error:", error.message);
       return res.status(500).json({ message: "Unable to fetch location coordinates" });
     }
-    if(!req.user.email){
-        return res.status(400).json({ message: "User is not logged in" });
+    if (!req.user.email) {
+      return res.status(400).json({ message: "User is not logged in" });
     }
-    if(latitude< -90 || latitude > 90 || longitude < -180 || longitude > 180){
-      latitude= null;
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      latitude = null;
       longitude = null;
     }
     const Property = await property.findOneAndUpdate(
@@ -53,7 +52,7 @@ async function uploadProperty(req, res) {
         imgLink: imgUrls,
         description: body.description,
         BHK: body.BHK,
-        rent:body.rent,
+        rent: body.rent,
         locality: body.locality,
         address: body.address,
         addressLink: body.addressLink,
@@ -67,10 +66,14 @@ async function uploadProperty(req, res) {
         parkingArea: body.parkingArea,
         houseType: body.houseType,
         isRoommate: body.isRoommate,
-        latitude:latitude,
-        longitude:longitude
+        latitude: latitude,
+        longitude: longitude,
+        location: {
+          type: 'Point', // specify it's a point geometry
+          coordinates: [longitude, latitude], // store longitude and latitude as an array
+        }
       },
-      {timestamps: true, upsert: true }
+      { timestamps: true, upsert: true }
     );
     return res.status(200).json({ message: "Property created successfully" });
   } catch (error) {
@@ -86,7 +89,7 @@ async function addTenantPreferences(req, res) {
     }
 
     const updated = await property.findOneAndUpdate(
-      { email:req.user.email, name:req.body.name },
+      { email: req.user.email, name: req.body.name },
       {
         tenantPreferences: {
           gender: req.body.gender || "Any",
@@ -109,7 +112,7 @@ async function addTenantPreferences(req, res) {
           notes: req.body.notes || null
         }
       },
-      { }
+      {}
     );
 
     if (!updated) {
@@ -125,7 +128,7 @@ async function addTenantPreferences(req, res) {
 async function yourProperties(req, res) {
   try {
     const properties = await property.find({ email: req.user.email });
-    
+
     return res.status(200).json({
       success: true,
       properties,
@@ -139,93 +142,54 @@ async function yourProperties(req, res) {
   }
 }
 
-async function findNearestProperty(req, res) {
-  try {
-    const { addressLink } = req.body; 
-
-    if (!addressLink) {
-      return res.status(400).json({ message: "Address link is required" });
-    }
-
-    
-    const coordMatch = addressLink.match(/(-?\d{1,3}\.\d+)[ ,]+(-?\d{1,3}\.\d+)/);
-    if (!coordMatch) {
-      return res.status(400).json({ message: "Could not extract coordinates from address link" });
-    }
-
-    const latitude = parseFloat(coordMatch[1]);
-    const longitude = parseFloat(coordMatch[2]);
-
-    const nearest = await property.find({
-      location: {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude],
-          },
-          $maxDistance: 10000, // 10 km radius
-        },
-      },
-    });
-
-    if (nearest.length === 0) {
-      return res.status(404).json({ message: "No nearby properties found" });
-    }
-
-    res.status(200).json({ message: "Nearby properties found", properties: nearest });
-  } catch (error) {
-    console.error("Error finding nearby properties:", error);
-    res.status(500).json({ message: "Error finding nearby properties", error: error.message });
-  }
-}
 
 
 async function deleteProperty(req, res) {
-    try {
-        const email = req.user.email;  
+  try {
+    const email = req.user.email;
 
-        // TAKE PROPERTY NAME FROM REQ BODY
-        const { propertyName } = req.body;
+    // TAKE PROPERTY NAME FROM REQ BODY
+    const { propertyName } = req.body;
 
-        if (!email || !propertyName) {
-            return res.status(400).json({
-                success: false,
-                message: "Email (from user) and Property Name (from body) are required"
-            });
-        }
-
-        // DELETE PROPERTY
-        const deleted = await property.findOneAndDelete({
-            email: email,
-            name: propertyName
-        });
-
-        if (!deleted) {
-            return res.status(404).json({
-                success: false,
-                message: "Property not found"
-            });
-        }
- 
-        await sendMail(
-            email,
-            "Property Deleted",
-            `Your property "${propertyName}" has been successfully deleted from your StayPal account.`
-        );
-
-        return res.status(200).json({
-            success: true,
-            message: "Property deleted & email sent successfully!"
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error",
-            error
-        });
+    if (!email || !propertyName) {
+      return res.status(400).json({
+        success: false,
+        message: "Email (from user) and Property Name (from body) are required"
+      });
     }
+
+    // DELETE PROPERTY
+    const deleted = await property.findOneAndDelete({
+      email: email,
+      name: propertyName
+    });
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found"
+      });
+    }
+
+    sendMail(
+      email,
+      "Property Deleted",
+      `Your property "${propertyName}" has been successfully deleted from your StayPal account.`
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Property deleted & email sent successfully!"
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
 }
 
 
@@ -234,5 +198,4 @@ module.exports = {
   addTenantPreferences,
   yourProperties,
   deleteProperty,
-  findNearestProperty
 };

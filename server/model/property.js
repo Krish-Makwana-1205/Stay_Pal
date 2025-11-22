@@ -22,6 +22,13 @@ const propertySchema = new mongoose.Schema({
     latitude: { type: Number },
     longitude: { type: Number },
     isRoommate: {type: Boolean, default: false},
+    location: {
+    type: { type: String, enum: ['Point'], required: true }, 
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true
+    }
+  },
     tenantPreferences: {
     
         gender: { type: String, enum: ["Male", "Female", "Any"], default:"Any"},
@@ -44,6 +51,8 @@ const propertySchema = new mongoose.Schema({
         notes: { type: String }
     }
 }, {timestamps:true});
+
+propertySchema.index({ location: '2dsphere' });
 
 propertySchema.index({ email: 1, name: 1 }, { unique: true }); // composite key
 

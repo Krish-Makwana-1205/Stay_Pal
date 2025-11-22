@@ -8,6 +8,7 @@ const dashboard = require('./router/home.js');
 const roommate = require('./router/Roommate.js'); 
 const chat = require('./router/message.js');
 const predictionRoutes = require('./router/predictionRoutes.js');
+const RadiusSearch = require('./router/radiusSearch.js');
 require("./cron/deleteotp.js");
 
 const app = express();
@@ -40,3 +41,4 @@ app.use("/home", dashboard);
 app.use("/roommate", roommate);  
 app.use("/chat", chat);
 app.use("/prediction", predictionRoutes);
+app.use("/radiussearch", RadiusSearch);

@@ -3,9 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const { storage } = require('../cloudinary'); 
 const upload = multer({ storage });
-const { uploadProperty,addTenantPreferences,yourProperties} = require('../controller/propertyOwner.js');
+const { uploadProperty,addTenantPreferences,yourProperties, deleteProperty} = require('../controller/propertyOwner.js');
 const {restrictToLoggedinUserOnly} = require('../middleware/logincheck');
-const { deleteProperty } = require("../controller/propertyOwner");
 
 // router.get('/nearest', findNearestProperty);
 
