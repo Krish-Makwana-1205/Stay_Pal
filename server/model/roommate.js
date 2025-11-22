@@ -11,7 +11,7 @@ const roommateSchema = new mongoose.Schema({
     },
     rentlower: {
         type: Number,
-        require: true,
+        required: true,
     },
     rentupper: {
         type: Number,

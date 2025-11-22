@@ -377,7 +377,7 @@ async function roommateUpload(req, res) {
         console.error("Roommate upload failed:", error);
         return res
             .status(500)
-            .json({ success: false, message: "Could not post roommate property" });
+            .json({ success: false, message: "Could not post roommate" });
     }
 }
 
@@ -385,13 +385,14 @@ async function getlistings(req, res) {
     if (!req.user.email) {
         return res.status(500).json({ success: false, message: 'Error while fetching cookie data' });
     }
-
+    console.log(req.user.email)
     try {
-        const listings = Roommate.find({ email: req.user.email });
-
+        const listings = await Roommate.find({ email: req.user.email });
+        console.log(listings)
         return res.status(200).json({ success: true, message: 'fetch successfull', data: listings });
     }
     catch (e) {
+        console.log("run")
         return res.status(500).json({ success: false, error: e, message: 'error while fetching data' });
     }
 

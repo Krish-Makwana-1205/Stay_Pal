@@ -16,6 +16,7 @@ import PropertyView from "./pages/PropertyView";
 import EditProperty from "./pages/EditProperty";
 import EditPreferences from "./pages/EditPreferences";
 import ApplicationList from "./pages/ApplicationList";
+import RoommateForm from "./pages/RoommateForm"
 // import ViewRoommates from "./pages/ViewRoommates";
 // import ViewShared from "./pages/ViewShared";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -44,6 +45,7 @@ function App() {
         <Route path="/editproperty/:email/:name" element={<EditProperty />} />
         <Route path="/googlelogin" element={<GoogleLogin />} />
         <Route path="/tenant/my-applications" element={<MyApplications />} />
+        <Route path="/roommateform" element={<RoommateForm />} />
         
         <Route
           path="/editpreferences/:email/:name"
