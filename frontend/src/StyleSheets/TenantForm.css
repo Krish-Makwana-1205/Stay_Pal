@@ -57,13 +57,13 @@
   position: relative;
   background: var(--secondary-color);
   width: 100%;
-  max-width: 500px;
+  max-width: 900px;
   padding: 50px 40px;
   border: 2px solid var(--primary-color);
   border-radius: 0; /* Sharp corners for graphic look */
   z-index: 1;
   
-  /* The "Pop Art" Hard Shadow */
+  
   box-shadow: 15px 15px 0px var(--primary-color); 
   
   /* Entrance Animation */
@@ -75,7 +75,7 @@
   gap: 15px;
 }
 
-/* A decorative colorful bar at the top */
+
 .tenant-form::before {
   content: "";
   position: absolute;
