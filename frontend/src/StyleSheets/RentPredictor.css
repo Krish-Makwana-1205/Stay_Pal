@@ -1,0 +1,224 @@
+
+
+/* Background similar to light gradient in screenshot */
+.rent-page-bg {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 16px;
+  background: radial-gradient(circle at top, #f5f5f7 0, #e7ddd2 40%, #dfd4c7 100%);
+  box-sizing: border-box;
+}
+
+/* Main white card */
+.prediction-card {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px 48px 32px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  box-sizing: border-box;
+}
+
+/* Heading */
+.page-title {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.page-subtitle {
+  margin: 0 0 32px;
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 560px;
+}
+
+/* Form layout */
+.prediction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Dark blue label bar with angled right edge */
+.field-label-bar {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  padding: 8px 18px;
+  background-color: #041b3d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.field-label-main {
+  position: relative;
+  z-index: 1;
+}
+
+.field-input-wrapper {
+  margin-top: 6px;
+}
+
+/* Inputs and select */
+.field-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.field-input:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #11182720;
+}
+
+.select-input {
+  appearance: none;
+}
+
+/* City dropdown */
+.city-wrapper {
+  position: relative;
+}
+
+.city-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 20;
+  list-style: none;
+  padding: 4px 0;
+}
+
+.city-option {
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #374151;
+}
+
+.city-option:hover {
+  background-color: #f3f4ff;
+}
+
+/* Help text under fields */
+.field-help {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Button */
+.button-row {
+  margin-top: 4px;
+}
+
+.predict-btn {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  background-color: #041b3d;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.predict-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.predict-btn:not(:disabled):hover {
+  background-color: #06285a;
+  box-shadow: 0 14px 30px rgba(4, 27, 61, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Error banner */
+.error-banner {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+/* Result panel at bottom */
+.result-panel {
+  margin-top: 12px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.result-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.result-range {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #041b3d;
+}
+
+.result-meta {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .prediction-card {
+    padding: 28px 20px 24px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .field-label-bar::after {
+    display: none;
+  }
+}

@@ -1,36 +1,55 @@
 const axios = require("axios");
 
-
+// Extract latitude/longitude from either:
+// 1) A plain string containing numbers: "23.02,72.57" or "@23.02,72.57",
+// 2) A Google Maps URL (including short maps.app.goo.gl links).
 async function getCoordinates(addressLink) {
   try {
-    const apiKey = process.env.OPENCAGE_API_KEY;
-    if (!apiKey) throw new Error("Missing OpenCage API key");
+    if (!addressLink) {
+      throw new Error("Address link is required");
+    }
 
-    if (addressLink) {
-      const coordMatch = addressLink.match(
-        /(-?\d{1,3}\.\d+)[ ,]+(-?\d{1,3}\.\d+)/
-      );
-      if (coordMatch) {
-        const lat = parseFloat(coordMatch[1]);
-        const lng = parseFloat(coordMatch[2]);
+    const coordRegex = /(-?\d{1,3}\.\d+)[ ,@]+(-?\d{1,3}\.\d+)/;
+
+    // 1) Directly from the string (works for raw coords and full Google Maps URLs)
+    let match = addressLink.match(coordRegex);
+    if (match) {
+      const lat = parseFloat(match[1]);
+      const lng = parseFloat(match[2]);
+      return { latitude: lat, longitude: lng };
+    }
+
+    // 2) If it's a URL (e.g. maps.app.goo.gl short link),
+    //    follow redirects to the final Google Maps URL and
+    //    try to read coordinates from there.
+    if (/^https?:\/\//i.test(addressLink)) {
+      const response = await axios.get(addressLink, {
+        maxRedirects: 5,
+        // Allow 3xx redirects as "ok" so axios follows them
+        validateStatus: (status) => status >= 200 && status < 400,
+      });
+
+      const finalUrl =
+        response.request?.res?.responseUrl ||
+        response.request?._redirectable?._currentUrl ||
+        response.request?._redirectable?._options?.href ||
+        addressLink;
+
+      match = finalUrl.match(coordRegex);
+      if (match) {
+        const lat = parseFloat(match[1]);
+        const lng = parseFloat(match[2]);
         return { latitude: lat, longitude: lng };
       }
     }
-    const url = 'https://api.opencagedata.com/geocode/v1/json?q=${encoded}&key=${apiKey}';
 
-    const response = await axios.get(url);
-    if (response.data.results && response.data.results.length > 0) {
-      const { lat, lng } = response.data.results[0].geometry;
-      return { latitude: lat, longitude: lng };
-    } else {
-      throw new Error("No results found for given address");
-    }
+    // If still nothing, we don't attempt external geocoding here.
+    throw new Error("No coordinates found in link");
   } catch (error) {
     console.error("Geocoding error:", error.message);
-    throw new Error("Geocoding failed");
+    throw new Error("Could not geocode address link");
   }
 }
-
 
 async function distance_Scoring(latitude1, longitude1, latitude2, longitude2) {
   // Validate all inputs
@@ -79,6 +98,5 @@ async function distance_Scoring(latitude1, longitude1, latitude2, longitude2) {
 
   return points;
 }
-
 
 module.exports = { getCoordinates, distance_Scoring };

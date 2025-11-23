@@ -1,25 +1,46 @@
 const property = require("../model/property");
+const { getCoordinates } = require("../utils/geocode.js");
 
 async function findNearestProperty(req, res) {
   try {
-    let { addressLink , radius} = req.query;
-    radius = (radius*1000);
-    if(!radius){
-      radius = 10000
-    }
+    let { addressLink, radius } = req.query;
+
     if (!addressLink) {
       return res.status(400).json({ message: "Address link is required" });
     }
 
-
-    const coordMatch = addressLink.match(/(-?\d{1,3}\.\d+)[ ,]+(-?\d{1,3}\.\d+)/);
-    if (!coordMatch) {
-      return res.status(400).json({ message: "Could not extract coordinates from address link" });
+    // Radius from km → meters. Default to 50km if not provided.
+    let radiusMeters = Number(radius) * 1000;
+    if (!radiusMeters || Number.isNaN(radiusMeters)) {
+      radiusMeters = 50000; // 50 km
     }
 
-    const latitude = parseFloat(coordMatch[1]);
-    const longitude = parseFloat(coordMatch[2]);
-    
+    // Use common geocoding helper (works with coords, full URLs, plain text)
+    let coords;
+    try {
+      coords = await getCoordinates(addressLink);
+    } catch (err) {
+      return res
+        .status(400)
+        .json({ message: "Could not extract coordinates from address link" });
+    }
+
+    const { latitude, longitude } = coords;
+
+    // Extra safety check
+    if (
+      typeof latitude !== "number" ||
+      typeof longitude !== "number" ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid coordinates extracted from address link" });
+    }
+
     const nearest = await property.find({
       location: {
         $near: {
@@ -27,7 +48,7 @@ async function findNearestProperty(req, res) {
             type: "Point",
             coordinates: [longitude, latitude],
           },
-          $maxDistance: radius, 
+          $maxDistance: radiusMeters,
         },
       },
     });
@@ -36,13 +57,18 @@ async function findNearestProperty(req, res) {
       return res.status(200).json({ message: "No nearby properties found" });
     }
 
-    res.status(200).json({ message: "Nearby properties found", properties: nearest });
+    return res
+      .status(200)
+      .json({ message: "Nearby properties found", properties: nearest });
   } catch (error) {
     console.error("Error finding nearby properties:", error);
-    res.status(500).json({ message: "Error finding nearby properties", error: error.message });
+    res.status(500).json({
+      message: "Error finding nearby properties",
+      error: error.message,
+    });
   }
 }
 
 module.exports = {
-    findNearestProperty
-}
+  findNearestProperty,
+};

@@ -24,6 +24,8 @@ import GoogleLogin from "./pages/GoogleLogin";
 import ChatPage from "./pages/ChatPage";
 import ChatListPage from "./pages/ChatListPage";
 import MyApplications from "./pages/Myapplications";
+import RentPredictor from "./pages/RentPredictor";
+import NearestProperties from "./pages/NearestProperties";
 function App() {
   return (
     <GoogleOAuthProvider clientId="111906127844-bkf5itk1g4jr340f13arirg2bcu83t8i.apps.googleusercontent.com">
@@ -55,6 +57,8 @@ function App() {
           path="/applications/:propertyName"
           element={<ApplicationList />}
         />
+        <Route path="/predict-rent" element={<RentPredictor />} />
+        <Route path="/nearest-properties" element={<NearestProperties />} />
         <Route path="*" element={<h1>Page Not Found</h1>} />
         <Route path="/chat/:receiverEmail" element={<ChatPage/>} />
         <Route path="/my-chats" element={<ChatListPage />} />
