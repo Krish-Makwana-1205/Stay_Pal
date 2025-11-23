@@ -1,5 +1,3 @@
-/* TenantForm.css - Unique "Profile" Scoped Classes */
-
 :root {
   --profile-primary: #0d2a4f;
   --profile-accent: #007bff;
@@ -17,13 +15,12 @@
   justify-content: center;
   position: relative;
   background-color: var(--profile-bg);
-  /* Blueprint Grid Pattern */
   background-image:
     linear-gradient(var(--profile-grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--profile-grid-line) 1px, transparent 1px);
   background-size: 40px 40px;
   padding: 40px 20px;
-  overflow: hidden; /* Ensures the animated background doesn't cause scrollbars */
+  overflow: hidden; 
 }
 
 
@@ -34,7 +31,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* Image Layer: Small, subtle housing icons */
   background-image: 
     url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg');
   background-repeat: repeat;
@@ -43,7 +39,7 @@
     0px 0px, 
     25px 25px, 
     50px 0px; /* Offset for a staggered pattern */
-  opacity: 0.15; /* Very subtle watermark */
+  opacity: 0.15; 
   pointer-events: none;
   z-index: 0;
   animation: bgPan 60s linear infinite; /* Slow background pan */
@@ -73,7 +69,7 @@
   background: repeating-linear-gradient(90deg, var(--profile-primary) 0%, var(--profile-primary) 20%, var(--profile-accent) 20%, var(--profile-accent) 40%);
 }
 
-/* --- 3. Typography --- */
+/* --- 3. Title --- */
 .profile-heading {
   font-size: 2.5rem;
   text-transform: uppercase;
@@ -89,7 +85,7 @@
   z-index: 2;
 }
 
-/* --- 4. Layout System (2 Columns) --- */
+/* --- 4. Layout --- */
 .profile-layout-wrapper {
   display: flex;
   flex-direction: row;
@@ -111,7 +107,7 @@
   padding-left: 40px;
 }
 
-/* --- 5. Inputs & Labels (Scoped) --- */
+/* --- 5. Inputs & Labels  --- */
 .profile-label {
   display: inline-block;
   background: var(--profile-primary);
@@ -142,8 +138,6 @@
   border-bottom-color: var(--profile-accent);
   background: rgba(0, 123, 255, 0.05);
 }
-
-/* --- 6. Custom Components --- */
 
 /* Alcohol/Smoking Toggles */
 .profile-inline-row {

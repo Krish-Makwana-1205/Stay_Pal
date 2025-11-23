@@ -1,15 +1,15 @@
-/* LandingPage.css - Updated with theme changes and compact features */
+/* LandingPage.css */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #0d2a4f; /* Dark Blue */
-  --accent-color: #007bff; /* Bright Blue */
-  --secondary-color: #ffffff; /* White */
-  --bg-light: #f4f7f9; /* Lighter gray background for sections */
-  --card-bg: #ffffff; /* Explicit card background color */
-  --text-color: #333333; /* Dark Gray Text */
-  --text-color-light: #777777; /* Medium Gray Text */
-  --text-on-dark: #f0f0f0; /* Light text for dark backgrounds */
+  --primary-color: #0d2a4f;
+  --accent-color: #007bff;
+  --secondary-color: #ffffff;
+  --bg-light: #f4f7f9;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-color-light: #777777;
+  --text-on-dark: #f0f0f0;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
   --border-radius: 12px;
@@ -34,13 +34,12 @@ body {
   overflow-x: hidden;
 }
 
-/* --- Hero Section (No changes) --- */
 .content-wrapper {
   position: relative;
   display: flex;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: flex-start; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
   padding: 100px 8%;
   min-height: 90vh;
   background: var(--primary-color);
@@ -68,7 +67,7 @@ body {
   right: 8%;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* brand left, buttons right */
+  justify-content: space-between;
   z-index: 20;
 }
 .hero-brand {
@@ -106,15 +105,15 @@ body {
   transform: translateY(-1px);
 }
 .header-logo {
-  width: 40px; 
+  width: 40px;
   height: auto;
 }
 
 .logo {
-  font-size: 2.2rem; 
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--secondary-color);
-  margin-bottom: 0; 
+  margin-bottom: 0;
   letter-spacing: -1px;
 }
 .hero-brand {
@@ -130,7 +129,6 @@ body {
   gap: 20px;
 }
 
-/* Links & button share the same look */
 .nav-link {
   border: 1px solid transparent;
   padding: 6px 14px;
@@ -153,7 +151,6 @@ body {
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Logout has a slightly stronger emphasis */
 .nav-logout {
   background-color: transparent;
   border-color: rgba(255, 255, 255, 0.6);
@@ -163,27 +160,27 @@ body {
   background-color: #e55353;
   border-color: #e55353;
   color: #ffffff;
-} 
+}
 .text-content {
   flex: none;
   min-width: 300px;
   max-width: 600px;
   position: relative;
   z-index: 10;
-  margin-top: -50px; 
-  text-align: left; 
+  margin-top: -50px;
+  text-align: left;
 }
 
 .image-gallery {
-  display: none; 
+  display: none;
 }
 
 .tagline {
-  font-size: 2.5rem; 
-  line-height: 1.2; 
+  font-size: 2.5rem;
+  line-height: 1.2;
   color: var(--secondary-color);
   margin-bottom: 25px;
-  font-weight: 600; 
+  font-weight: 600;
 }
 
 .description {
@@ -199,31 +196,31 @@ body {
 }
 
 .cta-button {
-  display: flex; 
+  display: flex;
   align-items: center;
-  justify-content: space-between; 
-  width: 300px; 
+  justify-content: space-between;
+  width: 300px;
   padding: 16px 25px;
-  background-color: rgba(255, 255, 255, 0.15); 
-  border: 1px solid rgba(255, 255, 255, 0.3); 
-  color: var(--secondary-color); 
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--secondary-color);
   text-decoration: none;
-  border-radius: 50px; 
+  border-radius: 50px;
   font-size: 1.1rem;
-  font-weight: 500; 
+  font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .cta-button:hover {
-  background-color: rgba(255, 255, 255, 0.25); 
+  background-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .cta-arrow {
-  font-size: 1.4rem; 
-  margin-left: 10px; 
+  font-size: 1.4rem;
+  margin-left: 10px;
 }
 
 .section-title {
@@ -234,30 +231,29 @@ body {
   font-weight: 600;
 }
 
-/* --- Features Section (MODIFIED for compactness) --- */
 .features-section {
-  padding: 60px 8%; /* MODIFIED: Reduced top/bottom padding from 80px */
-  background-color: var(--bg-light); 
+  padding: 60px 8%;
+  background-color: var(--bg-light);
 }
 
 .main-features {
   display: grid;
-  grid-template-columns: 1fr; 
-  gap: 30px; /* MODIFIED: Reduced gap from 40px */
-  margin-bottom: 50px; /* MODIFIED: Reduced margin from 60px */
-  max-width: 900px; 
+  grid-template-columns: 1fr;
+  gap: 30px;
+  margin-bottom: 50px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .feature-card.large-feature-card {
-  background-color: var(--primary-color); 
-  padding: 25px; /* MODIFIED: Reduced padding from 30px */
+  background-color: var(--primary-color);
+  padding: 25px;
   border-radius: var(--border-radius);
-  text-align: left; 
+  text-align: left;
   transition: all 0.3s ease;
-  border: none; 
-  box-shadow: var(--card-shadow); 
+  border: none;
+  box-shadow: var(--card-shadow);
 }
 
 .feature-card.large-feature-card:hover {
@@ -268,64 +264,63 @@ body {
 .feature-content-wrapper {
   display: flex;
   align-items: center;
-  gap: 25px; /* MODIFIED: Reduced gap from 30px */
+  gap: 25px;
 }
 
 .feature-content-wrapper.reverse-layout {
-  flex-direction: row-reverse; 
+  flex-direction: row-reverse;
 }
 
 .feature-text {
-  flex: 1; 
+  flex: 1;
 }
 
 .feature-text h3 {
-  font-size: 1.6rem; 
-  color: var(--secondary-color); 
+  font-size: 1.6rem;
+  color: var(--secondary-color);
   margin-bottom: 10px;
   font-weight: 600;
 }
 
 .feature-text p {
   font-size: 1rem;
-  color: var(--text-on-dark); 
+  color: var(--text-on-dark);
   line-height: 1.6;
 }
 
 .feature-image-container {
-  flex: 1; 
-  height: 220px; 
+  flex: 1;
+  height: 220px;
   border-radius: var(--border-radius);
-  overflow: hidden; 
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .feature-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
+  object-fit: cover;
   display: block;
 }
 
-/* --- Minor Features (MODIFIED for compactness) --- */
 .minor-features {
   display: flex;
   justify-content: center;
-  gap: 25px; /* MODIFIED: Reduced gap from 30px */
+  gap: 25px;
   flex-wrap: wrap;
 }
 
 .minor-feature.small-minor-feature {
   flex: 1;
-  min-width: 280px; 
-  max-width: 380px; 
-  background-color: #d4eaf6; 
-  padding: 20px; /* MODIFIED: Reduced padding from 25px */
+  min-width: 280px;
+  max-width: 380px;
+  background-color: #d4eaf6;
+  padding: 20px;
   border-radius: var(--border-radius);
   text-align: center;
   transition: all 0.3s ease;
   border: 1px solid #e0e0e0;
-  box-shadow: var(--card-shadow); 
+  box-shadow: var(--card-shadow);
 }
 
 .minor-feature.small-minor-feature:hover {
@@ -334,31 +329,28 @@ body {
 }
 
 .minor-feature-icon {
-  font-size: 2rem; 
+  font-size: 2rem;
   margin-bottom: 12px;
 }
 
 .minor-feature h4 {
-  font-size: 1.2rem; 
+  font-size: 1.2rem;
   color: var(--text-color);
   margin-bottom: 8px;
   font-weight: 600;
 }
 
 .minor-feature p {
-  font-size: 0.95rem; 
+  font-size: 0.95rem;
   color: var(--text-color-light);
   line-height: 1.5;
 }
 
-
-/* --- ftproperties Section (MODIFIED for theme) --- */
 .ftproperties-section {
-  padding: 60px 8%; /* MODIFIED: Reduced padding from 80px */
-  background-color: var(--primary-color); /* MODIFIED: Changed background to match footer */
+  padding: 60px 8%;
+  background-color: var(--primary-color);
 }
 
-/* MODIFIED: Changed title color to be visible on dark background */
 .ftproperties-section .section-title {
   color: var(--secondary-color);
 }
@@ -371,18 +363,17 @@ body {
   scroll-behavior: smooth;
 }
 
-/* MODIFIED: Changed scrollbar for dark background */
 .ftproperties-scroll::-webkit-scrollbar {
   height: 8px;
 }
 
 .ftproperties-scroll::-webkit-scrollbar-track {
-  background: #3a5b7e; /* Darker track for contrast */
+  background: #3a5b7e;
   border-radius: 10px;
 }
 
 .ftproperties-scroll::-webkit-scrollbar-thumb {
-  background: var(--bg-light); /* Light thumb */
+  background: var(--bg-light);
   border-radius: 10px;
 }
 .ftproperties-scroll::-webkit-scrollbar-thumb:hover {
@@ -393,7 +384,7 @@ body {
   min-width: 320px;
   max-width: 340px;
   flex-shrink: 0;
-  background-color: var(--card-bg) ;
+  background-color: var(--card-bg);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--card-shadow);
@@ -447,9 +438,8 @@ body {
   border-top: 1px solid #f0f0f0;
 }
 
-/* --- Reviews Section (No changes) --- */
 .reviews-section {
-  padding: 60px 8%; /* MODIFIED: Reduced padding to match other sections */
+  padding: 60px 8%;
   background-color: var(--bg-light);
 }
 
@@ -532,7 +522,6 @@ body {
   font-style: italic;
 }
 
-/* --- Footer (No changes) --- */
 .footer {
   background-color: var(--primary-color);
   color: var(--text-on-dark);
@@ -579,32 +568,31 @@ body {
 .footer-bottom {
   text-align: center;
   padding-top: 30px;
-  border-top: 1px solid #3a5b7e; 
+  border-top: 1px solid #3a5b7e;
   color: var(--text-on-dark);
   font-size: 0.9rem;
 }
 
 .footer-header-logo {
-  width: 60px; 
+  width: 60px;
   height: auto;
 }
 
-/* --- Responsive Design (No changes) --- */
 @media (max-width: 768px) {
   .content-wrapper {
     padding: 60px 5%;
     min-height: 70vh;
-    align-items: center; 
+    align-items: center;
   }
 
   .hero-header {
-    left: 5%; 
+    left: 5%;
   }
 
   .text-content {
     max-width: 100%;
-    margin-top: 20px; 
-    text-align: center; 
+    margin-top: 20px;
+    text-align: center;
   }
 
   .logo {
@@ -612,7 +600,7 @@ body {
   }
 
   .tagline {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
 
   .description {
@@ -620,10 +608,10 @@ body {
   }
 
   .cta-button {
-    width: 280px; 
+    width: 280px;
     padding: 14px 20px;
     font-size: 1rem;
-    margin: 0 auto; 
+    margin: 0 auto;
   }
 
   .section-title {
@@ -634,18 +622,17 @@ body {
     padding: 25px;
   }
   .feature-content-wrapper, .feature-content-wrapper.reverse-layout {
-    flex-direction: column; 
-    text-align: center; 
+    flex-direction: column;
+    text-align: center;
   }
   .feature-image-container {
-      width: 100%; 
-      height: 180px; 
-      margin-top: 20px; 
+      width: 100%;
+      height: 180px;
+      margin-top: 20px;
   }
   .feature-text {
-      flex: none; 
+      flex: none;
   }
-
 
   .ftproperties-section,
   .reviews-section,
@@ -676,7 +663,7 @@ body {
   }
 
   .logo {
-    font-size: 1.8rem; 
+    font-size: 1.8rem;
   }
 
   .header-logo {
@@ -693,7 +680,7 @@ body {
   }
 
   .minor-feature.small-minor-feature {
-    min-width: 100%; 
+    min-width: 100%;
     max-width: 100%;
   }
 

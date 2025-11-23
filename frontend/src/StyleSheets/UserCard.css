@@ -1,6 +1,3 @@
-/* UserCard.css - Combined & Optimized */
-
-/* --- Theme Variables (From Code 2) --- */
 :root {
   --primary-color: #0d2a4f;
   --accent-color: #007bff;
@@ -22,14 +19,13 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* --- Page Background (From Code 2 - Animated) --- */
+/* --- Page Background --- */
 .usercard-page {
   min-height: 100vh;
   width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Dynamic animated gradient */
   background: linear-gradient(-45deg, var(--primary-color), #1a4a8a, #0056b3, var(--bg-light));
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
@@ -38,7 +34,6 @@
   position: relative;
 }
 
-/* Floating Particles Background Effect */
 .usercard-page::before,
 .usercard-page::after {
   content: '';
@@ -62,13 +57,12 @@
   animation-delay: -5s;
 }
 
-/* --- Main Container (Glassmorphism style from Code 2) --- */
+/* --- Main Container --- */
 .usercard-container {
   width: 100%;
   max-width: 1000px;
   min-height: 60vh;
   z-index: 1;
-  /* Using Code 2's popIn animation */
   animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
@@ -103,7 +97,7 @@
   letter-spacing: 0.5px;
 }
 
-/* --- Navigation Links (Merged from Code 1) --- */
+/* --- Navigation Links --- */
 .usercard-nav {
   display: flex;
   align-items: center;
@@ -114,19 +108,14 @@
   border-radius: 999px;
   padding: 6px 14px;
   background: transparent;
-  /* Adapted border color for light glass header */
   border: 1px solid var(--primary-color); 
   color: var(--primary-color);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   outline: none;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+              color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
 }
 
@@ -137,11 +126,10 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Logout Button Styling */
 .usercard-nav-logout, 
 .logout-btn {
   background: transparent;
-  border: 2px solid #ff4b4b; /* Red accent for logout */
+  border: 2px solid #ff4b4b;
   color: #ff4b4b;
   padding: 8px 20px;
   border-radius: 30px;
@@ -182,16 +170,15 @@
   opacity: 0;
 }
 
-/* --- Options Grid (3D Spotlight Effect from Code 2) --- */
+/* --- Options Grid --- */
 .options {
   display: flex;
   justify-content: center;
   gap: 40px;
-  perspective: 1000px; /* Essential for 3D transforms */
+  perspective: 1000px;
   flex-wrap: wrap;
 }
 
-/* Unique Interaction: Hovering the container dims non-hovered items */
 .options:hover .option-card:not(:hover) {
   filter: blur(4px) grayscale(60%);
   transform: scale(0.95);
@@ -227,7 +214,6 @@
   z-index: 10;
 }
 
-/* Option Card Internal Elements */
 .option-img {
   width: 100px;
   height: 100px;
@@ -271,7 +257,6 @@
   animation: pulseBtn 1.5s infinite;
 }
 
-/* Loading & Not Logged States */
 .loading-text, .not-logged {
   color: var(--secondary-color);
   font-size: 1.5rem;
@@ -340,7 +325,7 @@
   100% { transform: scale(1); }
 }
 
-/* --- Responsive Design --- */
+/* --- Responsive --- */
 @media (max-width: 1024px) {
   .usercard-container {
     width: 90%;
@@ -354,7 +339,7 @@
 @media (max-width: 768px) {
   .usercard-page {
     padding: 10px;
-    background: var(--bg-light); /* Simplifies bg on mobile for performance */
+    background: var(--bg-light);
     animation: none;
   }
   
@@ -381,7 +366,6 @@
     gap: 20px;
   }
 
-  /* Remove complex hover interactions on mobile for better UX */
   .options:hover .option-card:not(:hover) {
     filter: none;
     transform: none;
@@ -392,7 +376,6 @@
     width: 100%;
     max-width: 350px;
     padding: 25px;
-    /* Card enters from side on mobile */
     animation: slideInSide 0.6s forwards; 
   }
 
