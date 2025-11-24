@@ -27,7 +27,7 @@ const tenantSchema = new mongoose.Schema({
     },
     religion: {
         type: String,
-        enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other", "Any"] ,
+        enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other", "Any", "Atheist"] ,
         default: "Any" 
     },
     alcohol: {

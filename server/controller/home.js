@@ -5,7 +5,8 @@ const User = require("../model/user");
 const { sendEmail } = require("../utils/mailer");
 const { getSimilarity } = require("../utils/nlp");
 const { getCoordinates, distance_Scoring } = require("../utils/geocode.js");
-
+const { getAge } = require("../utils/agecalc.js");
+const { getSimilaritySimple } = require("../utils/simplenlp.js");
 
 async function home(req, res) {
 
@@ -94,12 +95,7 @@ async function applyForProperty(req, res) {
       });
     }
 
-    await Promise.all([
-      Application.create({
-        tenantEmail,
-        propertyName,
-        propertyOwnerEmail,
-      }),
+    await Application.create({ tenantEmail, propertyName, propertyOwnerEmail, }),
 
       sendEmail(
         propertyOwnerEmail,
@@ -121,7 +117,6 @@ async function applyForProperty(req, res) {
           <br><p>Contact the tenant to proceed.</p>
         `
       )
-    ]);
 
     return res.status(200).json({ success: true, message: "Application sent successfully" });
 
@@ -155,6 +150,7 @@ async function getApplicationsForOwner(req, res) {
       Application.find({ propertyName, propertyOwnerEmail: ownerEmail }),
     ]);
 
+
     if (!propertyData) {
       return res.status(403).json({
         success: false,
@@ -173,20 +169,206 @@ async function getApplicationsForOwner(req, res) {
 
     const tenantEmails = apps.map((app) => app.tenantEmail);
 
-    const tenants = await Promise.all(
-      tenantEmails.map((email) => Tenant.findOne({ email }))
+    const tenants = await Tenant.find({
+      email: { $in: tenantEmails }
+    });
+    const preferences = propertyData.tenantPreferences;
+    const calculatePoints = async (tenant) => {
+      let match = 0, dif = 0;
+      if (preferences.gender != 'Any' && tenant.gender != 'Other') {
+        if (tenant.gender == propertyData.gender) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      const age = getAge(tenant.dob);
+      if (preferences.upperagelimit && preferences.loweragelimit) {
+
+
+        if (age <= preferences.upperagelimit && age >= preferences.loweragelimit) {
+          ++match;
+        }
+        else {
+          ++dif
+        }
+      }
+      else if (preferences.upperagelimit) {
+        if (age <= preferences.upperagelimit) {
+          ++match;
+        }
+        else {
+          ++dif
+        }
+      }
+      else if (preferences.loweragelimit) {
+        if (age >= preferences.loweragelimit) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.maritalStatus != 'Any') {
+        if (tenant.maritalStatus == preferences.maritalStatus) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.family != 'Any') {
+        if (tenant.family && preferences.family == 'Not Allowed') {
+          ++dif;
+        }
+        else if (!tenant.family) {
+          ++match;
+        }
+        else if (tenant.family && preferences.family == 'Allowed') {
+          ++match;
+        }
+      }
+      if (preferences.foodPreference != 'Any' && tenant.foodPreference != 'Any') {
+        if (preferences.foodPreference == 'Vegetarian') {
+          if (tenant.foodPreference == 'Non-Veg') {
+            ++dif;
+          }
+          else {
+            ++match;
+          }
+        }
+        else {
+          if (tenant.foodPreference == 'Non-Veg') {
+            ++match;
+          }
+          else {
+            ++dif;
+          }
+        }
+      }
+      if (!preferences.smoking) {
+        if (!tenant.smoker) {
+          ++match;
+        }
+        else {
+          ++dif
+        }
+      }
+      else {
+        ++match
+      }
+      if (!preferences.alcohol) {
+        if (!tenant.alcohol) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      else {
+        ++match
+      }
+      if (!preferences.pets) {
+        if (!tenant.Pet_lover) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      else {
+        ++match
+      }
+      if (preferences.nationality && tenant.nationality) {
+        if (preferences.nationality == tenant.nationality) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.workingShift != 'Any' && tenant.workingshifts != 'Any') {
+        if (preferences.workingShift == 'Day Shift' && tenant.workingShift == 'morning') {
+          ++match
+        }
+        else if (preferences.workingShift == 'Night Shift' && tenant.workingShift == 'night') {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.professionalStatus != "Any" && tenant.professionalStatus != "Any") {
+        if (preferences.professionalStatus == "Student" && tenant.professionalStatus == "student") {
+          ++match;
+        }
+        else if (preferences.professionalStatus != "Student" && tenant.professionalStatus == "working") {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.religion != "Any" && tenant.religion != "Any") {
+        if (preferences.religion == tenant.religion) {
+          ++match
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.language != "Any" && tenant.language != "Any") {
+        if (preferences.language == tenant.language) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      if (preferences.minStayDuration != -1 && tenant.minStayDuration != -1) {
+        if (preferences.minStayDuration <= tenant.minStayDuration) {
+          ++match;
+        }
+        else {
+          ++dif;
+        }
+      }
+      let descmatch = -1;
+      if (preferences.notes && tenant.description) {
+        descmatch = await getSimilaritySimple(preferences.notes, tenant.description);
+      }
+      console.log(tenant.username);
+      console.log(match);
+      console.log(dif);
+
+      return {
+        match,
+        dif,
+        score: match - dif,
+        descmatch
+      };
+
+    }
+
+    const result = await Promise.all(
+      tenants.map(async (tenant) => {
+        const app = apps.find(a => a.tenantEmail === tenant.email);
+        const points = await calculatePoints(tenant);
+
+        return {
+          tenant,
+          appliedAt: app.appliedAt,
+          ...points   // includes match, dif, score
+        };
+      })
     );
 
-    const result = apps.map((app, i) => ({
-      tenant: tenants[i],
-      appliedAt: app.appliedAt,
-    }));
+    // Sort by score descending
+    result.sort((a, b) => b.score - a.score);
 
-    return res.status(200).json({
-      success: true,
-      count: result.length,
-      data: result,
-    });
+
+    return res.status(200).json({ success: true, count: result.length, data: result, });
 
   } catch (error) {
     return res.status(500).json({
@@ -260,7 +442,7 @@ async function filterProperties(req, res) {
       houseType,
       nearbyPlaces,
       page = 1,
-      limit = 1000,
+      limit = 100,
       description,
       transportAvailability,
       googleLink
@@ -292,7 +474,7 @@ async function filterProperties(req, res) {
         linkpres = false;
       }
     }
-    else{
+    else {
 
     }
 
@@ -315,18 +497,21 @@ async function filterProperties(req, res) {
       Tenant.findOne({ email: req.user.email }),
       property.find(filterCriteria).skip(skip).limit(limit),
     ]);
-    const calculatePoints = async (prop) => {
+     function calculateBasicPoints(prop) {
       let points = 0;
+
       if (locality && prop.locality) {
         if (locality == prop.locality) {
           points += 15;
         }
       }
+
       if (houseType && prop.houseType) {
         if (houseType == prop.houseType) {
           points += 10;
         }
       }
+
       if (BHK && prop.BHK) {
         const diff = Math.abs(prop.BHK - BHK);
         points += Math.max(0, 10 - diff);
@@ -336,19 +521,21 @@ async function filterProperties(req, res) {
         if (prop.furnishingType.toLowerCase() === furnishingType.toLowerCase()) {
           points += 10;
         } else {
-          if (prop.furnishingType.toLowerCase() == 'semi furnished' || furnishingType.toLowerCase() == 'semi furnished') {
+          if (
+            prop.furnishingType.toLowerCase() == "semi furnished" ||
+            furnishingType.toLowerCase() == "semi furnished"
+          ) {
             points += 5;
           }
         }
       }
 
-      if(transportAvailability && prop.transportAvailability && transportAvailability != 'Any'){
-         if(transportAvailability == 'true' && prop.transportAvailability){
-             points += 3;
-         }
-         else{
-            points -= 3;
-         } 
+      if (transportAvailability && prop.transportAvailability && transportAvailability != "Any") {
+        if (transportAvailability == "true" && prop.transportAvailability) {
+          points += 3;
+        } else {
+          points -= 3;
+        }
       }
 
       if (areaSize && prop.areaSize) {
@@ -359,11 +546,11 @@ async function filterProperties(req, res) {
       if (nearbyPlaces && prop.nearbyPlaces) {
         let userPlaces = Array.isArray(nearbyPlaces)
           ? nearbyPlaces
-          : nearbyPlaces.split(",").map(p => p.trim().toLowerCase());
+          : nearbyPlaces.split(",").map((p) => p.trim().toLowerCase());
 
-        let propertyPlaces = prop.nearbyPlaces.map(p => p.toLowerCase());
+        let propertyPlaces = prop.nearbyPlaces.map((p) => p.toLowerCase());
 
-        let matches = userPlaces.filter(p => propertyPlaces.includes(p)).length;
+        let matches = userPlaces.filter((p) => propertyPlaces.includes(p)).length;
 
         points += matches * 3;
       }
@@ -382,7 +569,6 @@ async function filterProperties(req, res) {
         if (tenantPreferences.family && prefs.family !== "Any") {
           if (tenantPreferences.family === prefs.family) points += 2;
         }
-
 
         if (tenantPreferences.foodPreference && prefs.foodPreference !== "Any") {
           if (tenantPreferences.foodPreference === prefs.foodPreference) points += 1;
@@ -412,30 +598,75 @@ async function filterProperties(req, res) {
           if (tenantPreferences.language === prefs.language) points += 2;
         }
       }
+
+      return points;
+    }
+
+    async function refinePoints(prop, basePoints) {
+      let points = basePoints;
+
+      // 1) NLP on description (2-stage: cheap -> complex)
       if (description && prop.description) {
-        let simi = await getSimilarity(description, prop.description);
-        console.log(simi);
-        points += simi * 18;
+        const easyScore = await getSimilaritySimple(description, prop.description); // cheap
+        let finalNlpScore = easyScore;
+        console.log(prop.name);
+        console.log(easyScore);
+        if (easyScore >= 0.85) {
+          // Only now call complex NLP
+          const complexScore = await getSimilarity(description, prop.description);
+          finalNlpScore = complexScore;
+        }
+
+        points += finalNlpScore * 18;
       }
+
+      // 2) Distance scoring (heavy, so only for top N)
       let lat1 = prop.latitude;
       let long1 = prop.longitude;
       if (lat1 && long1 && linkpres) {
         points += await distance_Scoring(lat1, long1, lat2, long2);
       }
-      console.log(prop.name);
-      console.log(points);
+
       return points;
-    };
+    }
 
     // Calculate points for all properties in parallel
-    let scoredProperties = await Promise.all(
-      properties.map(async (prop) => ({
-        ...prop.toObject(),
-        points: await calculatePoints(prop),
-      }))
+     let baseScored = properties.map((prop) => ({
+      prop,
+      basePoints: calculateBasicPoints(prop),
+    }));
+
+     baseScored.sort((a, b) => b.basePoints - a.basePoints);
+    
+
+     const TOP_N = 10;
+    const topForRefine = baseScored.slice(0, TOP_N);
+
+    // Refine only top N with NLP + distance
+    const refinedTop = await Promise.all(
+      topForRefine.map(async (item) => {
+        const finalPoints = await refinePoints(item.prop, item.basePoints);
+        return {
+          id: String(item.prop._id),
+          points: finalPoints,
+        };
+      })
     );
 
-    // Sort by points descending
+    const refinedMap = new Map(refinedTop.map((r) => [r.id, r.points]));
+
+    // ---------- MERGE: top N (refined) + rest (basic) ----------
+    let scoredProperties = baseScored.map((item) => {
+      const id = String(item.prop._id);
+      const finalPoints = refinedMap.has(id) ? refinedMap.get(id) : item.basePoints;
+
+      return {
+        ...item.prop.toObject(),
+        points: finalPoints,
+      };
+    });
+
+    // Final sort by points (descending)
     scoredProperties.sort((a, b) => b.points - a.points);
 
     return res.status(200).json({

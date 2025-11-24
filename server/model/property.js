@@ -46,8 +46,8 @@ const propertySchema = new mongoose.Schema({
         professionalStatus: { type: String, enum: ["Student", "Employed", "Self-Employed", "Any"], default: "Any" },
         religion: { type: String, enum: ["Hinduism", "Islam", "Christianity", "Judaism", "Sikhism", "Jainism", "Buddhism","Taoism", "Zoroastrianism", "Other", "Any", "Atheist"] ,default: "Any" },
         language: { type: String, default: "Any" },
-        minStayDuration: { type: Number, default: 0 },
-        maxPeopleAllowed: { type: Number, default: 0 },
+        minStayDuration: { type: Number, default: -1 },
+        maxPeopleAllowed: { type: Number, default: -1 },
         notes: { type: String }
     }
 }, {timestamps:true});
