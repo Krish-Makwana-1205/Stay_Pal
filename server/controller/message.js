@@ -74,15 +74,54 @@ async function getChatList(req, res) {
         });
 
     } catch (error) {
-        console.log("🔥 CHAT LIST ERROR:", error);
+        console.log("CHAT LIST ERROR:", error);
         res.status(500).json({ success: false, error });
     }
 }
+async function deleteChat(req, res) {
+    try {
+        const sender = req.user.email;
+        const receiver = req.query.email;
 
+        if (!receiver) {
+            return res.status(400).json({
+                success: false,
+                message: "Receiver email required"
+            });
+        }
+
+        // Create unique chatId exactly like getChat
+        const emails = [sender, receiver].sort();
+        const chatId = emails.join("-");
+
+        // Delete the chat
+        const result = await Chat.deleteOne({ chatId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Chat not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Chat deleted successfully"
+        });
+
+    } catch (error) {
+        console.log("DELETE CHAT ERROR:", error);
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+}
 
 
 module.exports = {
     getChat,
     postMessage,
-    getChatList
+    getChatList,
+    deleteChat
 };

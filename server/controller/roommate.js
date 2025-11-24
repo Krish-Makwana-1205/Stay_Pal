@@ -2,6 +2,98 @@ const Tenant = require("../model/tenant");
 const Roommate = require("../model/roommate");
 const { getSimilarity } = require("../utils/nlp");
 
+// Assuming you have a RoommateApplication model similar to Application
+// const RoommateApplication = require("../models/RoommateApplication");
+
+async function applyForRoommate(req, res) {
+  try {
+    const applicantEmail = req.user.email;
+    const { recipientEmail } = req.body;
+
+    if (!applicantEmail) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not logged in" });
+    }
+
+    if (!recipientEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "Recipient email required",
+      });
+    }
+
+    if (applicantEmail === recipientEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot send a roommate request to yourself",
+      });
+    }
+
+    const [applicant, recipient] = await Promise.all([
+      Tenant.findOne({ email: applicantEmail }),
+      Tenant.findOne({ email: recipientEmail }),
+    ]);
+
+    if (!applicant) {
+      return res.status(404).json({
+        success: false,
+        message: "Applicant profile not found",
+      });
+    }
+
+    if (!recipient) {
+      return res.status(404).json({
+        success: false,
+        message: "Recipient profile not found",
+      });
+    }
+
+    await RoommateApplication.create({
+      applicantEmail,
+      recipientEmail,
+    });
+
+    sendEmail(
+      recipientEmail,
+      "New Roommate Request",
+      `
+        <h2>New Roommate Request</h2>
+        <p>You have received a new roommate request.</p>
+
+        <h3>Applicant Details</h3>
+        <p><strong>Name:</strong> ${applicant.name}</p>
+        <p><strong>Email:</strong> ${applicant.email}</p>
+        <p><strong>Gender:</strong> ${applicant.gender}</p>
+        <p><strong>Marital Status:</strong> ${applicant.maritalStatus}</p>
+        <p><strong>Profession:</strong> ${applicant.professionalStatus}</p>
+        <p><strong>Food Preference:</strong> ${applicant.foodPreference}</p>
+        <p><strong>Work Shift:</strong> ${applicant.workingshifts}</p>
+        <p><strong>Languages:</strong> ${applicant.language}</p>
+
+        <br><p>Contact the applicant to proceed.</p>
+      `
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Roommate request sent successfully",
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already sent a roommate request to this person.",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
 
 async function roommateSearch(req, res) {
     let query = req.query;
@@ -456,4 +548,5 @@ module.exports = {
     getlistings,
     updatelisting,
     deletelisting,
+    applyForRoommate
 }

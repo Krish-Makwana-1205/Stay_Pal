@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 
-const applicationSchema = new mongoose.Schema({
-  tenantEmail: { type: String, required: true },
-  propertyName: { type: String, required: true },
-  propertyOwnerEmail: { type: String, required: true },
+const roommateApplicationSchema = new mongoose.Schema({
+  applicantEmail: { type: String, required: true },
+  recipientEmail: { type: String, required: true },
   appliedAt: { type: Date, default: Date.now }
 });
 
-// Composite Unique Key 
-applicationSchema.index({ tenantEmail: 1, propertyName: 1, propertyOwnerEmail: 1 }, { unique: true });
+// Composite Unique Key to prevent duplicate roommate requests
+roommateApplicationSchema.index(
+  { applicantEmail: 1, recipientEmail: 1 },
+  { unique: true }
+);
 
-module.exports = mongoose.model("Application", applicationSchema);
+module.exports = mongoose.model("RoommateApplication", roommateApplicationSchema);
