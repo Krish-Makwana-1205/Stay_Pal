@@ -1,5 +1,5 @@
 /* =========================================
-   1. THEME (Matches Edit Property Form)
+   1. THEME (Matches My Properties)
 ========================================= */
 :root {
   --property-primary: #0d2a4f;
@@ -12,7 +12,7 @@
 /* =========================================
    2. PAGE CONTAINER (Grid Background)
 ========================================= */
-.pf-container {
+.epre-property-form-container { /* Mapped from .ep-property-form-container */
   width: 100%;
   min-height: 100vh;
   padding: 40px 20px;
@@ -20,6 +20,7 @@
   flex-direction: column;
   align-items: center;
 
+  /* White background with property grid */
   background-color: var(--property-bg);
   background-image:
     linear-gradient(var(--property-grid-line) 1px, transparent 1px),
@@ -32,7 +33,7 @@
 }
 
 /* Watermark layer */
-.pf-container::before {
+.epre-property-form-container::before { /* Mapped from .ep-property-form-container::before */
   content: "";
   position: absolute;
   inset: 0;
@@ -50,18 +51,9 @@
 }
 
 /* =========================================
-   3. PAGE WRAPPER (Controls Form Width)
+   3. PAGE TITLE (Same as My Properties)
 ========================================= */
-.pf-wrapper {
-  width: 100%;
-  max-width: 1200px; /* 🟦 SAME AS EDIT PROPERTY (Option A) */
-  z-index: 2;
-}
-
-/* =========================================
-   4. PAGE TITLE
-========================================= */
-.pf-title {
+.epre-form-title { /* Mapped from .ep-form-title */
   font-size: 2.2rem;
   text-transform: uppercase;
   font-weight: 800;
@@ -69,49 +61,47 @@
   text-align: center;
 
   background: var(--property-white);
-  padding: 15px 35px;
+  padding: 12px 35px;
   border: 2px solid var(--property-primary);
   box-shadow: 8px 8px 0 var(--property-primary);
 
-  margin: 0 auto 35px auto;
-  width: fit-content;
+  margin-bottom: 35px;
+  z-index: 2;
 }
 
 /* =========================================
-   5. FORM CARD (Pure White Opaque)
+   4. FORM CARD (Pure White Opaque)
 ========================================= */
-.pf-card {
+.epre-property-form { /* Mapped from .ep-property-form */
   width: 90%;
   max-width: 900px;
-  
-  /* --- CHANGE HERE --- */
-  margin: 0 auto 40px auto; /* Centers horizontally (0 auto) and adds bottom margin */
-  /* ------------------- */
 
   background: var(--property-white); /* FULL WHITE */
   border: 2px solid var(--property-primary);
   box-shadow: 12px 12px 0 var(--property-primary);
 
   padding: 35px;
+  margin-bottom: 40px;
   z-index: 2;
   animation: propertyPopUp 0.6s ease forwards;
 }
 
 /* =========================================
-   6. LABELS & INPUTS
+   5. INPUTS + LABELS
 ========================================= */
-.pf-label {
+.epre-property-form label { /* Mapped from .ep-property-form label */
   display: block;
   font-size: 0.9rem;
   font-weight: 700;
   margin-bottom: 6px;
   color: var(--property-primary);
   text-transform: uppercase;
+  margin-top: 15px; /* Added margin to separate fields visually */
 }
 
-.pf-input,
-.pf-textarea,
-.pf-select {
+.epre-property-form input, /* Mapped from .ep-property-form input */
+.epre-property-form textarea, /* Mapped from .ep-property-form textarea */
+.epre-property-form select { /* Mapped from .ep-property-form select */
   width: 100%;
   padding: 12px 15px;
   border: 2px solid var(--property-primary);
@@ -119,36 +109,47 @@
   font-size: 15px;
   background: #eef2f6;
   transition: 0.2s;
+  /* Added bottom margin for spacing between fields */
+  margin-bottom: 15px; 
 }
 
-.pf-input:focus,
-.pf-textarea:focus,
-.pf-select:focus {
+.epre-property-form input:focus, /* Mapped from .ep-property-form input:focus */
+.epre-property-form textarea:focus, /* Mapped from .epre-property-form textarea:focus */
+.epre-property-form select:focus { /* Mapped from .epre-property-form select:focus */
   background: white;
   box-shadow: 5px 5px 0 var(--property-primary);
   outline: none;
 }
 
-.pf-textarea {
+.epre-property-form textarea { /* Mapped from .ep-property-form textarea */
   min-height: 120px;
 }
 
 /* react-select fix */
-div[class*="-control"] {
+/* Note: We map to the prefix in the surrounding form class, not the react-select internal classes */
+.epre-property-form div[class*="-control"] {
   border: 2px solid var(--property-primary) !important;
   background: #eef2f6 !important;
   box-shadow: none !important;
   border-radius: 8px !important;
+  /* Added bottom margin for spacing between fields */
+  margin-bottom: 15px;
 }
-div[class*="-control--is-focused"] {
+.epre-property-form div[class*="-control--is-focused"] {
   background: white !important;
   box-shadow: 5px 5px 0 var(--property-primary) !important;
 }
 
+/* --- Specific JSX Fixes --- */
+.epre-property-form input[type="email"][readOnly][disabled] {
+    margin-bottom: 15px; /* Ensure spacing is consistent even with style override */
+}
+
+
 /* =========================================
-   7. IMAGE PREVIEW
+   6. IMAGE PREVIEW (Not used in Preferences, but included for completeness)
 ========================================= */
-.pf-image-preview-container {
+.epre-image-preview-container { /* Mapped from .ep-image-preview-container */
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -159,7 +160,7 @@ div[class*="-control--is-focused"] {
   background: #eef2f6;
 }
 
-.pf-image-preview-container img {
+.epre-image-preview-container img { /* Mapped from .ep-image-preview-container img */
   width: 95px;
   height: 95px;
   object-fit: cover;
@@ -169,9 +170,9 @@ div[class*="-control--is-focused"] {
 }
 
 /* =========================================
-   8. BUTTONS
+   7. BUTTONS
 ========================================= */
-.pf-clear-images-btn {
+.epre-clear-images-btn { /* Mapped from .ep-clear-images-btn */
   padding: 10px 15px;
   background: var(--property-primary);
   color: white;
@@ -180,14 +181,13 @@ div[class*="-control--is-focused"] {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
-  margin-top: 10px;
 }
-.pf-clear-images-btn:hover {
+.epre-clear-images-btn:hover { /* Mapped from .ep-clear-images-btn:hover */
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--property-primary);
 }
 
-.pf-submit-btn {
+.epre-submit-btn { /* Mapped from .ep-submit-btn */
   width: 100%;
   padding: 16px;
   background: var(--property-primary);
@@ -202,15 +202,16 @@ div[class*="-control--is-focused"] {
   box-shadow: 6px 6px 0 var(--property-primary);
   transition: 0.2s;
 }
-.pf-submit-btn:hover {
+.epre-submit-btn:hover { 
   background: var(--property-accent);
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 var(--property-primary);
 }
 
 /* =========================================
-   9. ALERTS
+   8. ALERTS
 ========================================= */
+
 .alert {
   padding: 15px;
   border-radius: 8px;
@@ -229,7 +230,7 @@ div[class*="-control--is-focused"] {
 }
 
 /* =========================================
-   10. ANIMATIONS
+   9. ANIMATIONS
 ========================================= */
 @keyframes bgPan {
   from { background-position: 0 0, 25px 25px, 50px 0; }
@@ -242,9 +243,13 @@ div[class*="-control--is-focused"] {
 }
 
 /* =========================================
-   11. RESPONSIVE
+   10. RESPONSIVE
 ========================================= */
+@media (max-width: 900px) {
+  .epre-property-form { padding: 25px; }
+}
+
 @media (max-width: 480px) {
-  .pf-title { font-size: 1.6rem; }
-  .pf-card { padding: 22px; }
+  .epre-form-title { font-size: 1.6rem; }
+  .epre-property-form { padding: 20px; }
 }

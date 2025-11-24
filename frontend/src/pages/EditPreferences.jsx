@@ -10,7 +10,7 @@ import Alert from "../Components/Alert";
 import { fetchSingleProperty } from "../api/filters";
 import { savePreferences } from "../api/propertyform";
 import { useAuth } from "../context/AuthContext";
-import "../StyleSheets/PropertyForm.css";
+import "../StyleSheets/EditPrefernces.css";
 
 export default function EditTenantPreferences() {
   const { email, name } = useParams();
@@ -208,12 +208,12 @@ export default function EditTenantPreferences() {
 
   // render
   return (
-    <div className="property-form-container">
-      <h2 className="form-title">Edit Tenant Preferences</h2>
+    <div className="epre-property-form-container">
+      <h2 className="epre-form-title">Edit Tenant Preferences</h2>
 
       <Alert message={message.text} type={message.type} onClose={() => setMessage({ text: "", type: "" })} />
 
-      <form onSubmit={handleSubmit} className="property-form">
+      <form onSubmit={handleSubmit} className="epre-property-form">
         <label>Email (auto-filled)</label>
         <input type="email" value={formData.email} readOnly disabled style={{ backgroundColor: "#f3f3f3", color: "#666" }} />
 
@@ -318,7 +318,7 @@ export default function EditTenantPreferences() {
         <label>Notes</label>
         <textarea name="notes" value={formData.notes} onChange={(e) => setFormData(p => ({ ...p, notes: e.target.value }))} />
 
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button type="submit" className="epre-submit-btn" disabled={loading}>
           {loading ? "Saving..." : "Save Preferences"}
         </button>
       </form>

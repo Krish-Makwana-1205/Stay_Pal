@@ -49,7 +49,7 @@ const ViewProperties = ({ defaultCity }) => {
 
   return (
     <div className="view-properties">
-
+     <div className="view-content-wrapper">
       {/* LEFT FILTERS */}
       <div className="dashboard-filters">
         <h2 className="filters-title">Filters</h2>
@@ -61,6 +61,7 @@ const ViewProperties = ({ defaultCity }) => {
 
       {/* RIGHT RESULTS */}
       <div className="properties-results">
+        <div className="results-card">
         <h2>
           Results {loadingResults ? "(loading...)" : `for city: ${currentCity || "All"}`}
         </h2>
@@ -100,8 +101,11 @@ const ViewProperties = ({ defaultCity }) => {
 
               </div>
             </div>
+            
           ))
         )}
+        </div>
+      </div>
       </div>
     </div>
   );

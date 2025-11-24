@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Alert from "../Components/Alert";
 import { savePreferences } from "../api/propertyform";
-import "../StyleSheets/PropertyForm.css";
+import "../StyleSheets/PropertyForm.css"; // Assuming this CSS file contains the provided styles
 import CreatableSelect from "react-select/creatable";
 import NumberInput from "../Components/NumberInput";
 import ISO6391 from "iso-639-1";
@@ -204,54 +204,67 @@ export default function PropertyForm2() {
   ];
 
   return (
-    <div className="property-form-container">
+    // pf-container is the main page container/background
+    <div className="pf-container">
 
-      <div className="property-form-wrapper">
+      {/* pf-wrapper controls the max width of the form content */}
+      <div className="pf-wrapper">
 
-        {/* LEFT PANEL */}
-        <div className="property-form-left">
-          <h2 className="property-form-title">Tenant Preferences</h2>
-        </div>
+        {/* This structure is a slight deviation from the CSS's assumed card layout, 
+            but for a simple form, wrapping everything in the card is best. */}
+        <h2 className="pf-title">Tenant Preferences</h2>
 
-        {/* RIGHT PANEL */}
-        <div className="property-form-right">
-
+        {/* pf-card is the main form card */}
+        <div className="pf-card">
+          
           <Alert
             message={message.text}
             type={message.type}
             onClose={() => setMessage({ text: "", type: "" })}
           />
 
-          <form onSubmit={handleSubmit} className="property-form">
+          <form onSubmit={handleSubmit}>
 
-            <label>Email (auto-filled)</label>
+            {/* Email (auto-filled) */}
+            <label className="pf-label">Email (auto-filled)</label>
             <input
               type="email"
+              className="pf-input"
               value={formData.email}
               readOnly
               disabled
-              style={{ backgroundColor: "#f3f3f3", color: "#666" }}
+              style={{ backgroundColor: "#eef2f6", color: "#555", cursor: "not-allowed" }}
             />
 
-            <label>Property Name *</label>
+            {/* Property Name */}
+            <label className="pf-label">Property Name *</label>
             <input
               type="text"
+              className="pf-input"
               value={formData.name}
               readOnly
-              style={{ backgroundColor: "#f3f3f3", color: "#555", cursor: "not-allowed" }}
+              style={{ backgroundColor: "#eef2f6", color: "#555", cursor: "not-allowed" }}
             />
 
-            <label>Gender Preference</label>
-            <select name="gender" value={formData.gender} onChange={handleChange}>
+            {/* Gender Preference */}
+            <label className="pf-label">Gender Preference</label>
+            <select
+              name="gender"
+              className="pf-select"
+              value={formData.gender}
+              onChange={handleChange}
+            >
               <option value="Any">Any</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
 
-            <label>Age Range</label>
+            {/* Age Range */}
+            <label className="pf-label">Age Range</label>
             <div style={{ display: "flex", gap: "10px" }}>
               <NumberInput
                 name="minAge"
+                className="pf-input"
                 placeholder="Min Age"
                 value={formData.minAge}
                 onChange={(e) =>
@@ -261,6 +274,7 @@ export default function PropertyForm2() {
               />
               <NumberInput
                 name="maxAge"
+                className="pf-input"
                 placeholder="Max Age"
                 value={formData.maxAge}
                 onChange={(e) =>
@@ -270,7 +284,8 @@ export default function PropertyForm2() {
               />
             </div>
 
-            <label>Occupation</label>
+            {/* Occupation (CreatableSelect uses react-select fix) */}
+            <label className="pf-label">Occupation</label>
             <CreatableSelect
               options={occupationOptions}
               value={
@@ -283,9 +298,11 @@ export default function PropertyForm2() {
               isClearable
             />
 
-            <label>Marital Status</label>
+            {/* Marital Status */}
+            <label className="pf-label">Marital Status</label>
             <select
               name="maritalStatus"
+              className="pf-select"
               value={formData.maritalStatus}
               onChange={handleChange}
             >
@@ -294,16 +311,24 @@ export default function PropertyForm2() {
               <option value="Married">Married</option>
             </select>
 
-            <label>Family</label>
-            <select name="family" value={formData.family} onChange={handleChange}>
+            {/* Family */}
+            <label className="pf-label">Family</label>
+            <select
+              name="family"
+              className="pf-select"
+              value={formData.family}
+              onChange={handleChange}
+            >
               <option value="Any">Any</option>
               <option value="Allowed">Allowed</option>
               <option value="Not Allowed">Not Allowed</option>
             </select>
 
-            <label>Food Preference</label>
+            {/* Food Preference */}
+            <label className="pf-label">Food Preference</label>
             <select
               name="foodPreference"
+              className="pf-select"
               value={formData.foodPreference}
               onChange={handleChange}
             >
@@ -312,25 +337,44 @@ export default function PropertyForm2() {
               <option value="Non-Vegetarian">Non-Vegetarian</option>
             </select>
 
-            <label>Smoking Preference</label>
-            <select name="smoking" value={formData.smoking} onChange={handleChange}>
+            {/* Smoking Preference */}
+            <label className="pf-label">Smoking Preference</label>
+            <select
+              name="smoking"
+              className="pf-select"
+              value={formData.smoking}
+              onChange={handleChange}
+            >
               <option value="true">Any</option>
               <option value="false">Not Allowed</option>
             </select>
 
-            <label>Alcohol Preference</label>
-            <select name="alcohol" value={formData.alcohol} onChange={handleChange}>
+            {/* Alcohol Preference */}
+            <label className="pf-label">Alcohol Preference</label>
+            <select
+              name="alcohol"
+              className="pf-select"
+              value={formData.alcohol}
+              onChange={handleChange}
+            >
               <option value="true">Any</option>
               <option value="false">Not Allowed</option>
             </select>
 
-            <label>Pets Allowed</label>
-            <select name="pets" value={formData.pets} onChange={handleChange}>
+            {/* Pets Allowed */}
+            <label className="pf-label">Pets Allowed</label>
+            <select
+              name="pets"
+              className="pf-select"
+              value={formData.pets}
+              onChange={handleChange}
+            >
               <option value="true">Any</option>
               <option value="false">Not Allowed</option>
             </select>
 
-            <label>Nationality</label>
+            {/* Nationality (Select uses react-select fix) */}
+            <label className="pf-label">Nationality</label>
             <Select
               options={Object.values(countries).map((c) => ({
                 value: c.name,
@@ -350,9 +394,11 @@ export default function PropertyForm2() {
               isClearable
             />
 
-            <label>Religion</label>
+            {/* Religion */}
+            <label className="pf-label">Religion</label>
             <select
               name="religion"
+              className="pf-select"
               value={formData.religion}
               onChange={handleChange}
             >
@@ -370,7 +416,8 @@ export default function PropertyForm2() {
               <option value="Other">Other</option>
             </select>
 
-            <label>Most Preferred Language</label>
+            {/* Most Preferred Language (Select uses react-select fix) */}
+            <label className="pf-label">Most Preferred Language</label>
             <Select
               options={ISO6391.getAllNames().map((lang) => ({
                 value: lang,
@@ -390,9 +437,11 @@ export default function PropertyForm2() {
               isClearable
             />
 
-            <label>Working Shift</label>
+            {/* Working Shift */}
+            <label className="pf-label">Working Shift</label>
             <select
               name="workingShift"
+              className="pf-select"
               value={formData.workingShift}
               onChange={handleChange}
             >
@@ -401,9 +450,11 @@ export default function PropertyForm2() {
               <option value="Night Shift">Night Shift</option>
             </select>
 
-            <label>Professional Status</label>
+            {/* Professional Status */}
+            <label className="pf-label">Professional Status</label>
             <select
               name="professionalStatus"
+              className="pf-select"
               value={formData.professionalStatus}
               onChange={handleChange}
             >
@@ -413,9 +464,12 @@ export default function PropertyForm2() {
               <option value="Self-Employed">Self-Employed</option>
             </select>
 
-            <label>Minimum Stay Duration (months)</label>
+            {/* Minimum Stay Duration */}
+            <label className="pf-label">Minimum Stay Duration (months)</label>
+            {/* NumberInput should ensure it uses pf-input style internally or via props */}
             <NumberInput
               name="minStayDuration"
+              className="pf-input"
               min="0"
               value={formData.minStayDuration}
               onChange={(e) =>
@@ -426,9 +480,12 @@ export default function PropertyForm2() {
               }
             />
 
-            <label>Max People Allowed</label>
+            {/* Max People Allowed */}
+            <label className="pf-label">Max People Allowed</label>
+            {/* NumberInput should ensure it uses pf-input style internally or via props */}
             <NumberInput
               name="maxPeopleAllowed"
+              className="pf-input"
               min="0"
               value={formData.maxPeopleAllowed}
               onChange={(e) =>
@@ -439,14 +496,21 @@ export default function PropertyForm2() {
               }
             />
 
-            <label>Notes</label>
+            {/* Notes */}
+            <label className="pf-label">Notes</label>
             <textarea
               name="notes"
+              className="pf-textarea"
               value={formData.notes}
               onChange={handleChange}
             />
 
-            <button type="submit" className="property-submit-btn" disabled={loading}>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="pf-submit-btn"
+              disabled={loading}
+            >
               {loading ? "Saving..." : "Save Preferences"}
             </button>
           </form>
