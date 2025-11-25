@@ -4,7 +4,7 @@ import { forgetPass, resetPass, loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import Alert from "../Components/Alert";
 
-// import "./ForgetPassword.css";
+import "../StyleSheets/ForgetPassword.css";
 
 export default function ForgetPassword() {
   const [step, setStep] = useState("email"); // "email" or "reset"
@@ -66,80 +66,97 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="forget-container">
-      <Alert message={alert.text} type={alert.type} onClose={() => setAlert({ text: "", type: "" })} />
-      <form
-        className="forget-form"
-        onSubmit={step === "email" ? handleSendOtp : handleResetPassword}
-      >
-        <h1 className="form-title">Reset Your Password</h1>
-        <p className="form-subtitle">
-          {step === "email"
-            ? "Enter your registered email to get an OTP."
-            : "Enter OTP and your new password."}
-        </p>
+    <div className="fp-forget-container">
+  <Alert
+    message={alert.text}
+    type={alert.type}
+    onClose={() => setAlert({ text: "", type: "" })}
+  />
 
+  <form
+    className="fp-forget-form"
+    onSubmit={step === "email" ? handleSendOtp : handleResetPassword}
+  >
+    <h1 className="fp-form-title">Reset Your Password</h1>
+
+    <p className="fp-form-subtitle">
+      {step === "email"
+        ? "Enter your registered email to get an OTP."
+        : "Enter OTP and your new password."}
+    </p>
+
+    <input
+      type="email"
+      placeholder="Email"
+      name="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+      disabled={step === "reset"}
+      className="fp-input"
+    />
+
+    {step === "reset" && (
+      <>
         <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Enter OTP"
+          name="otp"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
           required
-          disabled={step === "reset"}
+          className="fp-input"
         />
 
-        {step === "reset" && (
-          <>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              name="otp"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </>
-        )}
+        <input
+          type="password"
+          placeholder="New Password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="fp-input"
+        />
 
-        <button type="submit" disabled={loading}>
-          {loading
-            ? "Please wait..."
-            : step === "email"
-            ? "Send OTP"
-            : "Reset Password"}
+        <input
+          type="password"
+          placeholder="Confirm New Password"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          className="fp-input"
+        />
+      </>
+    )}
+
+    <button
+      type="submit"
+      disabled={loading}
+      className="fp-submit-btn"
+    >
+      {loading
+        ? "Please wait..."
+        : step === "email"
+        ? "Send OTP"
+        : "Reset Password"}
+    </button>
+
+    {step === "reset" && (
+      <p className="fp-resend-wrapper">
+        Didn’t receive OTP?{" "}
+        <button
+          type="button"
+          className="fp-resend-otp-btn"
+          onClick={handleSendOtp}
+          disabled={loading}
+        >
+          Resend OTP
         </button>
+      </p>
+    )}
+  </form>
+</div>
 
-        {step === "reset" && (
-          <p>
-            Didn’t receive OTP?{" "}
-            <button
-              type="button"
-              className="resend-otp-btn"
-              onClick={handleSendOtp}
-              disabled={loading}
-            >
-              Resend OTP
-            </button>
-          </p>
-        )}
-      </form>
-    </div>
   );
 }

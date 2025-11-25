@@ -1,39 +1,310 @@
-.similar-wrapper {
+/* =========================================================
+   PROPERTY VIEW THEME (Matches MyProperties)
+========================================================= */
+
+:root {
+  --property-primary: #0d2a4f;
+  --property-accent: #007bff;
+  --property-bg: #f4f7f9;
+  --property-white: #ffffff;
+  --property-grid-line: rgba(13, 42, 79, 0.08);
+}
+
+/* PAGE WRAPPER */
+.pv-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  background-color: var(--property-bg);
+  background-image:
+    linear-gradient(var(--property-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pv-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position: 0px 0px, 25px 25px, 50px 0px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: bgvvPan 60s linear infinite;
+}
+
+.pv-wrapper > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes bgvvPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+/* HEADER BOX */
+.pv-header-box {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.pv-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--property-primary);
+
+  padding: 12px 35px;
+  display: inline-block;
+
+  background: white;
+  border-bottom: 4px solid var(--property-primary);
+  box-shadow: 5px 5px 0 var(--property-primary);
+}
+
+/* CARD */
+.pv-property-card {
+  width:900px;
+  background: var(--property-white);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 12px 12px 0 var(--property-primary);
+  border: 2px solid var(--property-primary);
+  box-sizing: border-box;
+  border-radius: 0;
+  margin: 25px auto;
+  display: grid;
+  position: relative;
+  
+  
+
+  
+}
+
+/* HEADER ROW */
+.pv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.pv-profile-card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--property-primary);
+}
+
+/* FIX FLOATING BUTTON */
+.pv-action-btn {
+  font-size: 0.9rem;
+  background: var(--property-accent);
+  color: white;
+
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+.pv-action-btn:hover {
+  opacity: 0.9;
+}
+
+/* CARD BODY */
+.pv-card-body {
+  margin-top: 10px;
+}
+
+/* IMAGE */
+.pv-image-wrapper {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pv-profile-img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 0;
+  border: 1px solid var(--property-primary);
+  box-shadow: 5px 5px 0 var(--property-primary);
+}
+
+/* DETAILS GRID */
+.pv-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 25px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: var(--property-bg);
+  border-radius: 10px;
+  border: 1px solid var(--property-grid-line);
+}
+
+.pv-full-width {
+  grid-column: span 2;
+}
+
+.pv-map-link {
+  font-weight: 600;
+  color: var(--property-accent);
+  text-decoration: none;
+}
+
+.pv-map-link:hover {
+  text-decoration: underline;
+}
+
+/* DESCRIPTION */
+.pv-description-box {
+  padding: 15px 18px;
+  background: var(--property-bg);
+  border-radius: 10px;
+  border: 1px solid var(--property-grid-line);
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+  line-height: 1.4rem;
+}
+
+/* APPLY BUTTON */
+.pv-primary-btn {
+  background: var(--property-primary);
+  color: white;
+
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pv-primary-btn:hover {
+  opacity: 0.92;
+}
+
+/* =========================================================
+   SIMILAR PROPERTIES SECTION
+========================================================= */
+
+.pv-preferences-section {
   margin-top: 40px;
 }
 
-.similar-list {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 10px;
+.pv-pref-header {
+  margin-bottom: 15px;
 }
 
-.similar-card {
-  min-width: 220px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+.pv-profile-subtitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--property-primary);
+}
+
+/* Similar list grid */
+.pv-similar-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  
+  box-shadow: 5px 5px 0 var(--property-primary);
+  gap: 18px;
+}
+
+/* Similar Card */
+.pv-similar-card {
+  background: white;
+  border: 1px solid var(--property-primary);
+  border-radius: 0;
   cursor: pointer;
-  background: #fff;
-  transition: 0.2s;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: 0.2s ease;
 }
 
-.similar-card:hover {
-  transform: scale(1.03);
+.pv-similar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
-.similar-img {
+.pv-similar-img {
   width: 100%;
-  height: 130px;
+  height: 160px;
   object-fit: cover;
-  border-radius: 10px 10px 0 0;
+  border-radius: 0;
+  
+  
 }
 
-.similar-text {
-  padding: 10px;
+.pv-similar-text {
+  padding: 12px;
 }
 
-.similar-locality {
-  color: #777;
+.pv-similar-text h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--property-primary);
+  margin-bottom: 5px;
+}
+
+.pv-similar-text p {
+  margin: 0;
   font-size: 0.9rem;
+}
+
+.pv-similar-locality {
+  color: #444;
+  margin-top: 3px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .pv-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .pv-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pv-full-width {
+    grid-column: span 1;
+  }
+
+  .pv-page-title {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pv-profile-img {
+    max-height: 260px;
+  }
 }
