@@ -1,0 +1,236 @@
+:root {
+  --room-primary: #0d2a4f;
+  --room-accent: #007bff;
+  --room-bg: #f4f7f9;
+  --room-white: #ffffff;
+  --room-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* --- 1. Page Container --- */
+.room-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: var(--room-bg);
+  background-image:
+    linear-gradient(var(--room-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--room-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 40px 20px;
+  overflow: hidden; 
+}
+
+/* Background Animation */
+.room-page-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg');
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position: 0px 0px, 25px 25px, 50px 0px; 
+  opacity: 0.15; 
+  pointer-events: none;
+  z-index: 0;
+  animation: roomBgPan 60s linear infinite;
+}
+
+/* --- 2. Main Interface Card --- */
+.room-interface-card {
+  position: relative;
+  background: var(--room-white);
+  width: 100%;
+  max-width: 700px;
+  height: 80vh; /* Fixed height for chat room */
+  border: 2px solid var(--room-primary);
+  box-shadow: 15px 15px 0px var(--room-primary); 
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  animation: roomPopIn 0.5s ease-out forwards;
+}
+
+/* Top Decorative Bar */
+.room-interface-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--room-primary) 0%, var(--room-primary) 20%, var(--room-accent) 20%, var(--room-accent) 40%);
+  z-index: 2;
+}
+
+/* --- 3. Header Section --- */
+.room-header {
+  padding: 20px 25px;
+  border-bottom: 2px solid var(--room-primary);
+  background: white;
+  margin-top: 8px; /* Space for the decorative bar */
+}
+
+.room-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--room-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.room-status-indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #28a745;
+  border-radius: 50%;
+  border: 1px solid var(--room-primary);
+}
+
+/* --- 4. Chat History Area --- */
+.room-history-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: rgba(244, 247, 249, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Scrollbar Styling */
+.room-history-window::-webkit-scrollbar {
+  width: 8px;
+}
+.room-history-window::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.room-history-window::-webkit-scrollbar-thumb {
+  background: var(--room-primary);
+}
+
+.room-empty-msg {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 50px;
+}
+
+/* --- 5. Message Bubbles --- */
+.msg-row {
+  display: flex;
+  width: 100%;
+}
+
+.msg-row.sent {
+  justify-content: flex-end;
+}
+
+.msg-row.received {
+  justify-content: flex-start;
+}
+
+.msg-bubble {
+  max-width: 70%;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  position: relative;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+}
+
+/* Sent Message Style */
+.msg-row.sent .msg-bubble {
+  background-color: var(--room-accent);
+  color: white;
+  border: 1px solid var(--room-primary);
+  border-bottom-right-radius: 0; /* Sharp corner */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+/* Received Message Style */
+.msg-row.received .msg-bubble {
+  background-color: white;
+  color: var(--room-primary);
+  border: 1px solid var(--room-primary);
+  border-bottom-left-radius: 0; /* Sharp corner */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* --- 6. Input Area --- */
+.room-input-area {
+  padding: 20px;
+  background: white;
+  border-top: 2px solid var(--room-primary);
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.room-text-input {
+  flex: 1;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  color: var(--room-primary);
+}
+
+.room-text-input:focus {
+  outline: none;
+  border-bottom-color: var(--room-accent);
+  background: rgba(0, 123, 255, 0.05);
+}
+
+.room-send-btn {
+  padding: 12px 25px;
+  background: var(--room-primary);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 8px 8px;
+  transition: all 0.2s ease;
+}
+
+.room-send-btn:hover {
+  background-color: var(--room-accent);
+  box-shadow: 3px 3px 0 var(--room-primary);
+  transform: translate(-2px, -2px);
+}
+
+/* --- Animations --- */
+@keyframes roomBgPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+@keyframes roomPopIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .room-interface-card {
+    height: 90vh;
+    box-shadow: 6px 6px 0 var(--room-primary);
+  }
+}

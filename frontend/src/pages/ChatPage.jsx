@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchChat, sendChatMessage } from "../api/chat";
 import Header from "../Components/Header";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import "../StyleSheets/ChatPage.css"; 
 
 export default function ChatPage() {
   const { receiverEmail } = useParams();
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState("");
+  
+  // Ref for auto-scrolling to bottom
+  const chatEndRef = useRef(null);
 
   // AUTH
   const { user, logout } = useAuth();
@@ -17,7 +20,7 @@ export default function ChatPage() {
   // LOGOUT HANDLER
   const handleLogout = async () => {
     await logout();
-    navigate("/"); // redirect to homepage or login page
+    navigate("/");
   };
 
   // FETCH CHAT
@@ -38,6 +41,11 @@ export default function ChatPage() {
     setMessage("");
     await loadChat();
   };
+  
+  // Auto-scroll on new message
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat]);
 
   useEffect(() => {
     loadChat();
@@ -46,78 +54,59 @@ export default function ChatPage() {
   return (
     <>
       <Header 
-        user={user}          // actual logged-in user object
+        user={user}
         onLogout={handleLogout} 
         onNavigate={navigate}
       />
 
-      <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
-        <h2>Chat with: {receiverEmail}</h2>
+      <div className="room-page-wrapper">
+        <div className="room-interface-card">
+          
+          {/* Header of the Chat Card */}
+          <div className="room-header">
+            <h2 className="room-title">
+              <span className="room-status-indicator"></span>
+              {receiverEmail}
+            </h2>
+          </div>
 
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            height: "400px",
-            overflowY: "scroll",
-            marginBottom: "15px",
-            borderRadius: "10px",
-          }}
-        >
-          {chat?.messages?.length ? (
-            chat.messages.map((msg, idx) => (
-              <div
-                key={idx}
-                style={{
-                  textAlign:
-                    msg.senderEmail === receiverEmail ? "left" : "right",
-                  margin: "10px 0",
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    background:
-                      msg.senderEmail === receiverEmail ? "#f0f0f0" : "#a4d7ff",
-                  }}
-                >
-                  {msg.body}
-                </span>
-              </div>
-            ))
-          ) : (
-            <p>No messages yet.</p>
-          )}
-        </div>
+          {/* Chat History Window */}
+          <div className="room-history-window">
+            {chat?.messages?.length ? (
+              chat.messages.map((msg, idx) => {
+                const isMe = msg.senderEmail !== receiverEmail; // Assuming user is sender if not receiver
+                
+                return (
+                  <div 
+                    key={idx} 
+                    className={`msg-row ${isMe ? "sent" : "received"}`}
+                  >
+                    <div className="msg-bubble">
+                      {msg.body}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="room-empty-msg">No messages yet. Say hello!</p>
+            )}
+            <div ref={chatEndRef} />
+          </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type message..."
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-            }}
-          />
+          {/* Input Zone */}
+          <div className="room-input-area">
+            <input
+              className="room-text-input"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type message..."
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            />
+            <button className="room-send-btn" onClick={sendMessage}>
+              Send
+            </button>
+          </div>
 
-          <button
-            onClick={sendMessage}
-            style={{
-              padding: "10px 20px",
-              background: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Send
-          </button>
         </div>
       </div>
     </>
