@@ -76,21 +76,21 @@ export default function RentPredictor() {
   };
 
   return (
-    <div className="rent-page-bg">
-      <div className="prediction-card">
-        <h1 className="page-title">Predict Monthly Rent</h1>
-        <p className="page-subtitle">
+    <div className="rp-rent-page-bg">
+      <div className="rp-prediction-card">
+        <h1 className="rp-page-title">Predict Monthly Rent</h1>
+        <p className="rp-page-subtitle">
           Enter details similar to your property listings and get an estimated
           rent range based on existing properties in the database.
         </p>
 
-        <form className="prediction-form" onSubmit={handleSubmit}>
+        <form className="rp-prediction-form" onSubmit={handleSubmit}>
           {/* CITY */}
-          <div className="field-block">
-            <div className="field-label-bar">
-              <span className="field-label-main">City *</span>
+          <div className="rp-field-block">
+            <div className="rp-field-label-bar">
+              <span className="rp-field-label-main">City *</span>
             </div>
-            <div className="field-input-wrapper city-wrapper">
+            <div className="rp-field-input-wrapper city-wrapper">
               <input
                 id="city"
                 type="text"
@@ -102,16 +102,16 @@ export default function RentPredictor() {
                 onFocus={() => {
                   if (city.length >= 1) setShowCityDropdown(true);
                 }}
-                className="field-input"
+                className="rp-field-input"
                 placeholder="Type and choose city (e.g. Ahmedabad)"
                 autoComplete="off"
               />
               {showCityDropdown && filteredCities.length > 0 && (
-                <ul className="city-dropdown">
+                <ul className="rp-city-dropdown">
                   {filteredCities.map((c) => (
                     <li
                       key={c}
-                      className="city-option"
+                      className="rp-city-option"
                       onMouseDown={() => handleCitySelect(c)}
                     >
                       {c}
@@ -120,19 +120,19 @@ export default function RentPredictor() {
                 </ul>
               )}
             </div>
-            <p className="field-help">
+            <p className="rp-field-help">
               Type 1–2 letters and choose the correct city; it must match the
               city name stored in your properties.
             </p>
           </div>
 
           {/* BHK + AREA row */}
-          <div className="field-row">
-            <div className="field-block">
-              <div className="field-label-bar">
-                <span className="field-label-main">BHK *</span>
+          <div className="rp-field-row">
+            <div className="rp-field-block">
+              <div className="rp-field-label-bar">
+                <span className="rp-field-label-main">BHK *</span>
               </div>
-              <div className="field-input-wrapper">
+              <div className="rp-field-input-wrapper">
                 <input
                   id="bhk"
                   type="number"
@@ -141,98 +141,98 @@ export default function RentPredictor() {
                   step="1"
                   value={bhk}
                   onChange={(e) => setBhk(e.target.value)}
-                  className="field-input"
+                  className="rp-field-input"
                 />
               </div>
-              <p className="field-help">
+              <p className="rp-field-help">
                 Use the arrows to increase or decrease BHK. This value is used
                 with ±1 BHK tolerance.
               </p>
             </div>
 
-            <div className="field-block">
-              <div className="field-label-bar">
-                <span className="field-label-main">Area Size (sq ft) *</span>
+            <div className="rp-field-block">
+              <div className="rp-field-label-bar">
+                <span className="rp-field-label-main">Area Size (sq ft) *</span>
               </div>
-              <div className="field-input-wrapper">
+              <div className="rp-field-input-wrapper">
                 <input
                   id="area"
                   type="number"
                   min="0"
                   value={areaSize}
                   onChange={(e) => setAreaSize(e.target.value)}
-                  className="field-input"
+                  className="rp-field-input"
                   placeholder="e.g. 1000"
                 />
               </div>
-              <p className="field-help">
+              <p className="rp-field-help">
                 Backend uses ±30% of this area to find similar properties.
               </p>
             </div>
           </div>
 
           {/* FURNISHING TYPE */}
-          <div className="field-block">
-            <div className="field-label-bar">
-              <span className="field-label-main">Furnishing Type *</span>
+          <div className="rp-field-block">
+            <div className="rp-field-label-bar">
+              <span className="rp-field-label-main">Furnishing Type *</span>
             </div>
-            <div className="field-input-wrapper">
+            <div className="rp-field-input-wrapper">
               <select
   id="furnishing"
   value={furnishingType}
   onChange={(e) => setFurnishingType(e.target.value)}
-  className="field-input select-input"
+  className="rpfield-input rp-select-input"
 >
   <option value="Fully Furnished">Fully Furnished</option>
   <option value="Semi Furnished">Semi Furnished</option>
   <option value="Unfurnished">Unfurnished</option>
 </select>
             </div>
-            <p className="field-help">
+            <p className="rp-field-help">
               These values must match how furnishing type is stored in your
               properties.
             </p>
           </div>
 
           {/* BUTTON + ERROR */}
-          <div className="button-row">
+          <div className="rp-button-row">
             <button
-              className="predict-btn"
+              className="rp-predict-btn"
               type="submit"
               disabled={loading}
             >
               {loading ? "Predicting..." : "Get Rent Estimate"}
             </button>
           </div>
-          {error && <div className="error-banner">{error}</div>}
+          {error && <div className="rp-error-banner">{error}</div>}
         </form>
 
         {/* RESULT */}
         {result && (
-          <div className="result-panel">
+          <div className="rp-result-panel">
             {result.status === "ok" ? (
               <>
-                <h2 className="result-title">Estimated Rent Range</h2>
-                <p className="result-range">
+                <h2 className="rp-result-title">Estimated Rent Range</h2>
+                <p className="rp-result-range">
                   ₹{result.min.toLocaleString("en-IN")} – ₹
                   {result.max.toLocaleString("en-IN")}
                 </p>
-                <p className="result-meta">
+                <p className="rp-result-meta">
                   Based on {result.sampleSize} similar properties in the
                   database.
                 </p>
               </>
             ) : result.status === "insufficient data" ? (
               <>
-                <h2 className="result-title">Insufficient Data</h2>
-                <p className="result-meta">
+                <h2 className="rp-result-title">Insufficient Data</h2>
+                <p className="rp-result-meta">
                   Only {result.sampleSize} similar property
                   {result.sampleSize === 1 ? "" : "ies"} found. Try a different
                   combination or add more listings.
                 </p>
               </>
             ) : (
-              <p className="result-meta">Unexpected response from server.</p>
+              <p className="rp-result-meta">Unexpected response from server.</p>
             )}
           </div>
         )}

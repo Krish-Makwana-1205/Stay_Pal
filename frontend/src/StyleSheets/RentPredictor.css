@@ -1,224 +1,241 @@
 
 
-/* Background similar to light gradient in screenshot */
-.rent-page-bg {
+:root {
+  --predict-primary: #0d2a4f;
+  --predict-accent: #007bff;
+  --predict-bg: #f4f7f9;
+  --predict-white: #ffffff;
+  --predict-shadow: 4px 4px 0 var(--predict-primary);
+}
+
+/* PAGE BACKGROUND */
+.rp-rent-page-bg {
+  background: var(--predict-bg);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 48px 16px;
-  background: radial-gradient(circle at top, #f5f5f7 0, #e7ddd2 40%, #dfd4c7 100%);
-  box-sizing: border-box;
+  padding: 40px 20px;
+  background-image:
+    linear-gradient(var(--property-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+
 }
 
-/* Main white card */
-.prediction-card {
-  width: 100%;
+.rp-rent-page-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position: 0px 0px, 25px 25px, 50px 0px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: bgrpPan 60s linear infinite;
+}
+
+.rp-rent-page-bg > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes bgrpPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+/* MAIN CARD */
+.rp-prediction-card {
+  background: var(--predict-white);
   max-width: 900px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 40px 48px 32px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
-  box-sizing: border-box;
+  margin: 70px auto;
+  padding: 40px;
+  position: center;
+  border: 3px solid var(--predict-primary);
+  border-radius: 0;
+  box-shadow: var(--predict-shadow);
 }
 
-/* Heading */
-.page-title {
-  margin: 0 0 8px;
-  font-size: 30px;
-  font-weight: 700;
-  color: #111827;
-}
-
-.page-subtitle {
-  margin: 0 0 32px;
-  font-size: 14px;
-  color: #6b7280;
-  max-width: 560px;
-}
-
-/* Form layout */
-.prediction-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 20px;
-}
-
-.field-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.field-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Dark blue label bar with angled right edge */
-.field-label-bar {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  padding: 8px 18px;
-  background-color: #041b3d;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+/* TITLES */
+.rp-page-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--predict-primary);
+  margin-bottom: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-.field-label-main {
-  position: relative;
-  z-index: 1;
 }
 
-.field-input-wrapper {
+.rp-page-subtitle {
+  text-align: center;
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+/* FIELD BLOCK */
+.rp-field-block {
+  margin-bottom: 25px;
+}
+
+/* LABEL BAR */
+.rp-field-label-bar {
+  background: var(--predict-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 8px;
+  box-shadow: 3px 3px 0 var(--predict-primary);
+}
+
+.rp-field-label-main {
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* INPUT WRAPPER */
+.rp-field-input-wrapper {
   margin-top: 6px;
+  position: relative;
 }
 
-/* Inputs and select */
-.field-input {
+/* INPUT */
+.rp-field-input {
   width: 100%;
   padding: 12px 14px;
+  font-size: 1rem;
+  border: 2px solid var(--predict-primary);
   border-radius: 10px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
   outline: none;
-  background-color: #ffffff;
-  box-sizing: border-box;
+  transition: 0.15s;
+  background: white;
 }
 
-.field-input:focus {
-  border-color: #111827;
-  box-shadow: 0 0 0 1px #11182720;
+.rp-field-input:focus {
+  border-color: var(--predict-accent);
+  box-shadow: 0 0 4px var(--predict-accent);
 }
 
-.select-input {
+/* SELECT INPUT */
+.rp-select-input {
   appearance: none;
-}
-
-/* City dropdown */
-.city-wrapper {
-  position: relative;
-}
-
-.city-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 4px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  max-height: 220px;
-  overflow-y: auto;
-  z-index: 20;
-  list-style: none;
-  padding: 4px 0;
-}
-
-.city-option {
-  padding: 8px 12px;
-  font-size: 14px;
   cursor: pointer;
-  color: #374151;
 }
 
-.city-option:hover {
-  background-color: #f3f4ff;
-}
-
-/* Help text under fields */
-.field-help {
-  margin: 0;
-  font-size: 12px;
-  color: #9ca3af;
-}
-
-/* Button */
-.button-row {
+/* SMALL HELP TEXT */
+.rp-field-help {
+  font-size: 0.8rem;
+  color: #555;
   margin-top: 4px;
+  line-height: 1.3;
 }
 
-.predict-btn {
-  padding: 12px 20px;
-  border-radius: 999px;
-  border: none;
-  background-color: #041b3d;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease,
-    transform 0.1s ease;
+/* ROW: BHK + AREA */
+.rp-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
 }
 
-.predict-btn:disabled {
-  opacity: 0.65;
-  cursor: default;
-}
-
-.predict-btn:not(:disabled):hover {
-  background-color: #06285a;
-  box-shadow: 0 14px 30px rgba(4, 27, 61, 0.35);
-  transform: translateY(-1px);
-}
-
-/* Error banner */
-.error-banner {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background-color: #fef2f2;
-  color: #b91c1c;
-  font-size: 13px;
-}
-
-/* Result panel at bottom */
-.result-panel {
-  margin-top: 12px;
-  padding-top: 18px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.result-title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.result-range {
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #041b3d;
-}
-
-.result-meta {
-  margin: 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* Responsive */
-@media (max-width: 800px) {
-  .prediction-card {
-    padding: 28px 20px 24px;
-  }
-
+@media (max-width: 700px) {
   .field-row {
     grid-template-columns: 1fr;
   }
+}
 
-  .field-label-bar::after {
-    display: none;
-  }
+/* CITY DROPDOWN */
+.rp-city-wrapper {
+  position: relative;
+}
+
+.rp-city-dropdown {
+  position: absolute;
+  width: 100%;
+  max-height: 250px;
+  background: white;
+  border: 2px solid var(--predict-primary);
+  border-top: none;
+  box-shadow: var(--predict-shadow);
+  overflow-y: auto;
+  z-index: 20;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.rp-city-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.rp-city-option:hover {
+  background: var(--predict-accent);
+  color: white;
+}
+
+/* BUTTON ROW */
+.rp-button-row {
+  margin-top: 25px;
+  text-align: center;
+}
+
+/* BUTTON */
+.rp-predict-btn {
+  background: var(--predict-accent);
+  color: white;
+  border: none;
+  padding: 14px 26px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: var(--predict-shadow);
+  transition: 0.2s;
+}
+
+.rp-predict-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ERROR BANNER */
+.rp-error-banner {
+  margin-top: 20px;
+  padding: 14px;
+  background: #ffdddd;
+  color: #a30000;
+  border: 2px solid #a30000;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* RESULT PANEL */
+.rp-result-panel {
+  margin-top: 40px;
+  padding: 25px;
+  border: 2px solid var(--predict-primary);
+  border-radius: 14px;
+  box-shadow: var(--predict-shadow);
+  background: #fafafa;
+}
+
+.rp-result-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--predict-primary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.rp-result-range {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--predict-accent);
+  margin-bottom: 6px;
+}
+
+.rp-result-meta {
+  font-size: 0.95rem;
+  color: #555;
 }

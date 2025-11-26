@@ -1,6 +1,4 @@
-/* =========================================================
-   PROPERTY VIEW THEME (Matches MyProperties)
-========================================================= */
+
 
 :root {
   --property-primary: #0d2a4f;
@@ -81,7 +79,6 @@
 .pv-property-card {
   width:900px;
   background: var(--property-white);
-  border-radius: 12px;
   padding: 25px;
   box-shadow: 12px 12px 0 var(--property-primary);
   border: 2px solid var(--property-primary);
@@ -205,9 +202,7 @@
   opacity: 0.92;
 }
 
-/* =========================================================
-   SIMILAR PROPERTIES SECTION
-========================================================= */
+/*similar property*/
 
 .pv-preferences-section {
   margin-top: 40px;
@@ -278,9 +273,7 @@
   margin-top: 3px;
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/*responsive*/
 
 @media (max-width: 768px) {
   .pv-card-header {
