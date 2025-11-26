@@ -1,5 +1,4 @@
-/* 
-   NEAREST PROPERTIES (np-prefixed)
+/* NEAREST PROPERTIES (np-prefixed)
 */
 
 :root {
@@ -7,7 +6,8 @@
   --np-accent: #007bff;
   --np-bg: #f4f7f9;
   --np-white: #ffffff;
-  --np-shadow: 4px 4px 0 var(--np-primary);
+  /* CHANGED: Increased shadow to match other pages */
+  --np-shadow: 15px 15px 0px var(--np-primary);
   --np-grid-line: rgba(13, 42, 79, 0.05);
 }
 
@@ -54,9 +54,21 @@
   max-width: 900px;
   margin: 60px auto;
   padding: 40px;
-  border: 3px solid var(--np-primary);
+  border: 2px solid var(--np-primary); /* CHANGED: Matched border width */
   border-radius: 0;
   box-shadow: var(--np-shadow);
+  /* Added decorative top bar to match other forms */
+  position: relative;
+}
+
+.np-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--np-primary) 0%, var(--np-primary) 20%, var(--np-accent) 20%, var(--np-accent) 40%);
 }
 
 /* TITLES */
@@ -67,6 +79,10 @@
   color: var(--np-primary);
   text-transform: uppercase;
   margin-bottom: 10px;
+  border-bottom: 4px solid var(--np-primary); /* Added underline style */
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%;
 }
 
 .np-subtitle {
@@ -74,6 +90,7 @@
   font-size: 1rem;
   color: #444;
   margin-bottom: 30px;
+  margin-top: 10px;
 }
 
 /* FORM */
@@ -89,17 +106,20 @@
 /* LABEL BAR */
 .np-field-label-bar {
   background: var(--np-primary);
-  padding: 8px 12px;
+  padding: 4px 12px;
   display: inline-block;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  box-shadow: 3px 3px 0 var(--np-primary);
+  /* CHANGED: Removed radius, added clip-path to match RentPredictor */
+  border-radius: 0; 
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+  margin-bottom: 5px;
+  box-shadow: none; /* Removed small shadow on label */
 }
 
 .np-field-label-main {
   color: white;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.85rem; /* Adjusted size */
+  text-transform: uppercase;
 }
 
 /* INPUT WRAPPER */
@@ -112,16 +132,19 @@
   width: 100%;
   padding: 12px 14px;
   font-size: 1rem;
-  border: 2px solid var(--np-primary);
-  border-radius: 10px;
+  border: 1px solid var(--np-primary);
+  /* CHANGED: Removed radius */
+  border-radius: 0; 
   background: white;
   outline: none;
   transition: 0.2s;
+  font-family: inherit;
 }
 
 .np-field-input:focus {
   border-color: var(--np-accent);
-  box-shadow: 0 0 4px var(--np-accent);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  background: rgba(0, 123, 255, 0.05);
 }
 
 /* TEXTAREA STYLE */
@@ -134,6 +157,7 @@
   font-size: 0.8rem;
   color: #555;
   margin-top: 4px;
+  font-style: italic;
 }
 
 /* RADIUS SLIDER */
@@ -145,6 +169,7 @@
 
 .np-radius-slider {
   flex: 1;
+  accent-color: var(--np-primary); /* Ensure slider color matches */
 }
 
 .np-radius-value {
@@ -159,41 +184,52 @@
 }
 
 .np-btn {
-  background: var(--np-accent);
+  background: var(--np-primary); /* Base color */
   color: white;
   border: none;
-  padding: 14px 28px;
+  padding: 18px 28px;
   font-size: 1.1rem;
-  border-radius: 10px;
-  font-weight: 700;
+  /* CHANGED: Removed radius, added texture pattern */
+  border-radius: 0;
+  font-weight: 800;
+  text-transform: uppercase;
   cursor: pointer;
-  box-shadow: var(--np-shadow);
+  box-shadow: none; /* Shadow handled by hover or card usually, but okay here */
   transition: 0.2s;
+  width: 100%;
+  
+  /* Added texture */
+  background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
 }
 
 .np-btn:hover {
-  transform: translateY(-2px);
+  background-color: var(--np-accent);
+  box-shadow: 5px 5px 0 var(--np-primary);
+  transform: translate(-3px, -3px);
 }
 
 /* MESSAGES */
 .np-error-banner {
   margin-top: 20px;
   padding: 14px;
-  background: #ffdddd;
+  background: #fdf2f2;
   color: #a30000;
-  border: 2px solid #a30000;
-  border-radius: 8px;
+  border: 1px solid #a30000;
+  border-radius: 0; /* CHANGED: Sharp corners */
   font-weight: 600;
+  text-align: center;
 }
 
 .np-info-banner {
   margin-top: 20px;
   padding: 14px;
-  background: #e7f3ff;
-  color: #004a99;
-  border: 2px solid #004a99;
-  border-radius: 8px;
+  background: #eef7ff;
+  color: var(--np-primary);
+  border: 1px solid var(--np-accent);
+  border-radius: 0; /* CHANGED: Sharp corners */
   font-weight: 600;
+  text-align: center;
 }
 
 /* RESULTS WRAPPER */
@@ -214,16 +250,19 @@
   gap: 20px;
   padding: 20px;
   margin-bottom: 20px;
-  border: 2px solid var(--np-primary);
+  border: 1px solid #ddd;
+  border-left: 4px solid var(--np-primary); /* Accent on left */
   background: white;
-  border-radius: 8px;
+  border-radius: 0; /* CHANGED: Sharp corners */
   cursor: pointer;
-  box-shadow: var(--np-shadow);
+  box-shadow: none;
   transition: 0.2s;
 }
 
 .np-result-card:hover {
-  transform: translateY(-2px);
+  transform: translate(-3px, -3px);
+  border-color: var(--np-primary);
+  box-shadow: 5px 5px 0 var(--np-primary); /* Hard shadow on hover */
 }
 
 /* IMAGE WRAPPER */
@@ -231,9 +270,10 @@
   width: 160px;
   height: 120px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0; /* CHANGED: Sharp corners */
   background: #eee;
   flex-shrink: 0;
+  border: 1px solid #ccc;
 }
 
 .np-result-img-wrapper img {
@@ -258,11 +298,13 @@
   font-weight: 800;
   color: var(--np-primary);
   margin-bottom: 6px;
+  text-transform: uppercase;
 }
 
 .np-result-location {
   color: #444;
   margin-bottom: 6px;
+  font-size: 0.9rem;
 }
 
 .np-result-rent {
@@ -277,6 +319,7 @@
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  font-size: 0.9rem;
-  color: #333;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
 }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "../StyleSheets/RentPredictor.css";
+import "../StyleSheets/RentPredictor.css"; 
 import { City } from "country-state-city";
 
-// All Indian cities (same source as your PropertyForm)
+// All Indian cities
 const ALL_CITIES = City.getCitiesOfCountry("IN").map((c) => c.name);
 
 export default function RentPredictor() {
@@ -10,7 +10,7 @@ export default function RentPredictor() {
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [bhk, setBhk] = useState("");
   const [areaSize, setAreaSize] = useState("");
-  const [furnishingType, setFurnishingType] = useState("Fully Furnished"); // visible select
+  const [furnishingType, setFurnishingType] = useState("Fully Furnished");
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -50,7 +50,7 @@ export default function RentPredictor() {
         city: city.trim(),
         BHK: bhk,
         areaSize,
-        furnishingType, // will be one of: Fully Furnished, Semi Furnished, Unfurnished, Any
+        furnishingType,
       });
 
       const response = await fetch(
@@ -76,166 +76,124 @@ export default function RentPredictor() {
   };
 
   return (
-    <div className="rp-rent-page-bg">
-      <div className="rp-prediction-card">
-        <h1 className="rp-page-title">Predict Monthly Rent</h1>
-        <p className="rp-page-subtitle">
-          Enter details similar to your property listings and get an estimated
-          rent range based on existing properties in the database.
+    <div className="est-page-wrapper">
+      <div className="est-card">
+        <h1 className="est-heading">Predict Monthly Rent</h1>
+        <p className="est-subheading">
+          Enter details below to get an estimated rent range based on current market data.
         </p>
 
-        <form className="rp-prediction-form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          
           {/* CITY */}
-          <div className="rp-field-block">
-            <div className="rp-field-label-bar">
-              <span className="rp-field-label-main">City *</span>
-            </div>
-            <div className="rp-field-input-wrapper city-wrapper">
-              <input
-                id="city"
-                type="text"
-                value={city}
-                onChange={handleCityChange}
-                onBlur={() => {
-                  setTimeout(() => setShowCityDropdown(false), 150);
-                }}
-                onFocus={() => {
-                  if (city.length >= 1) setShowCityDropdown(true);
-                }}
-                className="rp-field-input"
-                placeholder="Type and choose city (e.g. Ahmedabad)"
-                autoComplete="off"
-              />
-              {showCityDropdown && filteredCities.length > 0 && (
-                <ul className="rp-city-dropdown">
-                  {filteredCities.map((c) => (
-                    <li
-                      key={c}
-                      className="rp-city-option"
-                      onMouseDown={() => handleCitySelect(c)}
-                    >
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <p className="rp-field-help">
-              Type 1–2 letters and choose the correct city; it must match the
-              city name stored in your properties.
-            </p>
+          <div className="est-form-group">
+            <label className="est-label">City *</label>
+            <input
+              type="text"
+              className="est-input"
+              value={city}
+              onChange={handleCityChange}
+              onBlur={() => setTimeout(() => setShowCityDropdown(false), 150)}
+              onFocus={() => { if (city.length >= 1) setShowCityDropdown(true); }}
+              placeholder="e.g. Mumbai"
+              autoComplete="off"
+            />
+            {showCityDropdown && filteredCities.length > 0 && (
+              <ul className="est-dropdown-list">
+                {filteredCities.map((c) => (
+                  <li
+                    key={c}
+                    className="est-dropdown-item"
+                    onMouseDown={() => handleCitySelect(c)}
+                  >
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="est-helper-text">Select city from the dropdown list.</p>
           </div>
 
-          {/* BHK + AREA row */}
-          <div className="rp-field-row">
-            <div className="rp-field-block">
-              <div className="rp-field-label-bar">
-                <span className="rp-field-label-main">BHK *</span>
-              </div>
-              <div className="rp-field-input-wrapper">
-                <input
-                  id="bhk"
-                  type="number"
-                  min="1"
-                  max="100"
-                  step="1"
-                  value={bhk}
-                  onChange={(e) => setBhk(e.target.value)}
-                  className="rp-field-input"
-                />
-              </div>
-              <p className="rp-field-help">
-                Use the arrows to increase or decrease BHK. This value is used
-                with ±1 BHK tolerance.
-              </p>
+          {/* BHK & AREA ROW */}
+          <div className="est-row">
+            <div className="est-col est-form-group">
+              <label className="est-label">BHK *</label>
+              <input
+                type="number"
+                min="1"
+                max="100"
+                className="est-input"
+                value={bhk}
+                onChange={(e) => setBhk(e.target.value)}
+              />
+              <p className="est-helper-text">±1 BHK tolerance</p>
             </div>
 
-            <div className="rp-field-block">
-              <div className="rp-field-label-bar">
-                <span className="rp-field-label-main">Area Size (sq ft) *</span>
-              </div>
-              <div className="rp-field-input-wrapper">
-                <input
-                  id="area"
-                  type="number"
-                  min="0"
-                  value={areaSize}
-                  onChange={(e) => setAreaSize(e.target.value)}
-                  className="rp-field-input"
-                  placeholder="e.g. 1000"
-                />
-              </div>
-              <p className="rp-field-help">
-                Backend uses ±30% of this area to find similar properties.
-              </p>
+            <div className="est-col est-form-group">
+              <label className="est-label">Area (sq ft) *</label>
+              <input
+                type="number"
+                min="0"
+                className="est-input"
+                value={areaSize}
+                onChange={(e) => setAreaSize(e.target.value)}
+                placeholder="e.g. 1200"
+              />
+              <p className="est-helper-text">±30% area tolerance</p>
             </div>
           </div>
 
           {/* FURNISHING TYPE */}
-          <div className="rp-field-block">
-            <div className="rp-field-label-bar">
-              <span className="rp-field-label-main">Furnishing Type *</span>
-            </div>
-            <div className="rp-field-input-wrapper">
-              <select
-  id="furnishing"
-  value={furnishingType}
-  onChange={(e) => setFurnishingType(e.target.value)}
-  className="rpfield-input rp-select-input"
->
-  <option value="Fully Furnished">Fully Furnished</option>
-  <option value="Semi Furnished">Semi Furnished</option>
-  <option value="Unfurnished">Unfurnished</option>
-</select>
-            </div>
-            <p className="rp-field-help">
-              These values must match how furnishing type is stored in your
-              properties.
-            </p>
+          <div className="est-form-group">
+            <label className="est-label">Furnishing Type *</label>
+            <select
+              className="est-select"
+              value={furnishingType}
+              onChange={(e) => setFurnishingType(e.target.value)}
+            >
+              <option value="Fully Furnished">Fully Furnished</option>
+              <option value="Semi Furnished">Semi Furnished</option>
+              <option value="Unfurnished">Unfurnished</option>
+            </select>
           </div>
 
-          {/* BUTTON + ERROR */}
-          <div className="rp-button-row">
-            <button
-              className="rp-predict-btn"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? "Predicting..." : "Get Rent Estimate"}
-            </button>
-          </div>
-          {error && <div className="rp-error-banner">{error}</div>}
+          {/* SUBMIT BUTTON */}
+          <button type="submit" className="est-submit-btn" disabled={loading}>
+            {loading ? "Calculating..." : "Get Rent Estimate"}
+          </button>
+
+          {/* ERROR MESSAGE */}
+          {error && <div className="est-error-msg">{error}</div>}
+
         </form>
 
-        {/* RESULT */}
+        {/* RESULTS SECTION */}
         {result && (
-          <div className="rp-result-panel">
+          <div className="est-result-box">
             {result.status === "ok" ? (
               <>
-                <h2 className="rp-result-title">Estimated Rent Range</h2>
-                <p className="rp-result-range">
-                  ₹{result.min.toLocaleString("en-IN")} – ₹
-                  {result.max.toLocaleString("en-IN")}
-                </p>
-                <p className="rp-result-meta">
-                  Based on {result.sampleSize} similar properties in the
-                  database.
+                <h2 className="est-result-heading">Estimated Rent Range</h2>
+                <div className="est-price-range">
+                  ₹{result.min.toLocaleString("en-IN")} – ₹{result.max.toLocaleString("en-IN")}
+                </div>
+                <p className="est-meta-info">
+                  Based on {result.sampleSize} similar properties found in the database.
                 </p>
               </>
             ) : result.status === "insufficient data" ? (
               <>
-                <h2 className="rp-result-title">Insufficient Data</h2>
-                <p className="rp-result-meta">
-                  Only {result.sampleSize} similar property
-                  {result.sampleSize === 1 ? "" : "ies"} found. Try a different
-                  combination or add more listings.
+                <h2 className="est-result-heading">Insufficient Data</h2>
+                <p className="est-meta-info">
+                  Only found {result.sampleSize} similar propert{result.sampleSize === 1 ? 'y' : 'ies'}. 
+                  Try adjusting your search criteria.
                 </p>
               </>
             ) : (
-              <p className="rp-result-meta">Unexpected response from server.</p>
+              <p className="est-meta-info">Unexpected server response.</p>
             )}
           </div>
         )}
+
       </div>
     </div>
   );
