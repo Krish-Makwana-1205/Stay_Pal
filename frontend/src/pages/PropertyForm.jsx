@@ -242,280 +242,292 @@ export default function PropertyForm() {
 
   // --------------------------------------------
   return (
-    <div className="property-form-container">
+    <div className="pf-container">
 
-      <div className="property-form-wrapper">
-        
-        {/* LEFT SIDE */}
-        <div className="property-form-left">
-          <h2 className="property-form-title">Upload Property</h2>
-          <img
-            src="/house.png"
-            className="left-side-image"
-            alt="House Illustration"
+  <div className="pf-wrapper">
+
+    {/* TITLE */}
+    <h2 className="pf-title">Upload Property</h2>
+
+    {/* MAIN CARD */}
+    <div className="pf-card">
+
+      <form
+        onSubmit={handleSubmit}
+        className="pf-form"
+        encType="multipart/form-data"
+      >
+        {/* BASIC FIELDS */}
+        <label className="pf-label">Property Name *</label>
+        <input
+          className="pf-input"
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+
+        <label className="pf-label">Description *</label>
+        <textarea
+          className="pf-textarea"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
+
+        <label className="pf-label">BHK *</label>
+        <NumberInput
+          className="pf-input"
+          name="BHK"
+          max="100"
+          value={formData.BHK}
+          onChange={(e) =>
+            setFormData({ ...formData, BHK: e.target.value })
+          }
+          required
+        />
+
+        <label className="pf-label">Rent (₹) *</label>
+        <NumberInput
+          className="pf-input"
+          name="rent"
+          max="100000000"
+          value={formData.rent}
+          onChange={(e) =>
+            setFormData({ ...formData, rent: e.target.value })
+          }
+          required
+        />
+
+        {/* CITY */}
+        <label className="pf-label">City *</label>
+        <Select
+          className="pf-select"
+          options={cityOptions}
+          value={cityOptions.find((c) => c.value === formData.city) || null}
+          onChange={handleCityChange}
+          placeholder="Select your city"
+          isClearable
+        />
+
+        {/* NEARBY */}
+        <label className="pf-label" style={{ marginTop: "10px" }}>
+          Nearby Places
+        </label>
+        <CreatableSelect
+          className="pf-select"
+          isMulti
+          options={nearbyOptions}
+          value={formData.nearbyPlaces.map((p) => ({
+            value: p,
+            label: p,
+          }))}
+          onChange={handleNearbyPlacesChange}
+          placeholder="Select or add nearby places"
+        />
+
+        {/* LOCALITY */}
+        <label className="pf-label">Locality *</label>
+        <LocalitySelector
+          className="pf-select"
+          city={formData.city}
+          value={formData.locality}
+          onChange={(loc) => {
+            const list = JSON.parse(
+              localStorage.getItem(`localities_${formData.city}`)
+            );
+            const match = list?.find((item) => item.locality === loc);
+
+            setFormData((prev) => ({
+              ...prev,
+              locality: loc,
+              pincode: match ? match.postalCode : "",
+            }));
+          }}
+        />
+
+        <label className="pf-label">Pincode *</label>
+        <input
+          className="pf-input"
+          type="text"
+          name="pincode"
+          value={formData.pincode}
+          onChange={handleChange}
+          required
+        />
+
+        <label className="pf-label">House Type *</label>
+        <select
+          className="pf-input"
+          name="houseType"
+          value={formData.houseType}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select</option>
+          <option value="Apartment">Apartment</option>
+          <option value="Tenament">Tenament</option>
+          <option value="Bungalow">Bungalow</option>
+          <option value="Studio">Studio</option>
+          <option value="Condo">Condo</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label className="pf-label">Furnishing Type</label>
+        <select
+          className="pf-input"
+          name="furnishingType"
+          value={formData.furnishingType}
+          onChange={handleChange}
+        >
+          <option value="Fully Furnished">Fully Furnished</option>
+          <option value="Semi Furnished">Semi Furnished</option>
+          <option value="Unfurnished">Unfurnished</option>
+          <option value="Any">Any</option>
+        </select>
+
+        <label className="pf-label">Area Size (sq ft)</label>
+        <NumberInput
+          className="pf-input"
+          name="areaSize"
+          max="1000000"
+          value={formData.areaSize}
+          onChange={(e) =>
+            setFormData({ ...formData, areaSize: e.target.value })
+          }
+        />
+
+        {/* ADDRESS */}
+        <label className="pf-label">Address Details</label>
+        <div className="pf-address-fields">
+          <input
+            className="pf-input"
+            type="text"
+            name="houseNumber"
+            placeholder="House / Flat No."
+            value={formData.houseNumber}
+            onChange={handleChange}
+          />
+
+          <input
+            className="pf-input"
+            type="text"
+            name="street"
+            placeholder="Street / Road Name"
+            value={formData.street}
+            onChange={handleChange}
+          />
+
+          <input
+            className="pf-input"
+            type="text"
+            name="areaOrLandmark"
+            placeholder="Area / Landmark"
+            value={formData.areaOrLandmark}
+            onChange={handleChange}
           />
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="property-form-right">
+        <label className="pf-label">Address Link</label>
+        <input
+          className="pf-input"
+          type="text"
+          name="addressLink"
+          value={formData.addressLink}
+          placeholder="Paste Google Maps link"
+          onChange={(e) => {
+            const val = e.target.value.trim();
+            setFormData({ ...formData, addressLink: val });
 
-          <form
-            onSubmit={handleSubmit}
-            className="property-form"
-            encType="multipart/form-data"
+            const valid = /^(https?:\/\/)?(www\.)?(google\.com\/maps\/(place|@)|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+/;
+            setLinkError(val && !valid.test(val) ? "Please enter a valid Google Maps link." : "");
+          }}
+        />
+
+        {linkError && (
+          <p className="pf-error">{linkError}</p>
+        )}
+
+        <label className="pf-label">Parking Area *</label>
+        <Select
+          className="pf-select"
+          options={parkingOptions}
+          value={parkingOptions.find((p) => p.value === formData.parkingArea) || null}
+          onChange={(selected) =>
+            setFormData({
+              ...formData,
+              parkingArea: selected ? selected.value : "None",
+            })
+          }
+          placeholder="Select Parking Option"
+        />
+
+        {/* IMAGE UPLOAD */}
+        <label className="pf-label">Property Images (max 10) *</label>
+
+        {imageLimitMessage && (
+          <p className="pf-error">{imageLimitMessage}</p>
+        )}
+
+        {images.length > 0 && (
+          <div className="pf-image-preview-container">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                src={URL.createObjectURL(img)}
+                className="pf-preview-thumb"
+                alt=""
+              />
+            ))}
+          </div>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          name="images"
+          multiple
+          accept="image/*"
+          className="pf-input"
+          onChange={handleFileChange}
+          required
+        />
+
+        <div className="pf-image-actions">
+          <button
+            type="button"
+            onClick={handleClearImages}
+            disabled={images.length === 0}
+            className="pf-clear-images-btn"
           >
-            {/* BASIC FIELDS */}
-            <label>Property Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            Clear Selected Images
+          </button>
 
-            <label>Description *</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-            />
-
-            <label>BHK *</label>
-            <NumberInput
-              name="BHK"
-              max="100"
-              value={formData.BHK}
-              onChange={(e) =>
-                setFormData({ ...formData, BHK: e.target.value })
-              }
-              required
-            />
-
-            <label>Rent (₹) *</label>
-            <NumberInput
-              name="rent"
-              max="100000000"
-              value={formData.rent}
-              onChange={(e) =>
-                setFormData({ ...formData, rent: e.target.value })
-              }
-              required
-            />
-
-            {/* CITY */}
-            <label>City *</label>
-            <Select
-              options={cityOptions}
-              value={cityOptions.find((c) => c.value === formData.city) || null}
-              onChange={handleCityChange}
-              placeholder="Select your city"
-              isClearable
-            />
-
-            {/* NEARBY */}
-            <label style={{ marginTop: "10px" }}>Nearby Places</label>
-            <CreatableSelect
-              isMulti
-              options={nearbyOptions}
-              value={formData.nearbyPlaces.map((p) => ({
-                value: p,
-                label: p,
-              }))}
-              onChange={handleNearbyPlacesChange}
-              placeholder="Select or add nearby places"
-            />
-
-            {/* LOCALITY */}
-            <label>Locality *</label>
-            <LocalitySelector
-              city={formData.city}
-              value={formData.locality}
-              onChange={(loc) => {
-                const list = JSON.parse(
-                  localStorage.getItem(`localities_${formData.city}`)
-                );
-                const match = list?.find((item) => item.locality === loc);
-
-                setFormData((prev) => ({
-                  ...prev,
-                  locality: loc,
-                  pincode: match ? match.postalCode : "",
-                }));
-              }}
-            />
-
-            <label>Pincode *</label>
-            <input
-              type="text"
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              required
-            />
-
-            <label>House Type *</label>
-            <select
-              name="houseType"
-              value={formData.houseType}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Tenament">Tenament</option>
-              <option value="Bungalow">Bungalow</option>
-              <option value="Studio">Studio</option>
-              <option value="Condo">Condo</option>
-              <option value="Other">Other</option>
-            </select>
-
-            <label>Furnishing Type</label>
-            <select
-              name="furnishingType"
-              value={formData.furnishingType}
-              onChange={handleChange}
-            >
-              <option value="Fully Furnished">Fully Furnished</option>
-              <option value="Semi Furnished">Semi Furnished</option>
-              <option value="Unfurnished">Unfurnished</option>
-              <option value="Any">Any</option>
-            </select>
-
-            <label>Area Size (sq ft)</label>
-            <NumberInput
-              name="areaSize"
-              max="1000000"
-              value={formData.areaSize}
-              onChange={(e) =>
-                setFormData({ ...formData, areaSize: e.target.value })
-              }
-            />
-
-            {/* ADDRESS */}
-            <label>Address Details</label>
-            <div className="address-fields">
-              <input
-                type="text"
-                name="houseNumber"
-                placeholder="House / Flat No."
-                value={formData.houseNumber}
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="street"
-                placeholder="Street / Road Name"
-                value={formData.street}
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="areaOrLandmark"
-                placeholder="Area / Landmark"
-                value={formData.areaOrLandmark}
-                onChange={handleChange}
-              />
-            </div>
-
-            <label>Address Link</label>
-            <input
-              type="text"
-              name="addressLink"
-              value={formData.addressLink}
-              placeholder="Paste Google Maps link"
-              onChange={(e) => {
-                const val = e.target.value.trim();
-                setFormData({ ...formData, addressLink: val });
-
-                const valid = /^(https?:\/\/)?(www\.)?(google\.com\/maps\/(place|@)|goo\.gl\/maps|maps\.app\.goo\.gl)\/.+/;
-                setLinkError(val && !valid.test(val) ? "Please enter a valid Google Maps link." : "");
-              }}
-            />
-
-            {linkError && (
-              <p style={{ color: "red", fontSize: "0.9rem" }}>{linkError}</p>
-            )}
-
-            <label>Parking Area *</label>
-            <Select
-              options={parkingOptions}
-              value={parkingOptions.find((p) => p.value === formData.parkingArea) || null}
-              onChange={(selected) =>
-                setFormData({
-                  ...formData,
-                  parkingArea: selected ? selected.value : "None",
-                })
-              }
-              placeholder="Select Parking Option"
-            />
-
-            {/* IMAGE UPLOAD */}
-            <label>Property Images (max 10) *</label>
-
-            {imageLimitMessage && (
-              <p style={{ color: "red" }}>{imageLimitMessage}</p>
-            )}
-
-            {images.length > 0 && (
-              <div className="image-preview-container">
-                {images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={URL.createObjectURL(img)}
-                    className="preview-thumb"
-                    alt=""
-                  />
-                ))}
-              </div>
-            )}
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              name="images"
-              multiple
-              accept="image/*"
-              onChange={handleFileChange}
-              required
-            />
-
-            <div style={{ marginTop: 8 }}>
-              <button
-                type="button"
-                onClick={handleClearImages}
-                disabled={images.length === 0}
-                className="clear-images-btn"
-              >
-                Clear Selected Images
-              </button>
-
-              <span style={{ marginLeft: 12 }}>
-                {images.length > 0
-                  ? `${images.length} image(s) selected`
-                  : "No images selected"}
-              </span>
-            </div>
-
-            <button
-              type="submit"
-              className="property-submit-btn"
-              disabled={loading}
-            >
-              {loading ? "Uploading..." : "Upload Property"}
-            </button>
-          </form>
+          <span className="pf-image-count">
+            {images.length > 0
+              ? `${images.length} image(s) selected`
+              : "No images selected"}
+          </span>
         </div>
-      </div>
 
-      <Alert
-        message={message.text}
-        type={message.type}
-        onClose={() => setMessage({ text: "", type: "" })}
-      />
+        <button
+          type="submit"
+          className="pf-submit-btn"
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Upload Property"}
+        </button>
+      </form>
     </div>
+  </div>
+
+  <Alert
+    message={message.text}
+    type={message.type}
+    onClose={() => setMessage({ text: "", type: "" })}
+  />
+</div>
   );
 }

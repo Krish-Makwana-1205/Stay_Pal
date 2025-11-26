@@ -86,6 +86,7 @@ async function applyForRoommate(req, res) {
 }
 
 async function roommateSearch(req, res) {
+    console.log("run")
     let query = req.query;
 
     if (!query.city) {
@@ -104,7 +105,7 @@ async function roommateSearch(req, res) {
     } catch (err) {
         return res.status(500).json({ success: false, message: "Internal Server Error in fetching data", error: err.message });
     }
-    const calculatePoints = async (room, query) => {
+    const calculatePoints = async (room) => {
         let points = 0;
 
         if (query.gender && room.gender) {
@@ -405,11 +406,11 @@ async function roommateSearch(req, res) {
 
             }
         }
-        if (query.description && room.description) {
-            let tem = await getSimilarity(query.description, room.description);
-            tem = tem * 15;
-            points += tem;
-        }
+        //if (query.description && room.description) {
+        //  let tem = await getSimilarity(query.description, room.description);
+        //  tem = tem * 15;
+        //   points += tem;
+        //}
         return points;
     };
 
@@ -420,7 +421,14 @@ async function roommateSearch(req, res) {
             points: await calculatePoints(room),
         }))
     );
+    console.log("finish")
     scoredRoommates.sort((a, b) => b.points - a.points);
+    console.log(scoredRoommates)
+    return res.status(200).json({
+        success: true,
+        count: scoredRoommates.length,
+        data: scoredRoommates
+    });
 }
 
 async function roommateUpload(req, res) {

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchSingleProperty, fetchproperty, applyForProperty } from "../api/filters";
+import {
+  fetchSingleProperty,
+  fetchproperty,
+  applyForProperty,
+} from "../api/filters";
 import "../StyleSheets/PropertyView.css";
 
 export default function PropertyView() {
@@ -62,155 +66,148 @@ export default function PropertyView() {
     if (property) loadSimilar(property);
   }, [property]);
 
-  if (loading) return <h2 style={{ padding: "20px" }}>Loading property...</h2>;
-  if (!property) return <h2 style={{ padding: "20px" }}>Property not found.</h2>;
+  if (loading) return <h2 className="pv-loading">Loading property...</h2>;
+  if (!property) return <h2 className="pv-loading">Property not found.</h2>;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <h1>{property.name}</h1>
+    <div className="pv-wrapper pv-profile-container">
 
-      {property.imgLink?.length > 0 && (
-        <img
-          src={property.imgLink[0]}
-          alt={property.name}
-          style={{
-            width: "100%",
-            maxHeight: "350px",
-            objectFit: "cover",
-            borderRadius: "10px",
-            marginBottom: "20px",
-          }}
-        />
-      )}
-
-      <h2>Property Details</h2>
-
-      <div
-        style={{
-          marginTop: "15px",
-          background: "#f8f8f8",
-          padding: "20px",
-          borderRadius: "10px",
-        }}
-      >
-        <div className="pv-details">
-          <p><strong>Rent:</strong> ₹{property.rent}</p>
-          <p><strong>BHK:</strong> {property.BHK}</p>
-          <p><strong>City:</strong> {property.city}</p>
-          <p><strong>Locality:</strong> {property.locality}</p>
-
-          {property.areaSize && (
-            <p><strong>Area Size:</strong> {property.areaSize} sq ft</p>
-          )}
-
-          <p><strong>House Type:</strong> {property.houseType}</p>
-          <p><strong>Furnishing:</strong> {property.furnishingType}</p>
-          <p><strong>Parking:</strong> {property.parkingArea}</p>
-
-          <p>
-            <strong>Transport Availability:</strong>{" "}
-            {property.transportAvailability ? "Yes" : "No"}
-          </p>
-
-          <p><strong>Description:</strong> {property.description}</p>
-
-          <p>
-            <strong>Nearby Places:</strong>{" "}
-            {property.nearbyPlaces?.length
-              ? property.nearbyPlaces.join(", ")
-              : "None"}
-          </p>
-
-          <p><strong>Owner Email:</strong> {property.email}</p>
-          <button
-  style={{
-    marginTop: "10px",
-    padding: "12px 20px",
-    background: "green",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "16px"
-  }}
-  onClick={() => navigate(`/chat/${property.email}`)}
->
-  Chat with Owner
-</button>
-
-
-          <p>
-            <strong>Address:</strong>{" "}
-            {property.address.split("$*").join(", ")}
-          </p>
-
-          <p>
-            <strong>Google Maps:</strong>{" "}
-            <a href={property.addressLink} target="_blank" rel="noreferrer">
-              Open in Maps
-            </a>
-          </p>
-        </div>
-
-        <button
-          className="apply-btn"
-          disabled={applyLoading}
-          onClick={async () => {
-            try {
-              setApplyLoading(true);
-
-              const payload = {
-                propertyName: property.name,
-                propertyOwnerEmail: property.email,
-              };
-
-              await applyForProperty(payload);
-              alert("Application sent to the owner!");
-            } catch (err) {
-              console.error(err);
-              alert("Failed to apply.");
-            } finally {
-              setApplyLoading(false);
-            }
-          }}
-          style={{
-            marginTop: "20px",
-            padding: "12px 20px",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "16px",
-            opacity: applyLoading ? 0.6 : 1,
-          }}
-        >
-          {applyLoading ? "Applying..." : "Apply"}
-        </button>
+      {/* HEADER */}
+      <div className="pv-header-box">
+        <h2 className="pv-page-title pv-profile-title">{property.name}</h2>
       </div>
 
-      {similar.length > 0 && (
-        <div className="similar-wrapper">
-          <h3>Similar Properties</h3>
+      {/* CARD */}
+      <div className="pv-property-card pv-profile-card">
 
-          <div className="similar-list">
+        {/* HEADER ROW */}
+        <div className="pv-card-header pv-profile-card-header">
+          <h3 className="pv-profile-card-title">{property.name}</h3>
+
+          <button
+            className="pv-action-btn pv-edit-btn pv-small pv-profile-btn pv-profile-btn-accent"
+            onClick={() => navigate(`/chat/${property.email}`)}
+          >
+            Chat With Owner
+          </button>
+        </div>
+
+        {/* BODY */}
+        <div className="pv-card-body pv-profile-body">
+          
+          {/* MAIN IMAGE */}
+          <div className="pv-image-wrapper pv-profile-image-box">
+            {property.imgLink?.length > 0 && (
+              <img
+                src={property.imgLink[0]}
+                alt={property.name}
+                className="pv-profile-img"
+              />
+            )}
+          </div>
+
+          {/* DETAILS GRID */}
+          <div className="pv-details-grid pv-profile-grid">
+            <p><strong>Rent:</strong> ₹{property.rent}</p>
+            <p><strong>BHK:</strong> {property.BHK}</p>
+
+            <p><strong>City:</strong> {property.city}</p>
+            <p><strong>Locality:</strong> {property.locality}</p>
+
+            {property.areaSize && (
+              <p><strong>Area Size:</strong> {property.areaSize} sq ft</p>
+            )}
+
+            <p><strong>House Type:</strong> {property.houseType}</p>
+            <p><strong>Furnishing:</strong> {property.furnishingType}</p>
+
+            <p><strong>Parking:</strong> {property.parkingArea}</p>
+            <p>
+              <strong>Transport:</strong>{" "}
+              {property.transportAvailability ? "Yes" : "No"}
+            </p>
+
+            <p className="pv-full-width">
+              <strong>Address:</strong> {property.address.split("$*").join(", ")}
+            </p>
+
+            <p className="pv-full-width">
+              <strong>Google Maps: </strong>
+              <a
+                href={property.addressLink}
+                target="_blank"
+                rel="noreferrer"
+                className="pv-map-link pv-profile-link"
+              >
+                Open in Maps
+              </a>
+            </p>
+
+            <p className="pv-full-width">
+              <strong>Nearby Places:</strong>{" "}
+              {property.nearbyPlaces?.length
+                ? property.nearbyPlaces.join(", ")
+                : "None"}
+            </p>
+
+            <p><strong>Owner Email:</strong> {property.email}</p>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="pv-description-box pv-profile-desc-box">
+            <strong>Description:</strong> {property.description}
+          </div>
+
+          {/* APPLY BUTTON */}
+          <button
+            className="pv-primary-btn pv-profile-btn pv-profile-btn-primary"
+            disabled={applyLoading}
+            onClick={async () => {
+              try {
+                setApplyLoading(true);
+
+                const payload = {
+                  propertyName: property.name,
+                  propertyOwnerEmail: property.email,
+                };
+
+                await applyForProperty(payload);
+                alert("Application sent to the owner!");
+              } catch (err) {
+                console.error(err);
+                alert("Failed to apply.");
+              } finally {
+                setApplyLoading(false);
+              }
+            }}
+          >
+            {applyLoading ? "Applying..." : "Apply"}
+          </button>
+        </div>
+      </div>
+
+      {/* SIMILAR PROPERTIES SECTION */}
+      {similar.length > 0 && (
+        <div className="pv-preferences-section pv-profile-pref-box">
+          <div className="pv-pref-header pv-profile-pref-header">
+            <h4 className="pv-profile-subtitle">Similar Properties</h4>
+          </div>
+
+          <div className="pv-similar-list">
             {similar.map((item, idx) => {
               const img = item.imgLink?.[0];
 
               return (
                 <div
                   key={idx}
-                  className="similar-card"
-                  onClick={() =>
-                    navigate(`/property/${item.email}/${item.name}`)
-                  }
+                  className="pv-similar-card"
+                  onClick={() => navigate(`/property/${item.email}/${item.name}`)}
                 >
-                  <img src={img} alt="" className="similar-img" />
-
-                  <div className="similar-text">
+                  <img src={img} alt="" className="pv-similar-img" />
+                  <div className="pv-similar-text">
                     <h4>{item.BHK} BHK in {item.city}</h4>
                     <p>₹{item.rent}</p>
-                    <p className="similar-locality">{item.locality}</p>
+                    <p className="pv-similar-locality">{item.locality}</p>
                   </div>
                 </div>
               );
@@ -218,6 +215,7 @@ export default function PropertyView() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

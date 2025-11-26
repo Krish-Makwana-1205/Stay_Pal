@@ -1,232 +1,234 @@
-/* ================================
-   1. PAGE LAYOUT (Full Screen + Bubbles)
-=================================== */
-.view-properties {
-  display: flex;
-  gap: 25px;
-  padding: 20px;
-  height: 100vh;       
-  width: 100vw;
-  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
-  box-sizing: border-box;
-  overflow: hidden;    /* Keeps bubbles inside screen */
-  position: relative;  /* Critical for positioning bubbles */
-  z-index: 0;
+/* =========================================
+   1. THEME VARIABLES 
+========================================= */
+:root {
+  --property-primary: #0d2a4f;
+  --property-accent: #007bff;
+  --property-bg: #f4f7f9;
+  --property-white: #ffffff;
+  --property-grid-line: rgba(13, 42, 79, 0.05);
 }
 
-/* --- FLOATING BUBBLES ANIMATION --- */
+/* =========================================
+   2. PAGE CONTAINER (Full Width Grid Background + Watermark)
+========================================= */
+.view-properties {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+  
+  /* Apply Grid Background to the full width */
+  background-color: var(--property-bg);
+  background-image:
+    linear-gradient(var(--property-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  position: relative;
+  overflow-y: auto;
+  box-sizing: border-box; 
+  z-index: 1; /* Ensures content is visible */
+}
+
+/* Watermark layer */
 .view-properties::before {
   content: "";
   position: absolute;
-  width: 500px;
-  height: 500px;
-  background: rgba(4, 0, 255, 0.1); /* Light Blue Bubble */
-  border-radius: 50%;
-  top: -150px;
-  right: -150px;
-  animation: float 6s ease-in-out infinite;
-  z-index: -1; /* Puts it behind the content */
+  inset: 0;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  background-position:
+    0px 0px,
+    25px 25px,
+    50px 0px;
+  opacity: 0.15;
+  pointer-events: none;
+  animation: bgPan 60s linear infinite;
+  z-index: 0;
 }
 
-.view-properties::after {
-  content: "";
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  background: rgba(4, 0, 255, 0.1); /* Light Blue Bubble */
-  border-radius: 50%;
-  bottom: -100px;
-  left: -100px;
-  animation: float 7s ease-in-out infinite reverse;
-  z-index: -1; /* Puts it behind the content */
+/* --- Content Wrapper (For Centering and Max Width) --- */
+.view-content-wrapper {
+    display: flex; 
+    gap: 30px;
+    max-width: 1200px; /* Constrain content width */
+    margin: 0 auto; /* Center the content */
+    width: 100%;
+    z-index: 2; /* Ensures content is above the watermark */
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(-25px) translateX(25px);
-  }
-}
-
-/* ================================
-   2. FILTERS SIDEBAR (Left Box)
-=================================== */
+/* =========================================
+   3. LEFT PANEL (Filters)
+========================================= */
 .dashboard-filters {
-  width: 400px;        
-  min-width: 400px;    
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
+  width: 350px;
+  flex-shrink: 0;
   
-  height: 100%; 
-  overflow-y: auto; 
+  position: sticky;
+  top: 40px; 
+  height: fit-content; 
   
-  display: flex;
-  flex-direction: column;
-  
-  /* Ensure it sits ON TOP of the bubbles */
-  position: relative;
-  z-index: 1; 
+  background: var(--property-white);
+  border: 2px solid var(--property-primary);
+  box-shadow: 8px 8px 0 var(--property-primary);
+  border-radius: 0; 
+
+  padding: 20px; 
 }
 
 .filters-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--property-primary);
+  text-align: center;
+  text-transform: uppercase;
   margin-bottom: 20px;
-  color: #1e3c72;
-  border-bottom: 2px solid #f0f0f0;
   padding-bottom: 10px;
+  border-bottom: 2px solid var(--property-grid-line);
 }
 
-/* ================================
-   3. FILTER INPUTS ALIGNMENT
-=================================== */
-.dashboard-filters > div, 
-.dashboard-filters form > div {
-  margin-bottom: 15px;
-}
-
-.dashboard-filters label {
-  display: block;        
-  font-size: 14px;
-  font-weight: 600;
-  color: #34495e;
-  margin-bottom: 8px;    
-  margin-top: 10px;
-}
-
-.dashboard-filters input[type="text"],
-.dashboard-filters input[type="number"],
-.dashboard-filters select,
-.dashboard-filters textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: #f8f9fa;
-  box-sizing: border-box; 
-}
-
-.dashboard-filters textarea {
-  min-height: 80px;
-  resize: vertical;
-  display: block; 
-}
-
-.dashboard-filters input[type="radio"],
-.dashboard-filters input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
-  display: inline-block;
-}
-
-/* ================================
-   4. RESULTS PANEL (Right Box)
-=================================== */
+/* =========================================
+   4. RIGHT PANEL (Results)
+========================================= */
 .properties-results {
-  flex: 1; 
-  padding: 25px 30px;
+  flex-grow: 1;
   
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-
-  height: 100%;
-  overflow-y: auto; 
-
-  /* Ensure it sits ON TOP of the bubbles */
-  position: relative;
-  z-index: 1;
+  position: sticky;
+  
+  height: fit-content; 
+  
+  background: var(--property-white);
 }
+
+/* --- NEW WRAPPER FOR RESULTS CONTENT --- */
+/* This class must wrap the h2 and the list of result items inside the .properties-results JSX */
+.results-card {
+  background: var(--property-white); /* White opaque background */
+  border: 2px solid var(--property-primary);
+  box-shadow: 12px 12px 0 var(--property-primary); /* Larger shadow like the main form card */
+  border-radius: 0; 
+  padding: 30px; 
+  margin-bottom: 30px; 
+}
+
 
 .properties-results h2 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #1f1f1f;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--property-primary);
+  margin-top: 0; /* Remove default top margin from h2 inside results-card */
+  margin-bottom: 25px;
+  padding: 10px 0;
+  text-transform: uppercase;
+  border-bottom: 3px double var(--property-primary);
 }
 
-/* ================================
-   5. RESULT ITEM (The Card)
-=================================== */
+/* If you need "No results found" to be styled differently, add a specific class to it */
+.properties-results p {
+  color: var(--property-primary);
+  font-size: 1.1rem;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   5. RESULT ITEM (Property Card)
+========================================= */
 .result-item {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 30px; /* Space between individual result items */
+  padding: 20px;
+  
+  background: var(--property-white); /* Still white, but now nested inside results-card */
+  border: 2px solid var(--property-primary);
+  box-shadow: 6px 6px 0 var(--property-primary);
+  border-radius: 0; /* REMOVED ROUNDED CORNERS */
+  
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.result-item:last-child {
+  margin-bottom: 0; /* No bottom margin for the last item in the list */
 }
 
 .result-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.result-item div {
-  flex: 1;
-}
-
-.result-item h3 {
-  font-size: 20px;
-  color: #1e3c72;
-  margin-bottom: 8px;
-}
-
-.result-item p {
-  font-size: 15px;
-  color: #555;
-  margin: 4px 0;
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--property-accent);
 }
 
 .result-item img {
-  width: 150px;       
-  height: 100px;      
-  object-fit: cover;  
-  border-radius: 10px;
-  flex-shrink: 0;     
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 0; /* REMOVED ROUNDED CORNERS */
+  border: 2px solid var(--property-primary);
+  flex-shrink: 0;
 }
 
-/* ================================
-   6. RESPONSIVE (Mobile)
-=================================== */
+.result-item h3 {
+  font-size: 1.5rem;
+  color: var(--property-accent);
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+
+.extra-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--property-primary);
+}
+
+.extra-info-grid strong {
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+/* =========================================
+   6. ANIMATIONS
+========================================= */
+@keyframes bgPan {
+  from { background-position: 0 0, 25px 25px, 50px 0; }
+  to   { background-position: 100px 100px, 125px 125px, 150px 100px; }
+}
+
+/* =========================================
+   7. RESPONSIVE
+========================================= */
 @media (max-width: 900px) {
-  .view-properties {
-    flex-direction: column; 
-    height: auto;           
-    overflow-y: auto;
+  .view-content-wrapper {
+    flex-direction: column;
   }
 
   .dashboard-filters {
     width: 100%;
-    min-width: 0;
-    height: auto;
+    
+    margin-bottom: 20px;
   }
 
-  .properties-results {
-    height: auto;
-    overflow-y: visible;
+  .results-card {
+    padding: 20px; /* Adjust padding on smaller screens */
   }
-  
+}
+
+@media (max-width: 600px) {
   .result-item {
-    flex-direction: column-reverse;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
   }
   
   .result-item img {
     width: 100%;
-    height: 180px;
+    height: 200px;
+    margin-bottom: 10px;
   }
 }
 .extra-info-grid {
@@ -240,4 +242,33 @@
   margin: 0;
   font-size: 14px;
   color: #444;
+}
+
+.similar-wrapper { margin-top: 24px; }
+
+/* Horizontal thumbnail list (kept from your snippet) */
+.similar-list { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; }
+
+/* Card */
+.similar-card { min-width: 220px; border: 1px solid #e6e9ef; border-radius: 10px; cursor: default; background: #fff; transition: 0.12s ease-in-out; overflow: hidden; }
+.similar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(11,24,44,0.06); }
+
+.similar-img { width: 100%; height: 160px; object-fit: cover; display: block; }
+
+.similar-text { padding: 12px; }
+
+.similar-locality { color: #777; font-size: 0.9rem; }
+
+/* Inputs/buttons basic styling */
+input, select, textarea, button { font-family: inherit; font-size: 14px; }
+input, select, textarea { padding: 8px 10px; border: 1px solid #e6e9ef; border-radius: 6px; width: 100%; box-sizing: border-box; }
+textarea { min-height: 60px; resize: vertical; }
+button { padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; background: #0a3b66; color: #fff; }
+button[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .similar-card { min-width: 100%; }
+  .similar-wrapper { margin-top: 12px; }
+  .similar-list { padding-bottom: 6px; }
 }
