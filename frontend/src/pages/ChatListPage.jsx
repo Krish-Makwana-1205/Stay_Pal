@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { fetchChatList } from "../api/chat";
+import "../StyleSheets/ChatListPage.css";
 
 export default function ChatListPage() {
   const [chats, setChats] = useState([]);
-  const { user, loading } = useAuth();  // <-- use loading from context
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Wait until auth loading is finished AND user is available
     if (loading || !user) return;
 
     async function loadChats() {
@@ -22,44 +22,46 @@ export default function ChatListPage() {
     }
 
     loadChats();
-  }, [loading, user]);  // re-run only when loading stops & user comes
+  }, [loading, user]);
 
-  if (loading) return <p>Loading user...</p>;
-  if (!user) return <p>Please login first.</p>;
+  if (loading) return <div className="chat-page-wrapper"><p>Loading...</p></div>;
+  if (!user) return <div className="chat-page-wrapper"><p>Please login first.</p></div>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Your Chats</h2>
+    <div className="chat-page-wrapper">
+      <div className="chat-list-card">
+        <h2 className="chat-list-heading">Your Chats</h2>
 
-      {chats.length === 0 ? (
-        <p>No chats yet.</p>
-      ) : (
-        chats.map((chat, idx) => {
-          const [u1, u2] = chat.email;
+        <div className="chat-items-container">
+          {chats.length === 0 ? (
+            <p className="chat-empty-state">No chats found. Start a conversation!</p>
+          ) : (
+            chats.map((chat, idx) => {
+              const [u1, u2] = chat.email;
+              const other = u1 === user.email ? u2 : u1;
+              
+              const lastMessage =
+                chat.messages.length > 0
+                  ? chat.messages[chat.messages.length - 1].body
+                  : "No messages yet";
 
-          const other = u1 === user.email ? u2 : u1;
-
-          const lastMessage =
-            chat.messages.length > 0
-              ? chat.messages[chat.messages.length - 1].body
-              : "No messages yet";
-
-          return (
-            <div
-              key={idx}
-              onClick={() => navigate(`/chat/${other}`)}
-              style={{
-                padding: "15px",
-                borderBottom: "1px solid #ddd",
-                cursor: "pointer",
-              }}
-            >
-              <h3>{other}</h3>
-              <p style={{ color: "#777" }}>{lastMessage}</p>
-            </div>
-          );
-        })
-      )}
+              return (
+                <div
+                  key={idx}
+                  className="chat-item"
+                  onClick={() => navigate(`/chat/${other}`)}
+                >
+                  <div className="chat-item-header">
+                    <span className="chat-item-name">{other}</span>
+                    <span className="chat-item-arrow">OPEN &rarr;</span>
+                  </div>
+                  <p className="chat-item-message">{lastMessage}</p>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
     </div>
   );
 }
