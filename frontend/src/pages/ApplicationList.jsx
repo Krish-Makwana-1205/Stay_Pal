@@ -2,12 +2,14 @@ import { useParams } from "react-router-dom";
 import { getApplications } from "../api/filters";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ChatPage from "./ChatPage";
+import "../StyleSheets/ApplicationList.css"; 
+
 export default function ApplicationList() {
   const { propertyName } = useParams();
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     async function load() {
       try {
@@ -22,55 +24,102 @@ export default function ApplicationList() {
     load();
   }, [propertyName]);
 
-  if (loading) return <h2>Loading...</h2>;
-  if (apps.length === 0) return <h3>No applications yet.</h3>;
+  // Helper component to display data fields uniformly
+  const DataField = ({ label, value }) => (
+    <div className="app-data-row">
+      <span className="app-data-label">{label}</span>
+      <span className="app-data-value">{value || "N/A"}</span>
+    </div>
+  );
 
-  return (
-    <div style={{padding:"20px"}}>
-      <button onClick={() => navigate("/my-chats")}>
-      Chats
-    </button>
-      <h2>Applications for {propertyName}</h2>
+  // Helper to render boolean tags
+  const BooleanTag = ({ label, isTrue }) => (
+    <div className={`app-tag ${isTrue ? "is-positive" : "is-negative"}`}>
+      {label}
+    </div>
+  );
 
-      {apps.map((a, i) => (
-        <div key={i} className="tenant-card" style={{
-  border: "1px solid #ddd",
-  padding: "15px",
-  marginBottom: "20px",
-  borderRadius: "8px",
-  background: "#fafafa"
-}}>
-  <h3>Tenant Profile</h3>
-
-  <p><strong>Name:</strong> {a.tenant?.name}</p>
-  <p><strong>Email:</strong> {a.tenant?.email}</p>
-  <p><strong>Gender:</strong> {a.tenant?.gender}</p>
-  <p><strong>Date of Birth:</strong> {new Date(a.tenant?.dob).toLocaleDateString()}</p>
-  <p><strong>Hometown:</strong> {a.tenant?.hometown}</p>
-  <p><strong>Nationality:</strong> {a.tenant?.nationality}</p>
-  <p><strong>Religion:</strong> {a.tenant?.religion}</p>
-  <p><strong>Food Preference:</strong> {a.tenant?.foodPreference}</p>
-  <p><strong>Language Preference:</strong> {a.tenant?.language}</p>
-  <p><strong>Professional Status:</strong> {a.tenant?.professionalStatus}</p>
-  <p><strong>Marital Status:</strong> {a.tenant?.maritalStatus}</p>
-  <p><strong>Smoker:</strong> {a.tenant?.smoker ? "Yes" : "No"}</p>
-  <p><strong>Drinks Alcohol:</strong> {a.tenant?.alcohol ? "Yes" : "No"}</p>
-  <p><strong>Pet Lover:</strong> {a.tenant?.Pet_lover ? "Yes" : "No"}</p>
-  <p><strong>Night Owl:</strong> {a.tenant?.nightOwl ? "Yes" : "No"}</p>
-  <p><strong>Early Bird:</strong> {a.tenant?.earlybird ? "Yes" : "No"}</p>
-  <p><strong>Music Lover:</strong> {a.tenant?.music_lover ? "Yes" : "No"}</p>
-  <p><strong>Fitness Freak:</strong> {a.tenant?.fitness_freak ? "Yes" : "No"}</p>
-  <p><strong>Party Lover:</strong> {a.tenant?.party_lover ? "Yes" : "No"}</p>
-
-  <p><strong>Hobbies:</strong> {a.tenant?.hobbies?.length ? a.tenant.hobbies.join(", ") : "None"}</p>
-  <p><strong>Allergies:</strong> {a.tenant?.allergies?.length ? a.tenant.allergies.join(", ") : "None"}</p>
+  if (loading) return <div className="app-list-wrapper"><h2 className="app-loading">Loading...</h2></div>;
   
-  <p><strong>Description:</strong> {a.tenant?.description || "No description given"}</p>
+  return (
+    <div className="app-list-wrapper">
+      <div className="app-content-container">
+        
+        {/* Header Row */}
+        <div className="app-header-row">
+          <h2 className="app-main-heading">
+            Applications: {propertyName}
+          </h2>
+          <button className="app-nav-btn" onClick={() => navigate("/my-chats")}>
+            View Chats
+          </button>
+        </div>
 
-  <p><strong>Applied At:</strong> {new Date(a.appliedAt).toLocaleString()}</p>
-</div>
+        {apps.length === 0 ? (
+          <h3 className="app-empty">No applications yet.</h3>
+        ) : (
+          <div className="app-cards-grid">
+            {apps.map((a, i) => {
+              const t = a.tenant || {}; // Shorten reference
+              
+              return (
+                <div key={i} className="app-tenant-card">
+                  {/* Decorative Bar */}
+                  <div className="app-card-deco"></div>
+                  
+                  <div className="app-card-body">
+                    <h3 className="app-card-title">{t.name || "Unknown Tenant"}</h3>
 
-      ))}
+                    {/* Basic Info Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <DataField label="Email" value={t.email} />
+                      <DataField label="Phone" value={t.phone || "--"} />
+                      <DataField label="Gender" value={t.gender} />
+                      <DataField label="Nationality" value={t.nationality} />
+                      <DataField label="Status" value={t.professionalStatus} />
+                      <DataField label="Marital" value={t.maritalStatus} />
+                    </div>
+
+                    <DataField 
+                        label="Hometown" 
+                        value={t.hometown} 
+                    />
+
+                    {/* Lifestyle / Boolean Tags Section */}
+                    <div className="app-tags-container">
+                        <BooleanTag label="Smoker" isTrue={t.smoker} />
+                        <BooleanTag label="Drinker" isTrue={t.alcohol} />
+                        <BooleanTag label="Pet Lover" isTrue={t.Pet_lover} />
+                        <BooleanTag label="Night Owl" isTrue={t.nightOwl} />
+                        <BooleanTag label="Early Bird" isTrue={t.earlybird} />
+                        <BooleanTag label="Music" isTrue={t.music_lover} />
+                        <BooleanTag label="Fitness" isTrue={t.fitness_freak} />
+                        <BooleanTag label="Party" isTrue={t.party_lover} />
+                    </div>
+
+                    {/* Array Data */}
+                    <div className="app-data-row">
+                        <span className="app-data-label">Hobbies</span>
+                        <span className="app-data-value">
+                            {t.hobbies?.length ? t.hobbies.join(", ") : "None listed"}
+                        </span>
+                    </div>
+
+                    {/* Description */}
+                    <div className="app-desc-box">
+                      "{t.description || "No description provided."}"
+                    </div>
+
+                    <span className="app-timestamp">
+                      Applied: {new Date(a.appliedAt).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,0 +1,233 @@
+:root {
+  --app-primary: #0d2a4f;
+  --app-accent: #007bff;
+  --app-bg: #f4f7f9;
+  --app-white: #ffffff;
+  --app-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* --- Page Container --- */
+.app-list-wrapper {
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--app-bg);
+  /* Grid Pattern */
+  background-image:
+    linear-gradient(var(--app-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--app-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 40px 20px;
+  overflow-x: hidden;
+}
+
+/* Background Icons Animation Layer */
+.app-list-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Using a generic pattern image similar to reference */
+  background-image: url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg'); 
+  background-repeat: repeat;
+  background-size: 60px 60px;
+  opacity: 0.1;
+  pointer-events: none;
+  animation: appBgPan 80s linear infinite;
+  z-index: 0;
+}
+
+.app-content-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Header Section --- */
+.app-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.app-main-heading {
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--app-primary);
+  background: var(--app-white);
+  padding: 10px 20px;
+  border: 2px solid var(--app-primary);
+  box-shadow: 6px 6px 0 var(--app-primary);
+  margin: 0;
+}
+
+.app-nav-btn {
+  background: var(--app-primary);
+  color: var(--app-white);
+  padding: 12px 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.app-nav-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  background-color: var(--app-accent);
+}
+
+/* --- Grid Layout for Cards --- */
+.app-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+/* --- Tenant Card --- */
+.app-tenant-card {
+  position: relative;
+  background: var(--app-white);
+  border: 2px solid var(--app-primary);
+  box-shadow: 12px 12px 0 var(--app-primary);
+  padding: 0; /* Padding handled inside to accommodate deco bar */
+  animation: appPopUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transition: transform 0.2s;
+}
+
+.app-tenant-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Decorative Top Bar */
+.app-card-deco {
+  height: 8px;
+  width: 100%;
+  background: repeating-linear-gradient(90deg, var(--app-primary) 0%, var(--app-primary) 20%, var(--app-accent) 20%, var(--app-accent) 40%);
+  border-bottom: 2px solid var(--app-primary);
+}
+
+.app-card-body {
+  padding: 25px;
+}
+
+.app-card-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--app-primary);
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  border-bottom: 2px dashed #ddd;
+  padding-bottom: 10px;
+}
+
+/* --- Data Display Styles --- */
+.app-data-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.app-data-label {
+  display: inline-block;
+  background: var(--app-primary);
+  color: var(--app-white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  margin-bottom: 4px;
+  width: fit-content;
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+}
+
+.app-data-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2px;
+}
+
+/* --- Lifestyle Tags (Badges) --- */
+.app-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.app-tag {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border: 1px solid var(--app-primary);
+  background: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 0 #ddd;
+}
+
+.app-tag.is-positive {
+  background: var(--app-accent);
+  color: white;
+  border-color: var(--app-primary);
+  box-shadow: 2px 2px 0 var(--app-primary);
+}
+
+.app-tag.is-negative {
+  background: #eee;
+  color: #777;
+  text-decoration: line-through;
+}
+
+/* --- Description Box --- */
+.app-desc-box {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #555;
+  margin-top: 15px;
+  border-left: 4px solid var(--app-accent);
+}
+
+.app-timestamp {
+  display: block;
+  text-align: right;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+/* --- Animations --- */
+@keyframes appPopUp {
+  0% { opacity: 0; transform: scale(0.95) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes appBgPan {
+  from { background-position: 0 0; }
+  to { background-position: 100px 100px; }
+}
+
+/* Helper Text */
+.app-loading, .app-empty {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 50px;
+  font-weight: 800;
+  color: var(--app-primary);
+  text-transform: uppercase;
+}
