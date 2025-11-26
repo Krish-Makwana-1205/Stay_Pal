@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Header from "../Components/Header";
 import { fetchChatList } from "../api/chat";
 import "../StyleSheets/ChatListPage.css";
 
@@ -8,6 +9,32 @@ export default function ChatListPage() {
   const [chats, setChats] = useState([]);
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Generate initials from email
+  const getInitials = (email) => {
+    if (!email) return "?";
+    const parts = email.split("@")[0].split(".");
+    return parts.map((p) => p.charAt(0).toUpperCase()).join("").slice(0, 2);
+  };
+
+  // Generate color from email hash
+  const getAvatarColor = (email) => {
+    const colors = [
+      "#FF6B6B",
+      "#4ECDC4",
+      "#45B7D1",
+      "#FFA07A",
+      "#98D8C8",
+      "#F7DC6F",
+      "#BB8FCE",
+      "#85C1E2",
+    ];
+    let hash = 0;
+    for (let i = 0; i < email.length; i++) {
+      hash = email.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
 
   useEffect(() => {
     if (loading || !user) return;
@@ -39,7 +66,7 @@ export default function ChatListPage() {
             chats.map((chat, idx) => {
               const [u1, u2] = chat.email;
               const other = u1 === user.email ? u2 : u1;
-              
+
               const lastMessage =
                 chat.messages.length > 0
                   ? chat.messages[chat.messages.length - 1].body
@@ -51,11 +78,24 @@ export default function ChatListPage() {
                   className="chat-item"
                   onClick={() => navigate(`/chat/${other}`)}
                 >
-                  <div className="chat-item-header">
-                    <span className="chat-item-name">{other}</span>
-                    <span className="chat-item-arrow">OPEN &rarr;</span>
+                  {/* Avatar */}
+                  <div
+                    className="chat-item-avatar"
+                    style={{
+                      backgroundColor: getAvatarColor(other),
+                    }}
+                  >
+                    {getInitials(other)}
                   </div>
-                  <p className="chat-item-message">{lastMessage}</p>
+
+                  {/* Content */}
+                  <div className="chat-item-content">
+                    <div className="chat-item-header">
+                      <span className="chat-item-name">{other}</span>
+                      <span className="chat-item-arrow">OPEN →</span>
+                    </div>
+                    <p className="chat-item-message">{lastMessage}</p>
+                  </div>
                 </div>
               );
             })

@@ -63,6 +63,18 @@ export default function ApplicationList() {
               
               const photoUrl = t.profilePhoto || "https://via.placeholder.com/150x150.png?text=No+Photo";
 
+              // Compute match percentage: prefer match/dif if available, otherwise map score to 0-100
+              const match = typeof a.match === 'number' ? a.match : 0;
+              const dif = typeof a.dif === 'number' ? a.dif : 0;
+              let percent = 50;
+              if (match + dif > 0) {
+                percent = Math.round((match / (match + dif)) * 100);
+              } else if (typeof a.score === 'number') {
+                // map score (which can be negative) to a sigmoid 0-100
+                const mapped = 100 / (1 + Math.exp(-a.score / 3));
+                percent = Math.round(mapped);
+              }
+
               return (
                 <div key={i} className="app-tenant-card">
                   <div className="app-card-deco"></div>
@@ -83,6 +95,22 @@ export default function ApplicationList() {
                              <h3 className="app-card-title">{t.username || "Unknown Tenant"}</h3>
                              <p className="app-card-subtitle">{t.professionalStatus || "Applicant"}</p>
                         </div>
+                    </div>
+
+                    {/* Match Score Meter */}
+                    <div style={{ marginTop: 12, marginBottom: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ flex: 1 }}>
+                          <div className="app-score-label">Match Score</div>
+                          <div className="app-score-meter" aria-hidden>
+                            <div
+                              className="app-score-fill"
+                              style={{ width: `${percent}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div className="app-score-percent">{percent}%</div>
+                      </div>
                     </div>
 
 

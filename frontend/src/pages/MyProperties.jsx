@@ -79,6 +79,18 @@ const MyProperties = () => {
                <strong>Nearby:</strong> {prop.nearbyPlaces.length > 0 ? prop.nearbyPlaces.join(", ") : "None"}
             </div>
             
+            <div style={{ marginTop: "12px" }}>
+              {user.email === prop.email && (
+                <button
+                  className="mp-primary-btn"
+                  style={{ width: "auto", padding: "8px 12px" }}
+                  onClick={() => navigate(`/applications/${prop.name}`)}
+                >
+                  VIEW APPLICATIONS
+                </button>
+              )}
+            </div>
+
             <p style={{fontSize: "0.8rem", color: "#666", marginTop: "10px"}}>
                Created: {new Date(prop.createdAt).toLocaleDateString()}
             </p>
