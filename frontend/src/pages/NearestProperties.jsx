@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../StyleSheets/NearestProperties.css";
 import { useNavigate } from "react-router-dom";
 
 export default function NearestProperties() {
   const [addressLink, setAddressLink] = useState("");
-  const [radiusKm, setRadiusKm] = useState(10); 
+  const [radiusKm, setRadiusKm] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [properties, setProperties] = useState([]);
@@ -12,6 +12,31 @@ export default function NearestProperties() {
 
   const navigate = useNavigate();
 
+  /* 🔥 ASK LOCATION PERMISSION ON PAGE LOAD */
+  useEffect(() => {
+    if (!("geolocation" in navigator)) {
+      setError("Your browser does not support location access.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        // Convert to Google Maps link
+        const googleLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+        setAddressLink(googleLink); // autofill input
+      },
+      (err) => {
+        console.log("Location error:", err);
+        setError("Location access denied. Please paste a Google Maps link manually.");
+      }
+    );
+  }, []);
+
+  // SEARCH FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -68,13 +93,11 @@ export default function NearestProperties() {
       <div className="np-card">
         <h1 className="np-title">Find Nearest Properties</h1>
         <p className="np-subtitle">
-          Paste a Google Maps link and choose a radius to discover properties
-          stored near that location.
+          Allow location access or paste a Google Maps link manually.
         </p>
 
         {/* SEARCH FORM */}
         <form className="np-form" onSubmit={handleSubmit}>
-          
           {/* Address link */}
           <div className="np-field-block">
             <div className="np-field-label-bar">
@@ -92,7 +115,7 @@ export default function NearestProperties() {
             </div>
 
             <p className="np-field-help">
-              Example: https://www.google.com/maps/place/...
+              Auto-filled if location was granted.
             </p>
           </div>
 
@@ -113,13 +136,9 @@ export default function NearestProperties() {
               />
               <span className="np-radius-value">{radiusKm} km</span>
             </div>
-
-            <p className="np-field-help">
-              Backend converts this to meters and searches within that distance.
-            </p>
           </div>
 
-          {/* Button + Messages */}
+          {/* Button & Messages */}
           <div className="np-button-row">
             <button className="np-btn" type="submit" disabled={loading}>
               {loading ? "Searching..." : "Search Nearby Properties"}
@@ -134,12 +153,6 @@ export default function NearestProperties() {
 
         {/* RESULTS */}
         <div className="np-results">
-          {properties.length === 0 && !loading && !error && !infoMessage && (
-            <p className="np-no-results-hint">
-              Results will appear here after you search.
-            </p>
-          )}
-
           {properties.map((p) => (
             <div
               key={`${p.email}-${p.name}-${p._id}`}
@@ -158,24 +171,10 @@ export default function NearestProperties() {
                 <h2 className="np-result-title">
                   {p.BHK} BHK • {p.houseType}
                 </h2>
-
                 <p className="np-result-location">
                   {p.locality}, {p.city}
                 </p>
-
                 <p className="np-result-rent">₹{p.rent} / month</p>
-
-                <div className="np-result-meta-row">
-                  <span>
-                    Furnishing: <strong>{p.furnishingType}</strong>
-                  </span>
-                  <span>
-                    Area: <strong>{p.areaSize || "—"} sq ft</strong>
-                  </span>
-                  <span>
-                    Parking: <strong>{p.parkingArea}</strong>
-                  </span>
-                </div>
               </div>
             </div>
           ))}

@@ -94,18 +94,23 @@ const Dashboard = () => {
 
           <div className="city-select-section">
             <h2>Select a City</h2>
-            <Select
-              options={cityOptions}
-              placeholder="Choose your city..."
-              value={
-                defaultCity
-                  ? { value: defaultCity, label: defaultCity }
-                  : null
-              }
-              onChange={handleCityChange}
-              className="city-dropdown"
-              isSearchable
-            />
+           <Select
+  options={cityOptions}
+  placeholder="Choose your city..."
+  value={
+    defaultCity
+      ? { value: defaultCity, label: defaultCity }
+      : null
+  }
+  onChange={handleCityChange}
+  className="city-dropdown"
+  isSearchable
+  menuPortalTarget={document.body}   // <-- ADD THIS
+  styles={{
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),  // <-- ADD THIS
+  }}
+/>
+
           </div>
 
 

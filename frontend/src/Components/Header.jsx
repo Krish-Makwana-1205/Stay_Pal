@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
-
+import { IoMdChatbubbles } from "react-icons/io";
 import "./Header.css";
-
 const Header = ({ user, onNavigate, onLogout, active }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -41,9 +40,17 @@ const Header = ({ user, onNavigate, onLogout, active }) => {
           onClick={() => onNavigate("/dashboard/roommates")}
         >Search Roommates</button>
         <button
-          className={`btn ${active === "shared" ? "active" : ""}`}
-          onClick={() => onNavigate("/dashboard/shared")}
-        >Search Shared Properties</button>
+          className={`btn `}
+          onClick={() => onNavigate("/predict-rent")}
+        >Predict Rent</button>
+        <button
+          className={`btn `}
+          onClick={() => onNavigate("/nearest-properties")}
+        >Near You</button>
+        <button
+          className={`btn `}
+          onClick={() => onNavigate("/my-chats")}
+        ><IoMdChatbubbles   /></button>
         <button
           className={`btn ${active === "home" ? "active" : ""}`}
           onClick={() => onNavigate("/dashboard")}

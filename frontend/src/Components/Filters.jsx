@@ -11,6 +11,7 @@ const MAX_RENT = 10000000; // 1 crore
 export default function Filters({ onApply, defaultCity }) {
   const { user } = useAuth();
   const storageKey = user ? `filters_${user.email}` : "filters_guest";
+  const userKey = user ? user.email : "guest";
 
   // --- Initialize all state from localStorage ---
   const [selectedCity, setSelectedCity] = useState(null);
@@ -26,57 +27,36 @@ export default function Filters({ onApply, defaultCity }) {
   const [description, setDescription] = useState("");
   const [googleLink, setGoogleLink] = useState("");
 
-  // Load saved filters on component mount
+  // Load saved filters on mount
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
 
-      if (saved.city) {
-        setSelectedCity({ value: saved.city, label: saved.city });
-      }
+      if (saved.city) setSelectedCity({ value: saved.city, label: saved.city });
       if (saved.rentLower !== undefined) setRentLower(String(saved.rentLower));
       if (saved.rentUpper !== undefined) setRentUpper(String(saved.rentUpper));
       if (saved.locality) setLocality(saved.locality);
       if (saved.BHK !== undefined) setBHK(String(saved.BHK));
       if (saved.furnishingType) setFurnishingType(saved.furnishingType);
       if (saved.areaSize !== undefined) setAreaSize(String(saved.areaSize));
-      if (saved.transportAvailability !== undefined) setTransportAvailability(saved.transportAvailability);
+      if (saved.transportAvailability !== undefined)
+        setTransportAvailability(saved.transportAvailability);
       if (saved.houseType) setHouseType(saved.houseType);
       if (saved.nearbyPlaces !== undefined) setNearbyPlaces(saved.nearbyPlaces);
       if (saved.description) setDescription(saved.description);
       if (saved.googleLink) setGoogleLink(saved.googleLink);
+      // If there's no saved city but a parent provided defaultCity, use it
+      if (!saved.city && defaultCity) {
+        setSelectedCity({ value: defaultCity, label: defaultCity });
+        // try per-city default locality
+        const perCityKey = `defaultLocality_${userKey}_${defaultCity}`;
+        const perSaved = localStorage.getItem(perCityKey);
+        if (perSaved) setLocality(perSaved);
+      }
     } catch (e) {
       console.error("Error loading saved filters:", e);
     }
   }, [storageKey]);
-
-  // Override city if defaultCity prop is provided
-  useEffect(() => {
-    if (defaultCity) {
-      // overwrite local cache to force fresh locality fetch
-      localStorage.removeItem(`localities_${defaultCity}`);
-      setSelectedCity({ value: defaultCity, label: defaultCity });
-      setLocality(""); // reset locality
-    }
-  }, [defaultCity]);
-
-  const furnishingOptions = ["Fully Furnished", "Semi Furnished", "Unfurnished"];
-  const houseTypeOptions = ["Apartment", "Independent House", "Villa", "PG / Hostel"];
-  const nearbyOptions = [
-    { value: "Market", label: "Market" },
-    { value: "Bus Stop", label: "Bus Stop" },
-    { value: "School", label: "School" },
-    { value: "Hospital", label: "Hospital" },
-    { value: "Metro Station", label: "Metro Station" },
-    { value: "Grocery Store", label: "Grocery Store" },
-    { value: "Super Market (e.g. Dmart)", label: "Super Market (e.g. Dmart)" },
-    { value: "Park", label: "Park" },
-    { value: "Mall", label: "Mall" },
-    { value: "Restaurant", label: "Restaurant" },
-    { value: "Pharmacy", label: "Pharmacy" },
-    { value: "ATM", label: "ATM" },
-    { value: "Gym", label: "Gym" },
-  ];
 
   // ---------- persist filters as user types ----------
   useEffect(() => {
@@ -96,9 +76,7 @@ export default function Filters({ onApply, defaultCity }) {
     };
     try {
       localStorage.setItem(storageKey, JSON.stringify(payload));
-    } catch (e) {
-      // ignore storage errors
-    }
+    } catch {}
   }, [
     storageKey,
     selectedCity,
@@ -115,27 +93,36 @@ export default function Filters({ onApply, defaultCity }) {
     googleLink,
   ]);
 
-  // ---------- city loader (unchanged) ----------
+  // ---------- city loader ----------
   const loadCityOptions = (inputValue, callback) => {
     const allCities = City.getCitiesOfCountry("IN");
     const filtered = allCities
-      .filter((c) => c.name.toLowerCase().includes((inputValue || "").toLowerCase()))
+      .filter((c) =>
+        c.name.toLowerCase().includes((inputValue || "").toLowerCase())
+      )
       .slice(0, 20)
       .map((c) => ({ label: c.name, value: c.name }));
     callback(filtered);
   };
 
-  // ---------- helpers & validation ----------
+  // ---------- validation ----------
   const parsedLower = Number(rentLower === "" ? NaN : rentLower);
   const parsedUpper = Number(rentUpper === "" ? NaN : rentUpper);
-  const rentLowerIsValid = !isNaN(parsedLower) && parsedLower >= 0 && parsedLower <= MAX_RENT;
-  const rentUpperIsValid = !isNaN(parsedUpper) && parsedUpper >= 0 && parsedUpper <= MAX_RENT;
+  const rentLowerIsValid =
+    !isNaN(parsedLower) && parsedLower >= 0 && parsedLower <= MAX_RENT;
+  const rentUpperIsValid =
+    !isNaN(parsedUpper) && parsedUpper >= 0 && parsedUpper <= MAX_RENT;
+
   const rentRangeError =
-    (rentLower !== "" && rentUpper !== "" && rentLowerIsValid && rentUpperIsValid && parsedLower > parsedUpper)
+    rentLower !== "" &&
+    rentUpper !== "" &&
+    rentLowerIsValid &&
+    rentUpperIsValid &&
+    parsedLower > parsedUpper
       ? "Minimum rent cannot be greater than maximum rent."
       : "";
 
-  // We'll show typed values in inputs and use numbers for API
+  // ---------- apply ----------
   const handleApply = () => {
     if (!selectedCity?.value) {
       alert("Please select a city before applying filters.");
@@ -143,14 +130,11 @@ export default function Filters({ onApply, defaultCity }) {
     }
 
     if (!rentLowerIsValid || !rentUpperIsValid) {
-      alert("Please enter valid numeric rent values within allowed limits.");
+      alert("Please enter valid rent values.");
       return;
     }
 
-    if (rentRangeError) {
-      // show inline error and prevent apply
-      return;
-    }
+    if (rentRangeError) return;
 
     const filters = {
       city: selectedCity.value.trim(),
@@ -160,7 +144,8 @@ export default function Filters({ onApply, defaultCity }) {
       rentUpperBound: parsedUpper,
       furnishingType: furnishingType || undefined,
       areaSize: areaSize ? Number(areaSize) : undefined,
-      transportAvailability: transportAvailability === null ? undefined : transportAvailability,
+      transportAvailability:
+        transportAvailability === null ? undefined : transportAvailability,
       houseType: houseType || undefined,
       nearbyPlaces: nearbyPlaces || undefined,
       description: description || undefined,
@@ -169,10 +154,13 @@ export default function Filters({ onApply, defaultCity }) {
       limit: 20,
     };
 
+    // store new city globally
+    localStorage.setItem("defaultCity", selectedCity.value.trim());
+
     onApply(filters);
   };
 
-  // Reset all filters
+  // ---------- reset ----------
   const handleReset = () => {
     setSelectedCity(null);
     setLocality("");
@@ -187,43 +175,51 @@ export default function Filters({ onApply, defaultCity }) {
     setDescription("");
     setGoogleLink("");
 
-    // Clear localStorage
     try {
       localStorage.removeItem(storageKey);
-    } catch (e) {
-      // ignore
-    }
+    } catch {}
   };
 
-  // ---------- slider handlers keep strings in sync ----------
-  const handleLowerSlider = (val) => {
-    // ensure it never goes above parsedUpper (if set)
-    const num = Number(val);
-    if (!isNaN(parsedUpper) && parsedUpper < num) {
-      setRentLower(String(parsedUpper));
-    } else {
-      setRentLower(String(num));
-    }
-  };
-  const handleUpperSlider = (val) => {
-    const num = Number(val);
-    if (!isNaN(parsedLower) && parsedLower > num) {
-      setRentUpper(String(parsedLower));
-    } else {
-      setRentUpper(String(num));
-    }
-  };
-
-  // convert nearbyPlaces string <-> CreatableSelect value:
+  // ---------- convert nearby ----------
   const nearbyValue = Array.isArray(nearbyPlaces)
     ? nearbyPlaces.map((p) => ({ label: p, value: p }))
-    : (nearbyPlaces ? nearbyPlaces.split(",").map(s => s.trim()).filter(Boolean).map(p => ({ label: p, value: p })) : []);
+    : nearbyPlaces
+    ? nearbyPlaces
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((p) => ({ label: p, value: p }))
+    : [];
 
   return (
     <div className="filters-container">
       <h2>Property Filters</h2>
 
-      {/* CITY */}
+      {/* Apply button at top */}
+      <div style={{ marginBottom: 10 }}>
+        <button
+          className="apply-btn"
+          onClick={handleApply}
+          disabled={
+            !selectedCity || !!rentRangeError || !rentLowerIsValid || !rentUpperIsValid
+          }
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#060e66ff",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "16px",
+            fontWeight: "600",
+          }}
+        >
+          Apply Filters
+        </button>
+      </div>
+
+      {/* ★★★★★ FIXED CITY LOGIC ★★★★★ */}
       <div className="filter-group">
         <label>City *</label>
         <AsyncSelect
@@ -233,20 +229,49 @@ export default function Filters({ onApply, defaultCity }) {
           value={selectedCity}
           onChange={(val) => {
             setSelectedCity(val);
-            setLocality(""); // reset locality on city change
+            setLocality("");
+
+            // ⭐ THE FIXED CORRECT LOGIC YOU ASKED FOR:
+            if (val?.value) {
+              localStorage.setItem("defaultCity", val.value.trim());
+              // If user previously saved a default locality for this city, apply it
+              try {
+                const perCityKey = `defaultLocality_${userKey}_${val.value}`;
+                const savedLoc = localStorage.getItem(perCityKey);
+                if (savedLoc) setLocality(savedLoc);
+              } catch (e) {}
+            }
           }}
           placeholder="Search for a city..."
         />
       </div>
+      {/* ★★★★★ END FIX ★★★★★ */}
 
       {/* LOCALITY */}
       <div className="filter-group">
         <label>Locality</label>
-        <LocalitySelector city={selectedCity?.value} value={locality} onChange={setLocality} />
+        <LocalitySelector
+          city={selectedCity?.value}
+          value={locality}
+          onChange={(val) => {
+            setLocality(val);
+            // persist per-city default locality for this user
+            if (selectedCity?.value) {
+              try {
+                const perCityKey = `defaultLocality_${userKey}_${selectedCity.value}`;
+                if (val) localStorage.setItem(perCityKey, val);
+                else localStorage.removeItem(perCityKey);
+              } catch (e) {}
+            }
+          }}
+        />
       </div>
 
-      {/* BHK + AREA (side-by-side) */}
-      <div className="filter-group" style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+      {/* BHK + AREA */}
+      <div
+        className="filter-group"
+        style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
+      >
         <div style={{ flex: 1 }}>
           <label>BHK</label>
           <input
@@ -281,7 +306,6 @@ export default function Filters({ onApply, defaultCity }) {
             value={rentLower}
             min={0}
             onChange={(e) => {
-              // accept raw typing; clamp to max
               const v = e.target.value.replace(/[^\d]/g, "");
               if (v === "") setRentLower("");
               else {
@@ -308,7 +332,6 @@ export default function Filters({ onApply, defaultCity }) {
           />
         </div>
 
-        {/* sliders */}
         <div className="rent-inputs">
           <div className="range-wrapper">
             <input
@@ -317,9 +340,12 @@ export default function Filters({ onApply, defaultCity }) {
               max={MAX_RENT}
               step={500}
               value={isNaN(Number(rentLower)) ? 0 : Number(rentLower)}
-              onChange={(e) => handleLowerSlider(e.target.value)}
+              onChange={(e) => setRentLower(e.target.value)}
             />
-            <span>Min: ₹{(isNaN(Number(rentLower)) ? 0 : Number(rentLower)).toLocaleString()}</span>
+            <span>
+              Min: ₹
+              {(isNaN(Number(rentLower)) ? 0 : Number(rentLower)).toLocaleString()}
+            </span>
           </div>
 
           <div className="range-wrapper">
@@ -329,13 +355,15 @@ export default function Filters({ onApply, defaultCity }) {
               max={MAX_RENT}
               step={500}
               value={isNaN(Number(rentUpper)) ? MAX_RENT : Number(rentUpper)}
-              onChange={(e) => handleUpperSlider(e.target.value)}
+              onChange={(e) => setRentUpper(e.target.value)}
             />
-            <span>Max: ₹{(isNaN(Number(rentUpper)) ? MAX_RENT : Number(rentUpper)).toLocaleString()}</span>
+            <span>
+              Max: ₹
+              {(isNaN(Number(rentUpper)) ? MAX_RENT : Number(rentUpper)).toLocaleString()}
+            </span>
           </div>
         </div>
 
-        {/* inline validation */}
         {(!rentLowerIsValid || !rentUpperIsValid) && (
           <p style={{ color: "crimson", marginTop: 8 }}>
             Enter valid numeric rent values (0 - {MAX_RENT.toLocaleString()}).
@@ -349,28 +377,25 @@ export default function Filters({ onApply, defaultCity }) {
       {/* FURNISHING */}
       <div className="filter-group">
         <label>Furnishing Type</label>
-        <select value={furnishingType} onChange={(e) => setFurnishingType(e.target.value)}>
+        <select
+          value={furnishingType}
+          onChange={(e) => setFurnishingType(e.target.value)}
+        >
           <option value="">Any</option>
-          {furnishingOptions.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
+          <option value="Fully Furnished">Fully Furnished</option>
+          <option value="Semi Furnished">Semi Furnished</option>
+          <option value="Unfurnished">Unfurnished</option>
         </select>
       </div>
 
-      {/* TRANSPORT */}
       {/* TRANSPORT */}
       <div className="filter-group">
         <label>Transport Availability</label>
         <select
           value={transportAvailability === null ? "" : transportAvailability}
           onChange={(e) => {
-            if (e.target.value === "") {
-              setTransportAvailability(null); // means no selection
-            } else {
-              setTransportAvailability(e.target.value === "true"); // convert to boolean
-            }
+            if (e.target.value === "") setTransportAvailability(null);
+            else setTransportAvailability(e.target.value === "true");
           }}
         >
           <option value="">Select</option>
@@ -379,39 +404,54 @@ export default function Filters({ onApply, defaultCity }) {
         </select>
       </div>
 
-
       {/* HOUSE TYPE */}
       <div className="filter-group">
         <label>House Type</label>
         <select value={houseType} onChange={(e) => setHouseType(e.target.value)}>
           <option value="">Any</option>
-          {houseTypeOptions.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
+          <option value="Apartment">Apartment</option>
+          <option value="Independent House">Independent House</option>
+          <option value="Villa">Villa</option>
+          <option value="PG / Hostel">PG / Hostel</option>
         </select>
       </div>
 
-      {/* NEARBY (creatable multi) */}
+      {/* NEARBY */}
       <div className="filter-group">
         <label>Nearby Places</label>
         <CreatableSelect
           isMulti
-          options={nearbyOptions}
           value={nearbyValue}
-          onChange={(vals) => {
-            const arr = (vals || []).map((v) => v.value);
-            setNearbyPlaces(arr);
-          }}
-          placeholder="Select or add nearby places"
+          onChange={(vals) =>
+            setNearbyPlaces((vals || []).map((v) => v.value))
+          }
+          options={[
+            { value: "Market", label: "Market" },
+            { value: "Bus Stop", label: "Bus Stop" },
+            { value: "School", label: "School" },
+            { value: "Hospital", label: "Hospital" },
+            { value: "Metro Station", label: "Metro Station" },
+            { value: "Grocery Store", label: "Grocery Store" },
+            { value: "Super Market (e.g. Dmart)", label: "Super Market (e.g. Dmart)" },
+            { value: "Park", label: "Park" },
+            { value: "Mall", label: "Mall" },
+            { value: "Restaurant", label: "Restaurant" },
+            { value: "Pharmacy", label: "Pharmacy" },
+            { value: "ATM", label: "ATM" },
+            { value: "Gym", label: "Gym" },
+          ]}
         />
       </div>
 
       {/* DESCRIPTION */}
       <div className="filter-group">
         <label>Describe your dream property</label>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the kind of property you want..." rows="3" />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Describe the kind of property you want..."
+          rows="3"
+        />
       </div>
 
       {/* GOOGLE LINK */}
@@ -430,14 +470,26 @@ export default function Filters({ onApply, defaultCity }) {
         <button
           className="apply-btn"
           onClick={handleApply}
-          disabled={!selectedCity || !!rentRangeError || !rentLowerIsValid || !rentUpperIsValid}
+          disabled={
+            !selectedCity || !!rentRangeError || !rentLowerIsValid || !rentUpperIsValid
+          }
         >
           Apply Filters
         </button>
         <button
           className="reset-btn"
           onClick={handleReset}
-          style={{ flex: 1, padding: "10px", backgroundColor: "#e74c3c", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "14px", fontWeight: "500" }}
+          style={{
+            flex: 1,
+            padding: "10px",
+            backgroundColor: "#e74c3c",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500",
+          }}
         >
           Reset Filters
         </button>

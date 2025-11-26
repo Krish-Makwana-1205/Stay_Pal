@@ -2,171 +2,162 @@ import React, { useEffect, useState } from "react";
 import { fetchMyProperties } from "../api/property";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../StyleSheets/MyProperties.css"; 
-
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  const openApplicants = (propertyName) => {
-    navigate(`/applications/${propertyName}`);
-  };
-
   useEffect(() => {
     fetchMyProperties()
       .then((res) => {
-        setProperties(res.data?.properties || []);
+        setProperties(res.data.properties || []);
       })
       .catch((err) => console.log(err));
   }, []);
-
+  // const [isowner, setIsOwner] = useState(false);
+  // console.log(user);
   return (
-    <div className="mp-my-properties-container mp-profile-container">
+    <div style={{ padding: "20px" }}>
+      <h2 style={{ marginBottom: "20px" }}>My Properties</h2>
 
-  <div className="mp-header-box">
-  <h2 className="mp-page-title mp-profile-title">My Properties</h2>
-</div>
+      {properties.map((prop) => (
+        <div
+          key={prop._id}
+          style={{
+            border: "1px solid #ccc",
+            padding: "20px",
+            borderRadius: "10px",
+            marginBottom: "25px",
+            background: "#fafafa",
+          }}
+        >
+          <h3 style={{ marginBottom: "10px" }}>{prop.name}</h3>
 
-  {properties?.length === 0 && (
-    <div className="mp-no-properties mp-profile-no-data">No properties found.</div>
-  )}
-
-  {properties?.map((prop) => {
-    if (!prop) return null;
-
-    const tp = prop?.tenantPreferences || {};
-
-    return (
-      <div key={prop?._id || Math.random()} className="mp-property-card mp-profile-card">
-
-        {/* Header Row */}
-        <div className="mp-card-header mp-profile-card-header">
-          <h3 className="mp-profile-card-title">{prop?.name}</h3>
-
-          {user?.email === prop?.email && (
-            <button
-              className="mp-action-btn mp-edit-btn mp-small mp-profile-btn mp-profile-btn-accent"
-              onClick={() =>
-                navigate(`/editproperty/${prop?.email}/${prop?.name}`)
-              }
-            >
-              Edit Property
-            </button>
+          {/* Image */}
+          {prop.imgLink?.length > 0 && (
+            <img
+              src={prop.imgLink[0]}
+              alt={prop.name}
+              style={{
+                width: "300px",
+                height: "180px",
+                objectFit: "cover",
+                borderRadius: "10px",
+                marginBottom: "15px",
+              }}
+            />
           )}
-        </div>
-
-        {/* BODY */}
-        <div className="mp-card-body mp-profile-body">
-
-          <div className="mp-image-wrapper mp-profile-image-box">
-            {prop?.imgLink?.length > 0 && (
-              <img src={prop.imgLink[0]} alt={prop.name} className="mp-profile-img" />
-            )}
-          </div>
-
-          {/* DETAILS GRID */}
-          <div className="mp-details-grid mp-profile-grid">
-            <p><strong>BHK:</strong> {prop?.BHK}</p>
-            <p><strong>Rent:</strong> ₹{prop?.rent}</p>
-
-            <p><strong>City:</strong> {prop?.city}</p>
-            <p><strong>Locality:</strong> {prop?.locality}</p>
-
-            <p className="mp-full-width"><strong>Address:</strong> {prop?.address}</p>
-
-            <p className="mp-full-width">
-              <strong>Google Maps:</strong>{" "}
-              <a href={prop?.addressLink} target="_blank" rel="noreferrer" className="mp-map-link mp-profile-link">
-                Open Map
-              </a>
-            </p>
-
-            <p><strong>Area Size:</strong> {prop?.areaSize} sq ft</p>
-            <p><strong>House Type:</strong> {prop?.houseType}</p>
-
-            <p><strong>Furnishing:</strong> {prop?.furnishingType}</p>
-            <p><strong>Parking:</strong> {prop?.parkingArea}</p>
-
-            <p><strong>Roommate Allowed:</strong> {prop?.isRoommate ? "Yes" : "No"}</p>
-            <p><strong>Transport Available:</strong> {prop?.transportAvailability ? "Yes" : "No"}</p>
-          </div>
-
-          <div className="mp-description-box mp-profile-desc-box">
-            <strong>Description:</strong> {prop?.description}
-          </div>
-
-          <div className="mp-description-box mp-profile-desc-box">
-            <strong>Nearby Places:</strong>{" "}
-            {prop?.nearbyPlaces?.length > 0
-              ? prop?.nearbyPlaces.join(", ")
-              : "None"}
-          </div>
-
-          <button
-            className="mp-primary-btn mp-profile-btn mp-profile-btn-primary"
-            onClick={() => openApplicants(prop.name)}
-          >
-            View Applicants
-          </button>
-
-        </div>
-
-        {/* PREFERENCES */}
-        <div className="mp-preferences-section mp-profile-pref-box">
-
-          <div className="mp-pref-header mp-profile-pref-header">
-            <h4 className="mp-rofile-subtitle">Tenant Preferences</h4>
-            <button
-              className="mp-action-btn mp-edit-btn mp-small mp-profile-btn mp-profile-btn-accent"
-              onClick={() =>
-                navigate(`/editpreferences/${prop?.email}/${prop?.name}`)
-              }
-            >
+          {user.email===prop.email&&(
+            <button onClick={() => navigate(`/editproperty/${user.email}/${prop.name}`)}>
               Edit
             </button>
-          </div>
-
-          <div className="mp-details-grid mp-profile-grid">
-            <p><strong>Gender:</strong> {tp?.gender || "Any"}</p>
-            {tp?.ageRange && <p><strong>Age Range:</strong> {tp.ageRange}</p>}
-
-            <p><strong>Occupation:</strong> {tp?.occupation || "Any"}</p>
-            <p><strong>Marital Status:</strong> {tp?.maritalStatus || "Any"}</p>
-
-            <p><strong>Family:</strong> {tp?.family || "Any"}</p>
-            <p><strong>Food Pref:</strong> {tp?.foodPreference || "Any"}</p>
-
-            <p><strong>Smoking:</strong> {tp?.smoking ? "Allowed" : "No"}</p>
-            <p><strong>Alcohol:</strong> {tp?.alcohol ? "Allowed" : "No"}</p>
-
-            <p><strong>Pets:</strong> {tp?.pets ? "Allowed" : "No"}</p>
-            <p><strong>Nationality:</strong> {tp?.nationality || "Any"}</p>
-
-            <p><strong>Shift:</strong> {tp?.workingShift || "Any"}</p>
-            <p><strong>Profession:</strong> {tp?.professionalStatus || "Any"}</p>
-
-            <p><strong>Religion:</strong> {tp?.religion || "Any"}</p>
-            <p><strong>Language:</strong> {tp?.language || "Any"}</p>
-
-            <p><strong>Min Stay:</strong> {tp?.minStayDuration || 0} months</p>
-            <p><strong>Max People:</strong> {tp?.maxPeopleAllowed || 0}</p>
-          </div>
-
-          {tp?.notes && (
-            <div className="mp-notes-box mp-profile-notes-box">
-              <strong>Notes:</strong> {tp.notes}
-            </div>
           )}
 
-        </div>
+          {/* Main Details */}
+          <p><strong>BHK:</strong> {prop.BHK}</p>
+          <p><strong>Rent:</strong> ₹{prop.rent}</p>
+          <p><strong>City:</strong> {prop.city}</p>
+          <p><strong>Locality:</strong> {prop.locality}</p>
+          <p><strong>Address:</strong> {prop.address}</p>
 
-      </div>
-    );
-  })}
+          <p>
+            <strong>Google Maps:</strong>{" "}
+            <a href={prop.addressLink} target="_blank" rel="noreferrer">
+              Open Map
+            </a>
+          </p>
 
+          <p><strong>Area Size:</strong> {prop.areaSize} sq ft</p>
+          <p><strong>House Type:</strong> {prop.houseType}</p>
+          <p><strong>Furnishing:</strong> {prop.furnishingType}</p>
+          <p><strong>Parking:</strong> {prop.parkingArea}</p>
+          <p><strong>Roommate Allowed:</strong> {prop.isRoommate ? "Yes" : "No"}</p>
+          <p><strong>Transport Available:</strong> {prop.transportAvailability ? "Yes" : "No"}</p>
+
+          <p><strong>Nation:</strong> {prop.nation}</p>
+          <p><strong>Description:</strong> {prop.description}</p>
+            <p><strong>Nearby Places:</strong> 
+  {prop.nearbyPlaces?.length > 0 
+    ? prop.nearbyPlaces.join(", ") 
+    : "None"}
+</p>
+
+          <p><strong>Created At:</strong> {new Date(prop.createdAt).toLocaleString()}</p>
+          <p><strong>Updated At:</strong> {new Date(prop.updatedAt).toLocaleString()}</p>
+
+          <hr style={{ margin: "20px 0" }} />
+
+          {/* Tenant Preferences */}
+         <h4>Tenant Preferences</h4>
+<div style={{ paddingLeft: "10px" }}>
+  <p><strong>Gender:</strong> {prop.tenantPreferences.gender}</p>
+
+  {prop.tenantPreferences.ageRange && (
+    <p><strong>Age Range:</strong> {prop.tenantPreferences.ageRange}</p>
+  )}
+
+  <p><strong>Occupation:</strong> {prop.tenantPreferences.occupation || "Any"}</p>
+
+  <p><strong>Marital Status:</strong> {prop.tenantPreferences.maritalStatus}</p>
+
+  <p><strong>Family:</strong> {prop.tenantPreferences.family}</p>
+
+  <p><strong>Food Preference:</strong> {prop.tenantPreferences.foodPreference}</p>
+
+  <p><strong>Smoking Allowed:</strong> 
+    {prop.tenantPreferences.smoking ? "Yes" : "No"}
+  </p>
+
+  <p><strong>Alcohol Allowed:</strong> 
+    {prop.tenantPreferences.alcohol ? "Yes" : "No"}
+  </p>
+
+  <p><strong>Pets Allowed:</strong> 
+    {prop.tenantPreferences.pets ? "Yes" : "No"}
+  </p>
+
+  <p><strong>Nationality:</strong> 
+    {prop.tenantPreferences.nationality || "Any"}
+  </p>
+
+  <p><strong>Working Shift:</strong> 
+    {prop.tenantPreferences.workingShift}
+  </p>
+
+  <p><strong>Professional Status:</strong> 
+    {prop.tenantPreferences.professionalStatus}
+  </p>
+
+  <p><strong>Religion:</strong> 
+    {prop.tenantPreferences.religion}
+  </p>
+
+  <p><strong>Language:</strong> 
+    {prop.tenantPreferences.language}
+  </p>
+
+  <p><strong>Min Stay Duration:</strong> 
+    {prop.tenantPreferences.minStayDuration || 0} months
+  </p>
+
+  <p><strong>Max People Allowed:</strong> 
+    {prop.tenantPreferences.maxPeopleAllowed || 0}
+  </p>
+
+  {prop.tenantPreferences.notes && (
+    <p><strong>Notes:</strong> {prop.tenantPreferences.notes}</p>
+  )}
 </div>
-);
-}
+
+          <button onClick={() =>
+  navigate(`/editpreferences/${prop.email}/${prop.name}`)
+}>
+  Edit Preferences
+</button>
+
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default MyProperties;

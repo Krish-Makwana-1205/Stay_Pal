@@ -51,7 +51,7 @@ export default function UserCard() {
   };
 
   const handlePropertyOwnerClick = () => {
-    navigate("/propertyForm");
+    navigate("/myproperties");
   };
 
   const handleRoommateClick = () => {

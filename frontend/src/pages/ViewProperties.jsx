@@ -3,109 +3,129 @@ import Filters from "../Components/Filters";
 import { fetchproperty } from "../api/filters";
 import "../StyleSheets/ViewProperty.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ViewProperties = ({ defaultCity }) => {
   const [houses, setHouses] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
-  // Get default city ONCE from state or props
-  const initialCity = location.state?.defaultCity || defaultCity;
+  // INITIAL CITY SELECTION
+  const initialCity =
+    location.state?.city ||
+    defaultCity ||
+    localStorage.getItem("defaultCity") ||
+    "";
 
   const [currentCity, setCurrentCity] = useState(initialCity);
 
-  // Handle filter updates
+  // APPLY FILTERS
   const handleFilters = async (filters) => {
     setLoadingResults(true);
 
     try {
-      // If the user enters a new city in Filters, update currentCity
-      if (filters.city) {
-        setCurrentCity(filters.city);
-      }
+      // Always use filters.city
+      setCurrentCity(filters.city);
+
+      // Save default city globally
+      localStorage.setItem("defaultCity", filters.city);
 
       const finalFilters = {
         ...filters,
-        city: filters.city || currentCity,
+        city: filters.city,
       };
 
       const { data } = await fetchproperty(finalFilters);
-      setHouses(data.data || []);
+      setHouses(data?.data || []);
     } catch (err) {
       console.error("Filter error:", err);
       setHouses([]);
     } finally {
       setLoadingResults(false);
     }
+
+    window.scrollTo(0, 0);
   };
 
-  // Run initial load ONCE with default city
+  // INITIAL LOAD
   useEffect(() => {
-    if (initialCity) {
-      handleFilters({ city: initialCity });
-    }
-  }, []); // <-- run only once
+    const run = async () => {
+      if (!initialCity) return;
+
+      // attempt to pick up a per-city default locality for this user
+      const userKey = user ? user.email : "guest";
+      const perCityKey = `defaultLocality_${userKey}_${initialCity}`;
+      const savedLocality = localStorage.getItem(perCityKey);
+
+      const initialFilters = { city: initialCity };
+      if (savedLocality) initialFilters.locality = savedLocality;
+
+      await handleFilters(initialFilters);
+    };
+
+    run();
+  }, []);
 
   return (
     <div className="view-properties">
-     <div className="view-content-wrapper">
-      {/* LEFT FILTERS */}
-      <div className="dashboard-filters">
-        <h2 className="filters-title">Filters</h2>
-        <Filters
-          onApply={handleFilters}
-          defaultCity={currentCity}  // Shows correct value in UI
-        />
-      </div>
+      <div className="view-content-wrapper">
 
-      {/* RIGHT RESULTS */}
-      <div className="properties-results">
-        <div className="results-card">
-        <h2>
-          Results {loadingResults ? "(loading...)" : `for city: ${currentCity || "All"}`}
-        </h2>
-
-        {houses.length === 0 ? (
-          <p>No results found</p>
-        ) : (
-          houses.map((item, i) => (
-            <div
-              key={i}
-              className="result-item"
-              onClick={() => navigate(`/property/${item.email}/${item.name}`)}
-            >
-
-              {/* LEFT IMAGE */}
-              {item.imgLink?.length > 0 ? (
-                <img src={item.imgLink[0]} alt="Property" />
-              ) : (
-                <img src="/placeholder.png" alt="No Image" />
-              )}
-
-              <div style={{ flex: 1 }}>
-                <h3>{item.BHK} BHK</h3>
-
-                <div className="extra-info-grid">
-                  <p>
-                    <strong>Rent:</strong> ₹{item.rent}
-                  </p>
-                  <p><strong>Furnishing:</strong> {item.furnishingType}</p>
-                  <p style={{ fontWeight: 600 }}>{item.city}</p>
-                  <p><strong>House Type:</strong> {item.houseType}</p>
-                  <p>{item.locality}</p>
-                  <p><strong>Parking:</strong> {item.parkingArea}</p>
-                  <p><strong>Area Size:</strong> {item.areaSize || "—"}</p>
-                  <p><strong>Transport:</strong> {item.transportAvailability ? "Yes" : "No"}</p>
-                </div>
-
-              </div>
-            </div>
-            
-          ))
-        )}
+        {/* FILTERS */}
+        <div className="dashboard-filters">
+          <h2 className="filters-title">Filters</h2>
+          <Filters onApply={handleFilters} defaultCity={currentCity} />
         </div>
-      </div>
+
+        {/* RESULTS */}
+        <div className="properties-results">
+          <div className="results-card">
+            <h2>
+              Results {loadingResults ? "(loading...)" : `for: ${currentCity}`}
+            </h2>
+
+            {houses.length === 0 ? (
+              <p>No results found</p>
+            ) : (
+              houses.map((item, index) => (
+                <div
+                  key={index}
+                  className="result-item"
+                  onClick={() =>
+                    navigate(`/property/${item.email}/${item.name}`, {
+                      state: { city: currentCity },
+                    })
+                  }
+                >
+                  {/* IMAGE */}
+                  <img
+                    src={item.imgLink?.[0] || "/placeholder.png"}
+                    alt="Property"
+                  />
+
+                  {/* FULL INFO (from first version) */}
+                  <div style={{ flex: 1 }}>
+                    <h3>{item.BHK} BHK</h3>
+
+                    <div className="extra-info-grid">
+                      <p><strong>Rent:</strong> ₹{item.rent}</p>
+                      <p><strong>Furnishing:</strong> {item.furnishingType}</p>
+                      <p style={{ fontWeight: 600 }}>{item.city}</p>
+                      <p><strong>House Type:</strong> {item.houseType}</p>
+                      <p>{item.locality}</p>
+                      <p><strong>Parking:</strong> {item.parkingArea}</p>
+                      <p><strong>Area Size (Sq ft):</strong> {item.areaSize || "—"}</p>
+                      <p><strong>Transport:</strong> {item.transportAvailability ? "Yes" : "No"}</p>
+                    </div>
+
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
