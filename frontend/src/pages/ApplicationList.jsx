@@ -2,7 +2,9 @@ import { useParams } from "react-router-dom";
 import { getApplications } from "../api/filters";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../StyleSheets/ApplicationList.css"; 
+import "../StyleSheets/ApplicationList.css";
+
+import Header from '../Components/Header';
 
 export default function ApplicationList() {
   const { propertyName } = useParams();
@@ -24,7 +26,6 @@ export default function ApplicationList() {
     load();
   }, [propertyName]);
 
-  // Helper component to display data fields uniformly
   const DataField = ({ label, value }) => (
     <div className="app-data-row">
       <span className="app-data-label">{label}</span>
@@ -32,7 +33,6 @@ export default function ApplicationList() {
     </div>
   );
 
-  // Helper to render boolean tags
   const BooleanTag = ({ label, isTrue }) => (
     <div className={`app-tag ${isTrue ? "is-positive" : "is-negative"}`}>
       {label}
@@ -45,7 +45,6 @@ export default function ApplicationList() {
     <div className="app-list-wrapper">
       <div className="app-content-container">
         
-        {/* Header Row */}
         <div className="app-header-row">
           <h2 className="app-main-heading">
             Applications: {propertyName}
@@ -60,23 +59,38 @@ export default function ApplicationList() {
         ) : (
           <div className="app-cards-grid">
             {apps.map((a, i) => {
-              const t = a.tenant || {}; // Shorten reference
+              const t = a.tenant || {};
               
+              const photoUrl = t.profilePhoto || "https://via.placeholder.com/150x150.png?text=No+Photo";
+
               return (
                 <div key={i} className="app-tenant-card">
-                  {/* Decorative Bar */}
                   <div className="app-card-deco"></div>
                   
                   <div className="app-card-body">
-                    <h3 className="app-card-title">{t.name || "Unknown Tenant"}</h3>
+                    
+                    <div className="app-card-header-flex">
+                        <div className="app-photo-frame">
+                            <img 
+                                src={photoUrl} 
+                                alt={t.username} 
+                                className="app-photo-img"
+                                // Fallback if the provided image URL is broken
+                                onError={(e) => {e.target.onerror = null; e.target.src="https://via.placeholder.com/150x150.png?text=Error";}}
+                            />
+                        </div>
+                        <div>
+                             <h3 className="app-card-title">{t.username || "Unknown Tenant"}</h3>
+                             <p className="app-card-subtitle">{t.professionalStatus || "Applicant"}</p>
+                        </div>
+                    </div>
 
-                    {/* Basic Info Grid */}
+
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                       <DataField label="Email" value={t.email} />
                       <DataField label="Phone" value={t.phone || "--"} />
                       <DataField label="Gender" value={t.gender} />
                       <DataField label="Nationality" value={t.nationality} />
-                      <DataField label="Status" value={t.professionalStatus} />
                       <DataField label="Marital" value={t.maritalStatus} />
                     </div>
 
@@ -85,7 +99,6 @@ export default function ApplicationList() {
                         value={t.hometown} 
                     />
 
-                    {/* Lifestyle / Boolean Tags Section */}
                     <div className="app-tags-container">
                         <BooleanTag label="Smoker" isTrue={t.smoker} />
                         <BooleanTag label="Drinker" isTrue={t.alcohol} />
@@ -97,7 +110,6 @@ export default function ApplicationList() {
                         <BooleanTag label="Party" isTrue={t.party_lover} />
                     </div>
 
-                    {/* Array Data */}
                     <div className="app-data-row">
                         <span className="app-data-label">Hobbies</span>
                         <span className="app-data-value">
@@ -105,14 +117,10 @@ export default function ApplicationList() {
                         </span>
                     </div>
 
-                    {/* Description */}
                     <div className="app-desc-box">
                       "{t.description || "No description provided."}"
                     </div>
 
-                    <span className="app-timestamp">
-                      Applied: {new Date(a.appliedAt).toLocaleString()}
-                    </span>
                   </div>
                 </div>
               );

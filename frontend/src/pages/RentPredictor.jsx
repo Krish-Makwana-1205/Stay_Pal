@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../StyleSheets/RentPredictor.css"; 
 import { City } from "country-state-city";
 
+
 // All Indian cities
 const ALL_CITIES = City.getCitiesOfCountry("IN").map((c) => c.name);
 
@@ -126,7 +127,6 @@ export default function RentPredictor() {
                 value={bhk}
                 onChange={(e) => setBhk(e.target.value)}
               />
-              <p className="est-helper-text">±1 BHK tolerance</p>
             </div>
 
             <div className="est-col est-form-group">
@@ -139,7 +139,6 @@ export default function RentPredictor() {
                 onChange={(e) => setAreaSize(e.target.value)}
                 placeholder="e.g. 1200"
               />
-              <p className="est-helper-text">±30% area tolerance</p>
             </div>
           </div>
 

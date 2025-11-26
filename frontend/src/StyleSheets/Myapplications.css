@@ -1,0 +1,196 @@
+:root {
+  --my-apps-primary: #0d2a4f;
+  --my-apps-accent: #007bff;
+  --my-apps-bg: #f4f7f9;
+  --my-apps-white: #ffffff;
+  --my-apps-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* --- Page Container --- */
+.my-apps-wrapper {
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--my-apps-bg);
+  background-image:
+    linear-gradient(var(--my-apps-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--my-apps-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 40px 20px;
+  overflow-x: hidden;
+}
+
+.my-apps-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg'); 
+  background-repeat: repeat;
+  background-size: 60px 60px;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.my-apps-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Header Section --- */
+.my-apps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.my-apps-title {
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--my-apps-primary);
+  background: var(--my-apps-white);
+  padding: 10px 20px;
+  border: 2px solid var(--my-apps-primary);
+  box-shadow: 6px 6px 0 var(--my-apps-primary);
+  margin: 0;
+}
+
+.my-apps-btn {
+  background: var(--my-apps-primary);
+  color: var(--my-apps-white);
+  padding: 12px 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.my-apps-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  background-color: var(--my-apps-accent);
+}
+
+/* --- Grid Layout --- */
+.my-apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+/* --- Card Styles --- */
+.my-apps-card {
+  position: relative;
+  background: var(--my-apps-white);
+  border: 2px solid var(--my-apps-primary);
+  box-shadow: 12px 12px 0 var(--my-apps-primary);
+  padding: 0;
+  transition: transform 0.2s;
+}
+
+.my-apps-card:hover {
+  transform: translateY(-2px);
+}
+
+.my-apps-card-deco {
+  height: 8px;
+  width: 100%;
+  background: repeating-linear-gradient(90deg, var(--my-apps-primary) 0%, var(--my-apps-primary) 20%, var(--my-apps-accent) 20%, var(--my-apps-accent) 40%);
+  border-bottom: 2px solid var(--my-apps-primary);
+}
+
+.my-apps-card-body {
+  padding: 25px;
+}
+
+/* Header Flex (Photo + Name) */
+.my-apps-card-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px dashed #ddd;
+  padding-bottom: 20px;
+}
+
+.my-apps-photo-frame {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px solid var(--my-apps-primary);
+  background: #e0e0e0;
+  box-shadow: 5px 5px 0 var(--my-apps-accent);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-apps-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.my-apps-card-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--my-apps-primary);
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+}
+
+.my-apps-card-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Data Rows */
+.my-apps-data-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.my-apps-data-label {
+  display: inline-block;
+  background: var(--my-apps-primary);
+  color: var(--my-apps-white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  margin-bottom: 4px;
+  width: fit-content;
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+}
+
+.my-apps-data-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2px;
+}
+
+/* Helper Text */
+.my-apps-loading, .my-apps-empty {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 50px;
+  font-weight: 800;
+  color: var(--my-apps-primary);
+  text-transform: uppercase;
+}
