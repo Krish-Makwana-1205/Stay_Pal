@@ -55,8 +55,10 @@ async function propertysend(req, res) {
 
 async function applyForProperty(req, res) {
   try {
+    console.log("Apply");
     const tenantEmail = req.user.email;
     const { propertyName, propertyOwnerEmail } = req.body;
+
 
     if (!tenantEmail) {
       return res.status(400).json({ success: false, message: "User not logged in" });
@@ -76,27 +78,34 @@ async function applyForProperty(req, res) {
       });
     }
 
-    const [tenant, foundProperty] = await Promise.all([
-      Tenant.findOne({ email: tenantEmail }),
-      property.findOne({ name: propertyName, email: propertyOwnerEmail }),
-    ]);
-
-    if (!tenant) {
+    const user = await User.findOne({ email: tenantEmail });
+    console.log(user);
+    if (!user.istenant) {
       return res.status(404).json({
         success: false,
         message: "Tenant profile not found",
       });
     }
+    console.log('hi');
+    let tenant, temp;
+    try {
+      tenant = await Promise.all([
+        Application.create({
+          tenantEmail: tenantEmail,
+          propertyName: propertyName,
+          propertyOwnerEmail: propertyOwnerEmail,
+        }),
 
-    if (!foundProperty) {
-      return res.status(404).json({
-        success: false,
-        message: "Property not found",
-      });
+        Tenant.findOne({ tenantEmail: tenantEmail })
+      ]);
+
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ success: true, message: "Could not create application" });
     }
-
-    await Application.create({ tenantEmail, propertyName, propertyOwnerEmail, }),
-
+    console.log(tenant);
+    console.log('here');
+    try {
       sendEmail(
         propertyOwnerEmail,
         "New Tenant Application",
@@ -117,7 +126,11 @@ async function applyForProperty(req, res) {
           <br><p>Contact the tenant to proceed.</p>
         `
       )
-
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ success: false, message: "could not send message" });
+    }
+    console.log('complete');
     return res.status(200).json({ success: true, message: "Application sent successfully" });
 
   } catch (error) {
@@ -497,7 +510,7 @@ async function filterProperties(req, res) {
       Tenant.findOne({ email: req.user.email }),
       property.find(filterCriteria).skip(skip).limit(limit),
     ]);
-     function calculateBasicPoints(prop) {
+    function calculateBasicPoints(prop) {
       let points = 0;
 
       if (locality && prop.locality) {
@@ -631,15 +644,15 @@ async function filterProperties(req, res) {
     }
 
     // Calculate points for all properties in parallel
-     let baseScored = properties.map((prop) => ({
+    let baseScored = properties.map((prop) => ({
       prop,
       basePoints: calculateBasicPoints(prop),
     }));
 
-     baseScored.sort((a, b) => b.basePoints - a.basePoints);
-    
+    baseScored.sort((a, b) => b.basePoints - a.basePoints);
 
-     const TOP_N = 10;
+
+    const TOP_N = 10;
     const topForRefine = baseScored.slice(0, TOP_N);
 
     // Refine only top N with NLP + distance

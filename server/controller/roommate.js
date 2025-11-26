@@ -30,22 +30,12 @@ async function applyForRoommate(req, res) {
       });
     }
 
-    const [applicant, recipient] = await Promise.all([
-      Tenant.findOne({ email: applicantEmail }),
-      Tenant.findOne({ email: recipientEmail }),
-    ]);
+    const applicant = await Tenant.findOne({ email: applicantEmail });
 
     if (!applicant) {
       return res.status(404).json({
         success: false,
         message: "Applicant profile not found",
-      });
-    }
-
-    if (!recipient) {
-      return res.status(404).json({
-        success: false,
-        message: "Recipient profile not found",
       });
     }
 
