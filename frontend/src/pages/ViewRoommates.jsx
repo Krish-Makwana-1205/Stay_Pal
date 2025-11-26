@@ -374,8 +374,8 @@ export default function ViewRoommates() {
               key={t.email || Math.random()}
               role="button"
               tabIndex={0}
-              onClick={() => navigate(`/tenant/${t.email}`)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/tenant/${t.email}`); }}
+              onClick={() => navigate(`/roommate/${t.email}`)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/roommate/${t.email}`); }}
               style={{ marginBottom: 12, cursor: "pointer" }}
             >
               {/* optional image */}

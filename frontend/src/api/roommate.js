@@ -48,4 +48,7 @@ export const searchRoommatesParams = async (filters) => {
 
 export const searchRoommates = (payload) => API.post("/search", payload);
 
+// Update this function - remove /tenant/ from the path
+export const fetchSingleTenant = (email) => API.get(`/profile/${email}`);
+
 export default API;
