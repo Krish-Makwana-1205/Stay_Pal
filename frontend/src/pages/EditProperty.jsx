@@ -114,14 +114,9 @@ const triggerFileInput = () => {
     });
   };
 
-  // Upload new images (Function to use with the file input's onChange)
-  // The original code uses a slightly different file selection logic in the input's onChange
-  // Let's create a simplified handleFileSelect to match the requested component's file input structure
+ 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    // The original code in the first block was: setImages((prev) => [...prev, ...selectedFiles]);
-    // The original code's image display logic seems to combine new images with old ones.
-    // I'll keep the logic from the first block's <input onChange> which is:
     setImages((prev) => [...prev, ...selectedFiles]);
   };
 
@@ -181,10 +176,6 @@ const handleSave = async (e) => {
 
   try {
     const res = await uploadProperty(fd);
-    // IMPORTANT: force LocalitySelector to fetch localities for this city on edit page
-    // NOTE: 'p.city' is not defined here, it should likely use formData.city
-    // Based on the logic of *clearing* the local storage on *successful* update,
-    // I will assume the intent was to use the current city in formData:
     localStorage.removeItem(`localities_${formData.city}`); 
 
     setMessage("Updated successfully!");
@@ -315,7 +306,7 @@ const handleSave = async (e) => {
 
         {/* Address */}
         <label>Address</label>
-        <div className="address-fields">
+        <div className="ep-address-fields">
           <input
             name="houseNumber"
             placeholder="House No"
@@ -371,9 +362,9 @@ const handleSave = async (e) => {
         <label>New Images</label>
         <button
           type="button"
-          className="ep-clear-images-btn" // Changed class name
+          className="ep-clear-images-btn" 
           onClick={triggerFileInput}
-          style={{ marginTop: "10px" }} // Kept style from original
+          style={{ marginTop: "10px" }} 
         >
           Upload New Images
         </button>
@@ -385,17 +376,17 @@ const handleSave = async (e) => {
           multiple
           accept="image/*"
           style={{ display: "none" }}
-          onChange={handleFileSelect} // Used the new function that has the original logic
+          onChange={handleFileSelect} // Used the new function 
         />
         
         {/* NEW IMAGES PREVIEW */}
         {images.length > 0 && (
           <div className="ep-image-preview-container">
             {images.map((img, idx) => (
-              <div key={idx} className="image-preview"> {/* NOTE: The request used `ep-image-preview-container` and `ep-preview-thumb`, but did not include the inner `image-preview` div. Keeping the inner div for functionality, but updating the outer class name as requested. */}
+              <div key={idx} className="ep-image-preview">
                 <img
                   src={URL.createObjectURL(img)}
-                  className="ep-preview-thumb" // Changed class name
+                  className="ep-preview-thumb" 
                 />
               </div>
             ))}
