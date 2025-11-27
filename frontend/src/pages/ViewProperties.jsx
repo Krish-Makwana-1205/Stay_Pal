@@ -5,12 +5,37 @@ import "../StyleSheets/ViewProperty.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+// Helper: Generate stable key from filters
+const generateFilterKey = (filters) => {
+  const normalized = {
+    city: filters.city || "",
+    locality: filters.locality || "",
+    BHK: filters.BHK || "",
+    rentLowerBound: filters.rentLowerBound ?? 0,
+    rentUpperBound: filters.rentUpperBound ?? 100000,
+    furnishingType: filters.furnishingType || "",
+    areaSize: filters.areaSize || "",
+    transportAvailability: filters.transportAvailability ?? "",
+    houseType: filters.houseType || "",
+    nearbyPlaces: Array.isArray(filters.nearbyPlaces) 
+      ? filters.nearbyPlaces.sort().join(",") 
+      : filters.nearbyPlaces || "",
+    description: filters.description || "",
+    googleLink: filters.googleLink || "",
+  };
+  return JSON.stringify(normalized);
+};
+
 const ViewProperties = ({ defaultCity }) => {
   const [houses, setHouses] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+
+  const userKey = user ? user.email : "guest";
+  const cacheKey = `propertyResults_${userKey}`;
+  const filterCacheKey = `lastAppliedFilters_${userKey}`;
 
   // INITIAL CITY SELECTION
   const initialCity =
@@ -20,9 +45,59 @@ const ViewProperties = ({ defaultCity }) => {
     "";
 
   const [currentCity, setCurrentCity] = useState(initialCity);
+  const [lastFilterKey, setLastFilterKey] = useState("");
+
+  // RESTORE CACHED RESULTS ON MOUNT
+  useEffect(() => {
+    try {
+      const cachedResults = localStorage.getItem(cacheKey);
+      const cachedFilters = localStorage.getItem(filterCacheKey);
+
+      if (cachedResults && cachedFilters) {
+        const parsedResults = JSON.parse(cachedResults);
+        const parsedFilters = JSON.parse(cachedFilters);
+
+        // Restore results and filter state
+        setHouses(parsedResults.houses || []);
+        setCurrentCity(parsedFilters.city || initialCity);
+        setLastFilterKey(generateFilterKey(parsedFilters));
+
+        
+        console.log(" Restored cached results:", parsedResults.houses.length, "properties");
+        return; // Skip initial load if we have cache
+      }
+    } catch (e) {
+      console.error("Error restoring cache:", e);
+    }
+
+    // If no cache, run initial load
+    runInitialLoad();
+  }, []);
+
+  // INITIAL LOAD (only runs if no cache)
+  const runInitialLoad = async () => {
+    if (!initialCity) return;
+
+    const perCityKey = `defaultLocality_${userKey}_${initialCity}`;
+    const savedLocality = localStorage.getItem(perCityKey);
+
+    const initialFilters = { city: initialCity };
+    if (savedLocality) initialFilters.locality = savedLocality;
+
+    await handleFilters(initialFilters);
+  };
 
   // APPLY FILTERS
   const handleFilters = async (filters) => {
+    const newFilterKey = generateFilterKey(filters);
+
+    if (newFilterKey === lastFilterKey && houses.length > 0) {
+      console.log("⚡ Filters unchanged, using cached results");
+      setCurrentCity(filters.city);
+      window.scrollTo(0, 0);
+      return;
+    }
+
     setLoadingResults(true);
 
     try {
@@ -38,7 +113,19 @@ const ViewProperties = ({ defaultCity }) => {
       };
 
       const { data } = await fetchproperty(finalFilters);
-      setHouses(data?.data || []);
+      const results = data?.data || [];
+      
+      setHouses(results);
+
+      // 💾 CACHE RESULTS AND FILTERS
+      localStorage.setItem(cacheKey, JSON.stringify({
+        houses: results,
+        timestamp: Date.now()
+      }));
+      localStorage.setItem(filterCacheKey, JSON.stringify(finalFilters));
+      setLastFilterKey(newFilterKey);
+
+      console.log("✅ Fetched and cached", results.length, "properties");
     } catch (err) {
       console.error("Filter error:", err);
       setHouses([]);
@@ -48,25 +135,6 @@ const ViewProperties = ({ defaultCity }) => {
 
     window.scrollTo(0, 0);
   };
-
-  // INITIAL LOAD
-  useEffect(() => {
-    const run = async () => {
-      if (!initialCity) return;
-
-      // attempt to pick up a per-city default locality for this user
-      const userKey = user ? user.email : "guest";
-      const perCityKey = `defaultLocality_${userKey}_${initialCity}`;
-      const savedLocality = localStorage.getItem(perCityKey);
-
-      const initialFilters = { city: initialCity };
-      if (savedLocality) initialFilters.locality = savedLocality;
-
-      await handleFilters(initialFilters);
-    };
-
-    run();
-  }, []);
 
   return (
     <div className="view-properties">
@@ -104,7 +172,7 @@ const ViewProperties = ({ defaultCity }) => {
                     alt="Property"
                   />
 
-                  {/* FULL INFO (from first version) */}
+                  {/* FULL INFO */}
                   <div style={{ flex: 1 }}>
                     <h3>{item.BHK} BHK</h3>
 
