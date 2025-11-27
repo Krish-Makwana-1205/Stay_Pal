@@ -3,11 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { searchRoommatesParams, applyForRoommate } from "../api/roommate";
 import "../StyleSheets/SearchRoommates.css"; 
 
+const STORAGE_KEY = "roommateFilters";
+
 export default function ViewRoommates() {
   const { city: routeCity } = useParams();
   const navigate = useNavigate();
 
-  
   const imagePrefs = [
     { key: "nightOwl", label: "Night Owl", img: "/nightOwl.png" },
     { key: "earlybird", label: "Early Bird", img: "/earlybird.png" },
@@ -20,7 +21,7 @@ export default function ViewRoommates() {
     { key: "Pet_lover", label: "Pet Lover", img: "/pet_lover.png" },
   ];
 
-  const [filters, setFilters] = useState({
+  const defaultFilters = {
     city: "",
     gender: "Any",
     minAge: "",
@@ -38,8 +39,6 @@ export default function ViewRoommates() {
     language: "",
     allergies: "",
     minStayDuration: "",
-    
-    
     nightOwl: false,
     earlybird: false,
     Pet_lover: false,
@@ -49,13 +48,37 @@ export default function ViewRoommates() {
     sporty: false,       
     traveller: false,    
     music_lover: false,  
-  });
+  };
 
+  // Load filters from localStorage on mount
+  const getInitialFilters = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...defaultFilters, ...parsed };
+      }
+    } catch (err) {
+      console.error("Error loading filters from localStorage:", err);
+    }
+    return defaultFilters;
+  };
+
+  const [filters, setFilters] = useState(getInitialFilters);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [applyLoading, setApplyLoading] = useState({});
+
+  // Save filters to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
+    } catch (err) {
+      console.error("Error saving filters to localStorage:", err);
+    }
+  }, [filters]);
 
   useEffect(() => {
     if (routeCity) {
@@ -172,36 +195,10 @@ export default function ViewRoommates() {
   };
 
   const resetFilters = () => {
-    setFilters({
-      city: "",
-      gender: "Any",
-      minAge: "",
-      maxAge: "",
-      foodPreference: "Any",
-      hobbies: "",
-      description: "",
-      religion: "",
-      alcohol: false,
-      smoking: false,
-      nationality: "",
-      professionalStatus: "Any",
-      maritalStatus: "Any",
-      family: false,
-      language: "",
-      allergies: "",
-      minStayDuration: "",
-      nightOwl: false,
-      earlybird: false,
-      Pet_lover: false,
-      fitness_freak: false,
-      studious: false,
-      party_lover: false,
-      sporty: false,
-      traveller: false,
-      music_lover: false,
-    });
+    setFilters(defaultFilters);
     setResults([]);
     setError("");
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   return (
