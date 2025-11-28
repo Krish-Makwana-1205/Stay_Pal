@@ -26,28 +26,17 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow mobile/Postman
+    origin: [
+      "http://localhost:5173",
 
-      const allowedOrigins = [
-        "http://localhost:5173",
-        "https://staypal1-topaz.vercel.app",      // your production domain
-        /^https:\/\/staypal1-.*\.vercel\.app$/,   // preview deployments
-      ];
+      "https://staypal1-topaz.vercel.app",
 
-      const isAllowed = allowedOrigins.some((rule) =>
-        rule instanceof RegExp ? rule.test(origin) : rule === origin
-      );
-
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+      /^https:\/\/staypal1-.*\.vercel\.app$/,
+    ],
     credentials: true,
   })
 );
+
 
 // app.options("*", cors());
 

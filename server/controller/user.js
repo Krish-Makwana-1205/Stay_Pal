@@ -147,7 +147,13 @@ async function makeUser(req, res) {
         username: body.name,
         istenant: false,
     });
-    res.cookie("uid", token);
+    res.cookie("uid", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+});
+
     return res
         .status(200)
         .json({ success: true, message: "User created. OTP sent to email." });
@@ -175,7 +181,13 @@ async function loginUser(req, res) {
             .json({ success: false, message: "Password is incorrect" });
     }
     const token = setUser(User);
-    res.cookie("uid", token);
+    res.cookie("uid", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+});
+
     return res.status(200).json({ success: true, message: "User login" });
 }
 
