@@ -1,18 +1,18 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { fetchUser as fetchUserAPI } from "../api/authApi"; 
 import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(undefined); 
+  const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(true);
+
 
   const fetchUser = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("http://localhost:8002/user/me", {
-        withCredentials: true,
-      });
+      const { data } = await fetchUserAPI();
       setUser(data?.user || null);
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -30,19 +30,18 @@ export const AuthProvider = ({ children }) => {
     await fetchUser();
   };
 
-const logout = async () => {
-  try {
-    await axios.post(
-      "http://localhost:8002/user/logout",
-      {},
-      { withCredentials: true }
-    );
-    setUser(null);        
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
-
+  const logout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      setUser(null);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, fetchUser }}>

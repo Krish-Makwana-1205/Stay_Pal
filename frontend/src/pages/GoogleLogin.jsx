@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
-import { googleAuth } from '../api/authApi';
-import axios from "axios";
+import { googleAuth, fetchUser } from '../api/authApi';   
 import { useNavigate } from "react-router-dom";
+import "../StyleSheets/GoogleLogin.css";
 
 function GoogleLogin() {
   const navigate = useNavigate();
+
 
   useEffect(() => {
     checkLogin();
@@ -13,25 +14,20 @@ function GoogleLogin() {
 
   const checkLogin = async () => {
     try {
-      const res = await axios.get("http://localhost:8002/user/me", {
-        withCredentials: true
-      });
-      if (res.data.success) {
-        navigate("/usercard");   
+      const res = await fetchUser();  
+      if (res.data?.success) {
+        navigate("/usercard");
       }
     } catch (err) {
     }
   };
 
-  
   const responseGoogle = async (authResult) => {
     try {
       if (authResult.code) {
-        const result = await googleAuth(authResult.code);
-        console.log("Google User:", result.data.user);
-
-        navigate("/usercard"); 
-         window.location.reload();
+        const result = await googleAuth(authResult.code);  
+        navigate("/usercard");
+        window.location.reload();
       }
     } catch (err) {
       console.log("Google Login Error:", err);
@@ -45,15 +41,25 @@ function GoogleLogin() {
   });
 
   useEffect(() => {
-    googleLogin();   
+    googleLogin();
   }, []);
 
   return (
-    <div>
-      <button onClick={() => googleLogin()}>
-        Continue with Google
-      </button>
-      <p>If popup did not open, click the button above.</p>
+    <div className="google-login-wrapper">
+      <div className="google-login-card">
+
+        <h2 className="google-login-title">Login to Continue</h2>
+
+        <button className="google-btn" onClick={() => googleLogin()}>
+          <img src="/google-icon.png" alt="Google" />
+          Continue with Google
+        </button>
+
+        <p className="google-hint">
+          If popup did not open, click the button above.
+        </p>
+
+      </div>
     </div>
   );
 }

@@ -1,0 +1,173 @@
+:root {
+  --room-primary: #0d2a4f;
+  --room-accent: #007bff;
+  --room-bg: #f4f7f9;
+  --room-white: #ffffff;
+  --room-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* ---------- PAGE WRAPPER ---------- */
+.fp-forget-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--room-bg);
+  background-image:
+    linear-gradient(var(--room-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--room-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background pattern animation */
+.fp-forget-container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg");
+  background-size: 50px;
+  opacity: 0.12;
+  z-index: 0;
+  animation: roomBgPan 60s linear infinite;
+}
+
+/* ----------- FORM CARD ----------- */
+.fp-forget-form {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+  background: var(--room-white);
+  border: 2px solid var(--room-primary);
+  box-shadow: 10px 10px 0px var(--room-primary);
+  position: relative;
+  z-index: 2;
+  animation: roomPopIn 0.5s ease-out forwards;
+}
+
+/* Decorative bar */
+.fp-forget-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--room-primary) 0%,
+    var(--room-primary) 20%,
+    var(--room-accent) 20%,
+    var(--room-accent) 40%
+  );
+}
+
+/* ---------- HEADINGS ---------- */
+.fp-form-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--room-primary);
+  margin-bottom: 10px;
+}
+
+.fp-form-subtitle {
+  text-align: center;
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+/* ---------- INPUT FIELDS ---------- */
+.fp-input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
+  color: var(--room-primary);
+  transition: all 0.3s ease;
+}
+
+.fp-input:focus {
+  outline: none;
+  border-bottom-color: var(--room-accent);
+  background: rgba(0, 123, 255, 0.05);
+}
+
+/* Disabled email field */
+.fp-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---------- SUBMIT BUTTON ---------- */
+.fp-submit-btn {
+  width: 100%;
+  padding: 12px 18px;
+  background: var(--room-accent);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 2px solid var(--room-primary);
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--room-primary);
+  transition: 0.25s ease;
+}
+
+.fp-submit-btn:hover:not(:disabled) {
+  background: var(--room-primary);
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--room-primary);
+}
+
+.fp-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- RESEND OTP ---------- */
+.fp-resend-wrapper {
+  margin-top: 12px;
+  text-align: center;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.fp-resend-otp-btn {
+  background: none;
+  border: none;
+  color: var(--room-accent);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.fp-resend-otp-btn:hover {
+  color: var(--room-primary);
+  text-decoration: underline;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes roomPopIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes roomBgPan {
+  from { background-position: 0 0; }
+  to { background-position: 150px 150px; }
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 600px) {
+  .fp-forget-form {
+    box-shadow: 6px 6px 0 var(--room-primary);
+  }
+}

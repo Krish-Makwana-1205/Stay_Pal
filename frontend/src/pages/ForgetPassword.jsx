@@ -144,7 +144,7 @@ export default function ForgetPassword() {
 
     {step === "reset" && (
       <p className="fp-resend-wrapper">
-        Didn’t receive OTP?{" "}
+        Didn't receive OTP?{" "}
         <button
           type="button"
           className="fp-resend-otp-btn"
