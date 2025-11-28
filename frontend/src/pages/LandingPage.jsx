@@ -1,19 +1,23 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import "../StyleSheets/LandingPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StayPalLogo from "../assets/logo_blue.png";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
 
-  const getStartedLink = user ? "/usercard" : "/signup";
+  const getStartedLink = user ? "/usercard" : "/login";
+  const navigate = useNavigate();
+
+  const goToUserOrLogin = () => {
+    if (user) navigate("/usercard");
+    else navigate("/login");
+  };
 
   const handleLogout = async () => {
     try {
       await logout();
-
-      // Same cleanup logic as on Dashboard
       localStorage.removeItem("defaultCity");
       const keys = Object.keys(localStorage);
       keys.forEach((key) => {
@@ -21,61 +25,43 @@ export default function LandingPage() {
           localStorage.removeItem(key);
         }
       });
-
       navigate("/login");
     } catch (err) {
       console.error("Logout failed from landing page:", err);
     }
-  }; 
+  };
+
   return (
     <main className="card">
-      {/* Hero Section */}
       <div className="content-wrapper">
-                <header className="hero-header">
-          {/* Left: Brand only */}
+        <header className="hero-header">
           <div className="hero-brand">
-            <img
-              src={StayPalLogo}
-              alt="StayPal Logo"
-              className="header-logo"
-            />
+            <img src={StayPalLogo} alt="StayPal Logo" className="header-logo" />
             <h1 className="logo">StayPal</h1>
           </div>
 
-          {/* Right: only Login & Signup for visitors */}
           <nav className="nav-links">
-            <Link to="/login" className="nav-link">
-              Login
-            </Link>
-            <Link to="/signup" className="nav-link">
-              Sign up
-            </Link>
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/signup" className="nav-link">Sign up</Link>
           </nav>
         </header>
 
         <div className="text-content">
-          <p className="tagline">
-            The one-stop solution for all your renting problems
-          </p>
+          <p className="tagline">The one-stop solution for all your renting problems</p>
           <p className="description">
-            StayPal makes finding your next home or the perfect flatmate a
-            breeze. Our intuitive platform connects you with verified listings
-            and compatible individuals, ensuring a smooth and stress-free renting
-            experience. Discover your <strong>ideal living situation</strong> with
-            StayPal.
+            StayPal makes finding your next home or the perfect flatmate a breeze.
           </p>
 
           {!loading && (
             <Link to={getStartedLink} className="cta-button">
-              Get Started
-              <span className="cta-arrow">→</span>
+              Get Started <span className="cta-arrow">→</span>
             </Link>
           )}
         </div>
 
         <div className="image-gallery">
           <img
-            src="https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            src="https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg"
             alt="Living room"
             className="img-1"
           />
@@ -88,178 +74,208 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Features Section - MODIFIED */}
+      {/* Features Section */}
       <section className="features-section">
         <h2 className="section-title">How StayPal Works For You</h2>
 
-        {/* Main Features - MODIFIED STRUCTURE */}
         <div className="main-features">
-          <div className="feature-card large-feature-card"> {/* Added a class for styling */}
+          <div
+            className="feature-card large-feature-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <div className="feature-content-wrapper">
-                <div className="feature-text">
-                    <h3>Find Your Perfect Flat</h3>
-                    <p>
-                        Browse through verified property listings and discover flats that
-                        match your preferences, budget, and location needs.
-                    </p>
-                </div>
-                <div className="feature-image-container">
-                    <img src="https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Modern apartment" className="feature-image"/>
-                </div>
+              <div className="feature-text">
+                <h3>Find Your Perfect Flat</h3>
+                <p>Browse verified listings based on your needs.</p>
+              </div>
+              <div className="feature-image-container">
+                <img
+                  src="https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg"
+                  alt="Modern apartment"
+                  className="feature-image"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="feature-card large-feature-card"> {/* Added a class for styling */}
-            <div className="feature-content-wrapper reverse-layout"> {/* Added reverse-layout for alternating */}
-                <div className="feature-text">
-                    <h3>Match With Roommates</h3>
-                    <p>
-                        Connect with compatible roommates based on lifestyle preferences,
-                        habits, and interests for a harmonious living experience.
-                    </p>
-                </div>
-                <div className="feature-image-container">
-                    <img src="https://i.pinimg.com/736x/aa/5f/5b/aa5f5bc605ded26696868cbd6b28aea7.jpg" alt="People interacting" className="feature-image"/>
-                </div>
+          <div
+            className="feature-card large-feature-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
+            <div className="feature-content-wrapper reverse-layout">
+              <div className="feature-text">
+                <h3>Match With Roommates</h3>
+                <p>Connect with compatible roommates easily.</p>
+              </div>
+              <div className="feature-image-container">
+                <img
+                  src="https://i.pinimg.com/736x/aa/5f/5b/aa5f5bc605ded26696868cbd6b28aea7.jpg"
+                  alt="People interacting"
+                  className="feature-image"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="feature-card large-feature-card"> {/* Added a class for styling */}
+          <div
+            className="feature-card large-feature-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <div className="feature-content-wrapper">
-                <div className="feature-text">
-                    <h3>Move Into Shared Spaces</h3>
-                    <p>
-                        Find flats with existing flatmates looking for another tenant—your
-                        room and new friends are waiting for you!
-                    </p>
-                </div>
-                <div className="feature-image-container">
-                    <img src="https://i.pinimg.com/1200x/84/20/fd/8420fd62d778c883078397db505fb288.jpg" alt="Moving boxes" className="feature-image"/>
-                </div>
+              <div className="feature-text">
+                <h3>Move Into Shared Spaces</h3>
+                <p>Find shared flats with existing flatmates.</p>
+              </div>
+              <div className="feature-image-container">
+                <img
+                  src="https://i.pinimg.com/1200x/84/20/fd/8420fd62d778c883078397db505fb288.jpg"
+                  alt="Moving boxes"
+                  className="feature-image"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Minor Features - NO CHANGE IN STRUCTURE, ONLY CSS */}
+        {/* Minor Features */}
         <div className="minor-features">
-          <div className="minor-feature small-minor-feature"> {/* Added a class for styling */}
+          <div className="minor-feature small-minor-feature">
             <div className="minor-feature-icon">📤</div>
             <h4>List Your Property</h4>
-            <p>
-              Property owners can easily upload and showcase their rentals to
-              reach thousands of potential tenants.
-            </p>
+            <p>Owners can easily upload and share their rentals.</p>
           </div>
 
-          <div className="minor-feature small-minor-feature"> {/* Added a class for styling */}
+          <div className="minor-feature small-minor-feature">
             <div className="minor-feature-icon">✨</div>
-            <h4>Smart Compatibility Matching</h4>
-            <p>
-              Select qualities you desire in a roommate and let our algorithm
-              match you with the most compatible people.
-            </p>
+            <h4>Smart Compatibility</h4>
+            <p>Match with the right roommates.</p>
           </div>
         </div>
       </section>
 
-      {/* ... (rest of your component remains the same) ... */}
+      {/* ⭐ UPDATED Featured Properties Section */}
       <section className="ftproperties-section">
         <h2 className="section-title">Featured Properties</h2>
+
         <div className="ftproperties-scroll">
-          <div className="ftproperty-card">
+
+          {/* CARD 1 */}
+          <div
+            className="ftproperty-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg"
               alt="Modern apartment"
               className="ftproperty-image"
             />
             <div className="ftproperty-details">
-              <h4>Modern 2BHK Apartment</h4>
-              <p className="ftproperty-location">📍 Downtown, Mumbai</p>
-              <p className="ftproperty-price">₹25,000/month</p>
-              <div className="ftproperty-features">
-                <span>🛏️ 2 Beds</span>
-                <span>🚿 2 Baths</span>
-                <span>📏 1200 sq ft</span>
-              </div>
+              <h4>2BHK Flat</h4>
+              <p className="ftproperty-location">📍 City: Mumbai | Locality: Andheri West</p>
+              <p className="ftproperty-price">Rent: ₹25,000/month</p>
+              <p className="ftproperty-furniture">Furtinue: Semi-Furnished</p>
             </div>
           </div>
 
-          <div className="ftproperty-card">
+          {/* CARD 2 */}
+          <div
+            className="ftproperty-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"
               alt="Cozy studio"
               className="ftproperty-image"
             />
             <div className="ftproperty-details">
-              <h4>Cozy Studio Apartment</h4>
-              <p className="ftproperty-location">📍 Koramangala, Bangalore</p>
-              <p className="ftproperty-price">₹18,000/month</p>
-              <div className="ftproperty-features">
-                <span>🛏️ 1 Bed</span>
-                <span>🚿 1 Bath</span>
-                <span>📏 650 sq ft</span>
-              </div>
+              <h4>Studio Apartment</h4>
+              <p className="ftproperty-location">📍 City: Bangalore | Locality: Koramangala</p>
+              <p className="ftproperty-price">Rent: ₹18,000/month</p>
+              <p className="ftproperty-furniture">Furtinue: Fully-Furnished</p>
             </div>
           </div>
 
-          <div className="ftproperty-card">
+          {/* CARD 3 */}
+          <div
+            className="ftproperty-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"
-              alt="Spacious villa"
+              alt="Villa"
               className="ftproperty-image"
             />
             <div className="ftproperty-details">
-              <h4>Spacious 3BHK Villa</h4>
-              <p className="ftproperty-location">📍 Gurgaon, Delhi NCR</p>
-              <p className="ftproperty-price">₹45,000/month</p>
-              <div className="ftproperty-features">
-                <span>🛏️ 3 Beds</span>
-                <span>🚿 3 Baths</span>
-                <span>📏 2000 sq ft</span>
-              </div>
+              <h4>3BHK Villa</h4>
+              <p className="ftproperty-location">📍 City: Delhi NCR | Locality: Gurgaon</p>
+              <p className="ftproperty-price">Rent: ₹45,000/month</p>
+              <p className="ftproperty-furniture">Furtinue: Unfurnished</p>
             </div>
           </div>
 
-          <div className="ftproperty-card">
+          {/* CARD 4 */}
+          <div
+            className="ftproperty-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src="https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg"
-              alt="Luxury penthouse"
+              alt="Penthouse"
               className="ftproperty-image"
             />
             <div className="ftproperty-details">
-              <h4>Luxury Penthouse</h4>
-              <p className="ftproperty-location">📍 Bandra West, Mumbai</p>
-              <p className="ftproperty-price">₹85,000/month</p>
-              <div className="ftproperty-features">
-                <span>🛏️ 4 Beds</span>
-                <span>🚿 4 Baths</span>
-                <span>📏 3500 sq ft</span>
-              </div>
+              <h4>Penthouse</h4>
+              <p className="ftproperty-location">📍 City: Mumbai | Locality: Bandra West</p>
+              <p className="ftproperty-price">Rent: ₹85,000/month</p>
+              <p className="ftproperty-furniture">Furtinue: Fully-Furnished</p>
             </div>
           </div>
 
-          <div className="ftproperty-card">
+          {/* CARD 5 */}
+          <div
+            className="ftproperty-card"
+            onClick={goToUserOrLogin}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src="https://images.pexels.com/photos/2079234/pexels-photo-2079234.jpeg"
-              alt="Budget friendly flat"
+              alt="Budget flat"
               className="ftproperty-image"
             />
             <div className="ftproperty-details">
-              <h4>Budget-Friendly 1BHK</h4>
-              <p className="ftproperty-location">📍 Whitefield, Bangalore</p>
-              <p className="ftproperty-price">₹12,000/month</p>
-              <div className="ftproperty-features">
-                <span>🛏️ 1 Bed</span>
-                <span>🚿 1 Bath</span>
-                <span>📏 550 sq ft</span>
-              </div>
+              <h4>1BHK Budget Flat</h4>
+              <p className="ftproperty-location">📍 City: Bangalore | Locality: Whitefield</p>
+              <p className="ftproperty-price">Rent: ₹12,000/month</p>
+              <p className="ftproperty-furniture">Furtinue: Semi-Furnished</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Reviews Section */}
-      <section className="reviews-section">
+     <section className="reviews-section">
         <h2 className="section-title">What Our Users Say</h2>
         <div className="reviews-scroll">
           <div className="review-card">

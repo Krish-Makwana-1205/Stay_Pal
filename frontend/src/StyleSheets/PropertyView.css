@@ -1,5 +1,3 @@
-
-
 :root {
   --property-primary: #0d2a4f;
   --property-accent: #007bff;
@@ -13,22 +11,20 @@
   max-width: 100%;
   margin: 0 auto;
   padding: 20px;
-
   box-sizing: border-box;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
   background-color: var(--property-bg);
   background-image:
     linear-gradient(var(--property-grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--property-grid-line) 1px, transparent 1px);
   background-size: 40px 40px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 }
 
 .pv-wrapper::before {
@@ -66,10 +62,8 @@
   font-weight: 800;
   text-transform: uppercase;
   color: var(--property-primary);
-
   padding: 12px 35px;
   display: inline-block;
-
   background: white;
   border-bottom: 4px solid var(--property-primary);
   box-shadow: 5px 5px 0 var(--property-primary);
@@ -77,7 +71,8 @@
 
 /* CARD */
 .pv-property-card {
-  width:900px;
+  width: 900px;
+  max-width: 100%;
   background: var(--property-white);
   padding: 25px;
   box-shadow: 12px 12px 0 var(--property-primary);
@@ -85,12 +80,9 @@
   box-sizing: border-box;
   border-radius: 0;
   margin: 25px auto;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  
-  
-
-  
 }
 
 /* HEADER ROW */
@@ -99,25 +91,26 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
+  border-bottom: 2px solid var(--property-grid-line);
+  padding-bottom: 15px;
 }
 
 .pv-profile-card-title {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--property-primary);
+  margin: 0;
 }
 
-/* FIX FLOATING BUTTON */
+/* ACTION BUTTON */
 .pv-action-btn {
   font-size: 0.9rem;
   background: var(--property-accent);
   color: white;
-
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
-
   white-space: nowrap;
 }
 
@@ -130,20 +123,23 @@
   margin-top: 10px;
 }
 
-/* IMAGE */
+/* --- IMAGE GALLERY (FIXED) --- */
 .pv-image-wrapper {
   width: 100%;
-  text-align: center;
   margin-bottom: 20px;
+  display: grid;
+  /* Auto-fit columns for multiple images */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+  gap: 15px;
 }
 
 .pv-profile-img {
   width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 0;
+  height: 400px; /* Fixed height for consistency */
+  object-fit: contain; /* Prevents cropping: shows full image */
+  background-color: #f0f0f0; /* Background for non-square images */
   border: 1px solid var(--property-primary);
-  box-shadow: 5px 5px 0 var(--property-primary);
+  box-shadow: 4px 4px 0 rgba(13, 42, 79, 0.2);
 }
 
 /* DETAILS GRID */
@@ -154,7 +150,6 @@
   margin-bottom: 25px;
   padding: 20px;
   background: var(--property-bg);
-  border-radius: 10px;
   border: 1px solid var(--property-grid-line);
 }
 
@@ -176,104 +171,125 @@
 .pv-description-box {
   padding: 15px 18px;
   background: var(--property-bg);
-  border-radius: 10px;
   border: 1px solid var(--property-grid-line);
   margin-bottom: 28px;
   font-size: 0.95rem;
-  line-height: 1.4rem;
+  line-height: 1.6rem;
 }
 
 /* APPLY BUTTON */
 .pv-primary-btn {
   background: var(--property-primary);
   color: white;
-
   padding: 12px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0; /* Match sharp theme */
   border: none;
-
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  transition: transform 0.1s;
 }
 
 .pv-primary-btn:hover {
-  opacity: 0.92;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
 }
 
-/*similar property*/
+.pv-primary-btn:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
 
+/* --- SIMILAR PROPERTY (FIXED) --- */
 .pv-preferences-section {
-  margin-top: 40px;
+  width: 900px; /* Matches the card width */
+  max-width: 100%;
+  margin: 40px auto 20px auto; /* Centers the section */
 }
 
 .pv-pref-header {
   margin-bottom: 15px;
+  border-bottom: 2px solid var(--property-primary);
+  padding-bottom: 10px;
+  background: white;
+  padding: 10px 20px;
+  box-shadow: 4px 4px 0 var(--property-primary);
+  display: inline-block;
 }
 
 .pv-profile-subtitle {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--property-primary);
+  margin: 0;
 }
 
 /* Similar list grid */
 .pv-similar-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  
-  box-shadow: 5px 5px 0 var(--property-primary);
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 /* Similar Card */
 .pv-similar-card {
   background: white;
-  border: 1px solid var(--property-primary);
+  border: 2px solid var(--property-primary);
   border-radius: 0;
   cursor: pointer;
-
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: 0.2s ease;
+  box-shadow: 6px 6px 0 var(--property-primary); /* Consistent shadow style */
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .pv-similar-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--property-primary);
 }
 
 .pv-similar-img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 0;
-  
-  
+  height: 180px;
+  object-fit: cover; /* Cover is okay for thumbnails, or use contain if preferred */
+  border-bottom: 2px solid var(--property-primary);
 }
 
 .pv-similar-text {
-  padding: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .pv-similar-text h4 {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 800;
   color: var(--property-primary);
-  margin-bottom: 5px;
+  margin: 0;
 }
 
 .pv-similar-text p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: #333;
 }
 
 .pv-similar-locality {
-  color: #444;
-  margin-top: 3px;
+  color: #666;
+  font-size: 0.85rem !important;
+  margin-top: auto; /* Pushes to bottom */
+  font-style: italic;
 }
 
-/*responsive*/
+/* RESPONSIVE */
+@media (max-width: 950px) {
+  .pv-property-card, .pv-preferences-section {
+    width: 95%;
+  }
+}
 
 @media (max-width: 768px) {
   .pv-card-header {
@@ -294,10 +310,45 @@
     font-size: 1.5rem;
     padding: 10px 20px;
   }
+  
+  .pv-profile-img {
+    height: 300px;
+  }
+}
+.pv-map-box {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-@media (max-width: 480px) {
-  .pv-profile-img {
-    max-height: 260px;
-  }
+.pv-map-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--property-primary);
+  border-radius: 8px;
+  background: white;
+  width: fit-content;
+  text-decoration: none;
+  transition: 0.25s ease;
+  box-shadow: 4px 4px 0 var(--property-primary);
+}
+
+.pv-map-wrapper:hover {
+  transform: translateY(-2px);
+  background: var(--property-bg);
+}
+
+.pv-map-img {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+}
+
+.pv-map-open-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--property-accent);
 }

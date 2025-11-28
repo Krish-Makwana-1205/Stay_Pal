@@ -8,7 +8,7 @@ import LocalitySelector from "../Components/LocalitySelector";
 import { fetchSingleProperty } from "../api/filters";
 import { uploadProperty } from "../api/propertyform";
 import Alert from "../Components/Alert";
-import "../StyleSheets/PropertyForm.css";
+import "../StyleSheets/EditProperty.css";
 
 export default function EditProperty() {
     const fileInputRef = useRef(null);
@@ -114,13 +114,12 @@ const triggerFileInput = () => {
     });
   };
 
-  // Upload new images
-  const handleFileChange = (e) => {
-    const selected = Array.from(e.target.files);
-    setImages(selected); // store new files only
+ 
+  const handleFileSelect = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setImages((prev) => [...prev, ...selectedFiles]);
   };
 
-  // --- FIX: rebuild address string like PropertyForm ---
 
 const handleSave = async (e) => {
   e.preventDefault();
@@ -157,6 +156,7 @@ const handleSave = async (e) => {
     if (key === "address") return; // don't send old address
 
     if (Array.isArray(val)) {
+      // Handle array fields (like nearbyPlaces) by appending each value
       val.forEach((v) => fd.append(key, v));
     } else {
       fd.append(key, val);
@@ -176,8 +176,7 @@ const handleSave = async (e) => {
 
   try {
     const res = await uploadProperty(fd);
-    // IMPORTANT: force LocalitySelector to fetch localities for this city on edit page
-localStorage.removeItem(`localities_${p.city}`); 
+    localStorage.removeItem(`localities_${formData.city}`); 
 
     setMessage("Updated successfully!");
     navigate("/myproperties");
@@ -192,10 +191,10 @@ localStorage.removeItem(`localities_${p.city}`);
 
   // ------------------- JSX -------------------
   return (
-    <div className="property-form-container">
-      <h2 className="form-title">Edit Property</h2>
+    <div className="ep-property-form-container">
+      <h2 className="ep-form-title">Edit Property</h2>
 
-      <form onSubmit={handleSave} className="property-form" encType="multipart/form-data">
+      <form onSubmit={handleSave} className="ep-property-form" encType="multipart/form-data">
 
         {/* NAME */}
         <label>Property Name *</label>
@@ -233,37 +232,39 @@ localStorage.removeItem(`localities_${p.city}`);
 
         {/* Nearby places */}
         <label>Nearby Places</label>
-<CreatableSelect
-  isMulti
-  options={nearbyOptions}
-  value={formData.nearbyPlaces.map((p) => ({ value: p, label: p }))}
-  onChange={(selected) =>
-    setFormData({
-      ...formData,
-      nearbyPlaces: selected ? selected.map((s) => s.value) : [],
-    })
-  }
-/>
+        <CreatableSelect
+          isMulti
+          options={nearbyOptions}
+          value={formData.nearbyPlaces.map((p) => ({ value: p, label: p }))}
+          onChange={(selected) =>
+            setFormData({
+              ...formData,
+              nearbyPlaces: selected ? selected.map((s) => s.value) : [],
+            })
+          }
+        />
 
 
         {/* Locality */}
         <label>Locality *</label>
-        <LocalitySelector
-  key={formData.city} // <— FORCE reload when city changes
-  city={formData.city}
-  value={formData.locality}
-  onChange={(loc) => {
-    const list = JSON.parse(localStorage.getItem(`localities_${formData.city}`));
+        {formData.city && ( // Added conditional rendering based on the requested JSX structure
+          <LocalitySelector
+            key={formData.city} // <— FORCE reload when city changes
+            city={formData.city}
+            value={formData.locality}
+            onChange={(loc) => {
+              const list = JSON.parse(localStorage.getItem(`localities_${formData.city}`));
 
-    const match = list?.find((l) => l.locality === loc);
+              const match = list?.find((l) => l.locality === loc);
 
-    setFormData((prev) => ({
-      ...prev,
-      locality: loc,
-      pincode: match ? match.postalCode : prev.pincode, // autofill pincode
-    }));
-  }}
-/>
+              setFormData((prev) => ({
+                ...prev,
+                locality: loc,
+                pincode: match ? match.postalCode : prev.pincode, // autofill pincode
+              }));
+            }}
+          />
+        )}
 
 
         {/* PINCODE */}
@@ -305,7 +306,7 @@ localStorage.removeItem(`localities_${p.city}`);
 
         {/* Address */}
         <label>Address</label>
-        <div className="address-fields">
+        <div className="ep-address-fields">
           <input
             name="houseNumber"
             placeholder="House No"
@@ -350,51 +351,49 @@ localStorage.removeItem(`localities_${p.city}`);
         />
 
        {/* Existing Images */}
-<label>Existing Images</label>
-<div className="image-preview-container">
-  {existingImages.map((img, i) => (
-    <img key={i} src={img} className="preview-thumb" />
-  ))}
-</div>
+        <label>Existing Images</label>
+        <div className="ep-image-preview-container">
+          {existingImages.map((img, i) => (
+            <img key={i} src={img} className="ep-preview-thumb" />
+          ))}
+        </div>
 
-{/* NEW IMAGES PREVIEW */}
-{images.length > 0 && (
-  <div className="image-preview-container">
-    {images.map((img, idx) => (
-      <div key={idx} className="image-preview">
-        <img
-          src={URL.createObjectURL(img)}
-          className="preview-thumb"
+        {/* New Images */}
+        <label>New Images</label>
+        <button
+          type="button"
+          className="ep-clear-images-btn" 
+          onClick={triggerFileInput}
+          style={{ marginTop: "10px" }} 
+        >
+          Upload New Images
+        </button>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          name="images" // Kept name from original
+          multiple
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleFileSelect} // Used the new function 
         />
-      </div>
-    ))}
-  </div>
-)}
+        
+        {/* NEW IMAGES PREVIEW */}
+        {images.length > 0 && (
+          <div className="ep-image-preview-container">
+            {images.map((img, idx) => (
+              <div key={idx} className="ep-image-preview">
+                <img
+                  src={URL.createObjectURL(img)}
+                  className="ep-preview-thumb" 
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
-{/* Upload Button */}
-<button
-  type="button"
-  className="clear-images-btn"
-  onClick={triggerFileInput}
-  style={{ marginTop: "10px" }}
->
-  Upload New Images
-</button>
-
-<input
-  ref={fileInputRef}
-  type="file"
-  name="images"
-  multiple
-  accept="image/*"
-  style={{ display: "none" }}
-  onChange={(e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setImages((prev) => [...prev, ...selectedFiles]);
-  }}
-/>
-
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button type="submit" className="ep-submit-btn" disabled={loading}>
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </form>

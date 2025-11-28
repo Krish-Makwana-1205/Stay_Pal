@@ -6,7 +6,7 @@
   --my-apps-grid-line: rgba(13, 42, 79, 0.05);
 }
 
-/* --- Page Container --- */
+/* --- Page Container--- */
 .my-apps-wrapper {
   min-height: 100vh;
   position: relative;
@@ -28,16 +28,18 @@
   height: 100%;
   background-image: url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg'); 
   background-repeat: repeat;
-  background-size: 60px 60px;
-  opacity: 0.1;
+  background-size: 50px 50px; 
+  background-position: 0px 0px, 25px 25px, 50px 0px;
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
+  animation: bgPan 60s linear infinite;
 }
 
 .my-apps-container {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -52,14 +54,15 @@
 }
 
 .my-apps-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   text-transform: uppercase;
   font-weight: 800;
   color: var(--my-apps-primary);
   background: var(--my-apps-white);
-  padding: 10px 20px;
-  border: 2px solid var(--my-apps-primary);
-  box-shadow: 6px 6px 0 var(--my-apps-primary);
+  padding: 10px 30px;
+  border: none;
+  border-bottom: 4px solid var(--my-apps-primary);
+  box-shadow: 5px 5px 0 var(--my-apps-primary);
   margin: 0;
 }
 
@@ -71,13 +74,15 @@
   text-transform: uppercase;
   border: none;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
   transition: all 0.2s;
+  border-radius: 0%;
+  background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
 }
 
 .my-apps-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  transform: translate(-3px, -3px);
+  box-shadow: 5px 5px 0 var(--my-apps-primary);
   background-color: var(--my-apps-accent);
 }
 
@@ -85,7 +90,7 @@
 .my-apps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 30px;
+  gap: 40px; 
 }
 
 /* --- Card Styles --- */
@@ -93,10 +98,16 @@
   position: relative;
   background: var(--my-apps-white);
   border: 2px solid var(--my-apps-primary);
-  box-shadow: 12px 12px 0 var(--my-apps-primary);
   padding: 0;
-  transition: transform 0.2s;
+  box-shadow: 15px 15px 0 var(--my-apps-primary);
+  animation: myAppsPopUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0; 
 }
+
+.my-apps-card:nth-child(1) { animation-delay: 0.1s; }
+.my-apps-card:nth-child(2) { animation-delay: 0.2s; }
+.my-apps-card:nth-child(3) { animation-delay: 0.3s; }
+.my-apps-card:nth-child(4) { animation-delay: 0.4s; }
 
 .my-apps-card:hover {
   transform: translateY(-2px);
@@ -106,7 +117,7 @@
   height: 8px;
   width: 100%;
   background: repeating-linear-gradient(90deg, var(--my-apps-primary) 0%, var(--my-apps-primary) 20%, var(--my-apps-accent) 20%, var(--my-apps-accent) 40%);
-  border-bottom: 2px solid var(--my-apps-primary);
+  border-bottom: none; 
 }
 
 .my-apps-card-body {
@@ -128,7 +139,7 @@
   width: 100px;
   height: 100px;
   border: 2px solid var(--my-apps-primary);
-  background: #e0e0e0;
+  background: #f0f0f0; /* Matched color */
   box-shadow: 5px 5px 0 var(--my-apps-accent);
   overflow: hidden;
   display: flex;
@@ -168,10 +179,10 @@
   display: inline-block;
   background: var(--my-apps-primary);
   color: var(--my-apps-white);
-  font-size: 0.7rem;
+  font-size: 0.75rem; /* Slightly larger to match profile */
   font-weight: 700;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 4px 12px; /* Updated padding */
   margin-bottom: 4px;
   width: fit-content;
   clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
@@ -179,10 +190,11 @@
 
 .my-apps-data-value {
   font-size: 1rem;
-  color: #333;
+  color: #333; /* Darker text */
   font-weight: 500;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 2px;
+  border-bottom: 2px solid #e0e0e0; /* Thicker line */
+  padding-bottom: 4px;
+  background: transparent;
 }
 
 /* Helper Text */
@@ -193,4 +205,17 @@
   font-weight: 800;
   color: var(--my-apps-primary);
   text-transform: uppercase;
+  text-shadow: 2px 2px 0 #fff; /* Added distinct shadow */
+}
+
+/* --- Keyframe Animations --- */
+
+@keyframes myAppsPopUp {
+  0% { opacity: 0; transform: scale(0.9) translateY(50px); box-shadow: 0 0 0 var(--my-apps-primary); }
+  100% { opacity: 1; transform: scale(1) translateY(0); box-shadow: 15px 15px 0px var(--my-apps-primary); }
+}
+
+@keyframes bgPan {
+  from { background-position: 0px 0px, 25px 25px, 50px 0px; }
+  to { background-position: 100px 100px, 125px 125px, 150px 100px; }
 }

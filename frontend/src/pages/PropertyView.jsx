@@ -5,16 +5,21 @@ import {
   fetchproperty,
   applyForProperty,
 } from "../api/filters";
+import { useAuth } from "../context/AuthContext";
 import "../StyleSheets/PropertyView.css";
+import Alert from "../Components/Alert";
 
 export default function PropertyView() {
   const { email, name } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [property, setProperty] = useState(null);
   const [similar, setSimilar] = useState([]);
   const [loading, setLoading] = useState(true);
   const [applyLoading, setApplyLoading] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState("info");
 
   useEffect(() => {
     async function load() {
@@ -66,51 +71,98 @@ export default function PropertyView() {
     if (property) loadSimilar(property);
   }, [property]);
 
+  const handleChatClick = () => {
+    if (user?.email === property?.email) {
+      setAlertType("error");
+      setAlertMsg("You cannot chat with yourself!");
+      return;
+    }
+    navigate(`/chat/${property.email}`);
+  };
+
+  const handleApplyClick = async () => {
+    if (user?.email === property?.email) {
+      setAlertType("error");
+      setAlertMsg("You cannot apply to your own property!");
+      return;
+    }
+
+    try {
+      setApplyLoading(true);
+
+      const payload = {
+        propertyName: property.name,
+        propertyOwnerEmail: property.email,
+      };
+
+      await applyForProperty(payload);
+      setAlertType("success");
+      setAlertMsg("Application sent to the owner!");
+    } catch (err) {
+      console.error(err);
+      setAlertType("error");
+      setAlertMsg(err.response?.data?.message || "Failed to apply.");
+    } finally {
+      setApplyLoading(false);
+    }
+  };
+
   if (loading) return <h2 className="pv-loading">Loading property...</h2>;
   if (!property) return <h2 className="pv-loading">Property not found.</h2>;
 
+  const isOwner = user?.email === property?.email;
+
   return (
     <div className="pv-wrapper pv-profile-container">
-
-      {/* HEADER */}
       <div className="pv-header-box">
         <h2 className="pv-page-title pv-profile-title">{property.name}</h2>
       </div>
 
-      {/* CARD */}
       <div className="pv-property-card pv-profile-card">
-
-        {/* HEADER ROW */}
         <div className="pv-card-header pv-profile-card-header">
           <h3 className="pv-profile-card-title">{property.name}</h3>
 
-          <button
-            className="pv-action-btn pv-edit-btn pv-small pv-profile-btn pv-profile-btn-accent"
-            onClick={() => navigate(`/chat/${property.email}`)}
-          >
-            Chat With Owner
-          </button>
+          {!isOwner ? (
+            <button
+              className="pv-action-btn pv-edit-btn pv-small pv-profile-btn pv-profile-btn-accent"
+              onClick={handleChatClick}
+            >
+              Chat With Owner
+            </button>
+          ) : (
+            <button
+              className="pv-action-btn pv-edit-btn pv-small pv-profile-btn"
+              disabled
+              style={{ 
+                backgroundColor: "#ccc", 
+                cursor: "not-allowed",
+                opacity: 0.6 
+              }}
+            >
+              Your Property
+            </button>
+          )}
         </div>
 
-        {/* BODY */}
         <div className="pv-card-body pv-profile-body">
-          
-          {/* MAIN IMAGE */}
           <div className="pv-image-wrapper pv-profile-image-box">
-            {property.imgLink?.length > 0 && (
-              <img
-                src={property.imgLink[0]}
-                alt={property.name}
-                className="pv-profile-img"
-              />
+            {property.imgLink && property.imgLink.length > 0 ? (
+              property.imgLink.map((link, index) => (
+                <img
+                  key={index}
+                  src={link}
+                  alt={`${property.name} view ${index + 1}`}
+                  className="pv-profile-img"
+                />
+              ))
+            ) : (
+              <p>No images available</p>
             )}
           </div>
 
-          {/* DETAILS GRID */}
           <div className="pv-details-grid pv-profile-grid">
             <p><strong>Rent:</strong> ₹{property.rent}</p>
             <p><strong>BHK:</strong> {property.BHK}</p>
-
             <p><strong>City:</strong> {property.city}</p>
             <p><strong>Locality:</strong> {property.locality}</p>
 
@@ -120,7 +172,6 @@ export default function PropertyView() {
 
             <p><strong>House Type:</strong> {property.houseType}</p>
             <p><strong>Furnishing:</strong> {property.furnishingType}</p>
-
             <p><strong>Parking:</strong> {property.parkingArea}</p>
             <p>
               <strong>Transport:</strong>{" "}
@@ -131,21 +182,34 @@ export default function PropertyView() {
               <strong>Address:</strong> {property.address.split("$*").join(", ")}
             </p>
 
-            <p className="pv-full-width">
-              <strong>Google Maps: </strong>
-              <a
-                href={property.addressLink}
-                target="_blank"
-                rel="noreferrer"
-                className="pv-map-link pv-profile-link"
-              >
-                Open in Maps
-              </a>
-            </p>
+           <div className="pv-full-width pv-map-box">
+  <div className="pv-full-width pv-map-box">
+  <strong>Google Maps:</strong>
+
+  <a
+    href={property.addressLink}
+    target="_blank"
+    rel="noreferrer"
+    className="pv-map-wrapper"
+  >
+    <img
+      src="/location-icon.png"
+      alt="Open in Google Maps"
+      className="pv-map-img"
+    />
+
+    <span className="pv-map-open-text">
+      Open in Maps
+    </span>
+  </a>
+</div>
+
+</div>
+
 
             <p className="pv-full-width">
               <strong>Nearby Places:</strong>{" "}
-              {property.nearbyPlaces?.length
+              {property.nearbyPlaces && property.nearbyPlaces.length > 0
                 ? property.nearbyPlaces.join(", ")
                 : "None"}
             </p>
@@ -153,40 +217,41 @@ export default function PropertyView() {
             <p><strong>Owner Email:</strong> {property.email}</p>
           </div>
 
-          {/* DESCRIPTION */}
           <div className="pv-description-box pv-profile-desc-box">
             <strong>Description:</strong> {property.description}
           </div>
 
-          {/* APPLY BUTTON */}
-          <button
-            className="pv-primary-btn pv-profile-btn pv-profile-btn-primary"
-            disabled={applyLoading}
-            onClick={async () => {
-              try {
-                setApplyLoading(true);
-
-                const payload = {
-                  propertyName: property.name,
-                  propertyOwnerEmail: property.email,
-                };
-
-                await applyForProperty(payload);
-                alert("Application sent to the owner!");
-              } catch (err) {
-                console.error(err);
-                alert("Failed to apply.");
-              } finally {
-                setApplyLoading(false);
-              }
-            }}
-          >
-            {applyLoading ? "Applying..." : "Apply"}
-          </button>
+          {!isOwner ? (
+            <button
+              className="pv-primary-btn pv-profile-btn pv-profile-btn-primary"
+              disabled={applyLoading}
+              onClick={handleApplyClick}
+            >
+              {applyLoading ? "Applying..." : "Apply for Property"}
+            </button>
+          ) : (
+            <button
+              className="pv-primary-btn pv-profile-btn"
+              disabled
+              style={{ 
+                backgroundColor: "#ccc", 
+                cursor: "not-allowed",
+                opacity: 0.6 
+              }}
+            >
+              You Own This Property
+            </button>
+          )}
+          
+          <Alert
+            message={alertMsg}
+            type={alertType}
+            onClose={() => setAlertMsg("")}
+            autoClose={5000}
+          />
         </div>
       </div>
 
-      {/* SIMILAR PROPERTIES SECTION */}
       {similar.length > 0 && (
         <div className="pv-preferences-section pv-profile-pref-box">
           <div className="pv-pref-header pv-profile-pref-header">
@@ -195,7 +260,7 @@ export default function PropertyView() {
 
           <div className="pv-similar-list">
             {similar.map((item, idx) => {
-              const img = item.imgLink?.[0];
+              const img = item.imgLink && item.imgLink[0];
 
               return (
                 <div
@@ -203,7 +268,7 @@ export default function PropertyView() {
                   className="pv-similar-card"
                   onClick={() => navigate(`/property/${item.email}/${item.name}`)}
                 >
-                  <img src={img} alt="" className="pv-similar-img" />
+                  {img && <img src={img} alt="" className="pv-similar-img" />}
                   <div className="pv-similar-text">
                     <h4>{item.BHK} BHK in {item.city}</h4>
                     <p>₹{item.rent}</p>
@@ -215,7 +280,6 @@ export default function PropertyView() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

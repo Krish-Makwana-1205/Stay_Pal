@@ -5,11 +5,24 @@ const { getCoordinates } = require("../utils/geocode.js");
 
 require("dotenv").config();
 
-
 async function uploadProperty(req, res) {
   try {
-    const imgUrls = req.files.map(file => file.path);
+    // Get new uploaded images
+    const newImgUrls = req.files ? req.files.map(file => file.path) : [];
+    
+    // Get existing images from frontend (sent as array)
+    let existingImages = req.body.existingImages || [];
+    
+    // Handle case where existingImages might be a string (single value from FormData)
+    if (typeof existingImages === 'string') {
+      existingImages = [existingImages];
+    }
+    
+    // Merge and remove duplicates using Set
+    const allImages = [...new Set([...existingImages, ...newImgUrls])];
+    
     let body = req.body;
+    
     // Trim trailing spaces AND convert to lowercase for relevant fields
     if (body.description) body.description = body.description.trimEnd().toLowerCase();
     if (body.rent) body.rent = body.rent;
@@ -37,19 +50,22 @@ async function uploadProperty(req, res) {
       console.error("Coordinate error:", error.message);
       return res.status(500).json({ message: "Unable to fetch location coordinates" });
     }
+    
     if (!req.user.email) {
       return res.status(400).json({ message: "User is not logged in" });
     }
+    
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
       latitude = null;
       longitude = null;
     }
+    
     const Property = await property.findOneAndUpdate(
       { email: req.user.email, name: body.name },
       {
         email: req.user.email,
         name: body.name,
-        imgLink: imgUrls,
+        imgLink: allImages,  // ✅ Use merged and deduplicated images
         description: body.description,
         BHK: body.BHK,
         rent: body.rent,
@@ -59,7 +75,7 @@ async function uploadProperty(req, res) {
         nation: body.nation,
         pincode: body.pincode,
         city: body.city,
-        furnishingType: body.furnishingType || "unfurnished", // lowercase default too
+        furnishingType: body.furnishingType || "unfurnished",
         areaSize: body.areaSize ? Number(body.areaSize) : null,
         nearbyPlaces: Array.isArray(body.nearbyPlaces) ? body.nearbyPlaces.map(place => place.trimEnd().toLowerCase()) : [],
         transportAvailability: body.transportAvailability === "true" || body.transportAvailability === true,
@@ -69,13 +85,14 @@ async function uploadProperty(req, res) {
         latitude: latitude,
         longitude: longitude,
         location: {
-          type: 'Point', // specify it's a point geometry
-          coordinates: [longitude, latitude], // store longitude and latitude as an array
+          type: 'Point',
+          coordinates: [longitude, latitude],
         }
       },
       { timestamps: true, upsert: true }
     );
-    return res.status(200).json({ message: "Property created successfully" });
+    
+    return res.status(200).json({ message: "Property updated successfully" });
   } catch (error) {
     console.log('error');
     console.log("Error uploading property:", error.message);
@@ -171,11 +188,11 @@ async function deleteProperty(req, res) {
       });
     }
 
-    sendMail(
-      email,
-      "Property Deleted",
-      `Your property "${propertyName}" has been successfully deleted from your StayPal account.`
-    );
+    // sendMail(
+    //   email,
+    //   "Property Deleted",
+    //   `Your property "${propertyName}" has been successfully deleted from your StayPal account.`
+    // );
 
     return res.status(200).json({
       success: true,

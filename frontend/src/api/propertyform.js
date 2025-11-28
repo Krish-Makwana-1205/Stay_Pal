@@ -1,8 +1,7 @@
-
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8002/propertyOwner", 
+  baseURL: `${import.meta.env.VITE_API_URL}/propertyOwner`,
   withCredentials: true,
 });
 
@@ -11,6 +10,21 @@ export const uploadProperty = (formData) =>
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-export const savePreferences = (payload) => API.post("/preferences", payload);
+export const deleteProperty = async (propertyName) => {
+  try {
+    const { data } = await API.post(
+      "/delete-property",
+      { propertyName },
+      { withCredentials: true }
+    );
+
+    return data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const savePreferences = (payload) =>
+  API.post("/preferences", payload);
 
 export default API;

@@ -27,6 +27,9 @@ export default function Filters({ onApply, defaultCity }) {
   const [description, setDescription] = useState("");
   const [googleLink, setGoogleLink] = useState("");
 
+  // 🔧 NEW: Track if we've done initial load
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
   // Load saved filters on mount
   useEffect(() => {
     try {
@@ -35,6 +38,7 @@ export default function Filters({ onApply, defaultCity }) {
       if (saved.city) setSelectedCity({ value: saved.city, label: saved.city });
       if (saved.rentLower !== undefined) setRentLower(String(saved.rentLower));
       if (saved.rentUpper !== undefined) setRentUpper(String(saved.rentUpper));
+      // ⭐ RESTORE LOCALITY - this is the key fix
       if (saved.locality) setLocality(saved.locality);
       if (saved.BHK !== undefined) setBHK(String(saved.BHK));
       if (saved.furnishingType) setFurnishingType(saved.furnishingType);
@@ -45,6 +49,7 @@ export default function Filters({ onApply, defaultCity }) {
       if (saved.nearbyPlaces !== undefined) setNearbyPlaces(saved.nearbyPlaces);
       if (saved.description) setDescription(saved.description);
       if (saved.googleLink) setGoogleLink(saved.googleLink);
+      
       // If there's no saved city but a parent provided defaultCity, use it
       if (!saved.city && defaultCity) {
         setSelectedCity({ value: defaultCity, label: defaultCity });
@@ -53,13 +58,19 @@ export default function Filters({ onApply, defaultCity }) {
         const perSaved = localStorage.getItem(perCityKey);
         if (perSaved) setLocality(perSaved);
       }
+
+      setInitialLoadDone(true);
     } catch (e) {
       console.error("Error loading saved filters:", e);
+      setInitialLoadDone(true);
     }
   }, [storageKey]);
 
   // ---------- persist filters as user types ----------
   useEffect(() => {
+    // ⭐ Don't persist until initial load is complete
+    if (!initialLoadDone) return;
+
     const payload = {
       city: selectedCity?.value || "",
       locality,
@@ -78,6 +89,7 @@ export default function Filters({ onApply, defaultCity }) {
       localStorage.setItem(storageKey, JSON.stringify(payload));
     } catch {}
   }, [
+    initialLoadDone,
     storageKey,
     selectedCity,
     locality,
@@ -219,7 +231,7 @@ export default function Filters({ onApply, defaultCity }) {
         </button>
       </div>
 
-      {/* ★★★★★ FIXED CITY LOGIC ★★★★★ */}
+      {/* CITY */}
       <div className="filter-group">
         <label>City *</label>
         <AsyncSelect
@@ -229,23 +241,29 @@ export default function Filters({ onApply, defaultCity }) {
           value={selectedCity}
           onChange={(val) => {
             setSelectedCity(val);
-            setLocality("");
+            
+            // ⭐ IMPORTANT: When user manually changes city, clear locality
+            // BUT only if this is NOT the initial load
+            if (initialLoadDone) {
+              setLocality("");
+            }
 
-            // ⭐ THE FIXED CORRECT LOGIC YOU ASKED FOR:
             if (val?.value) {
               localStorage.setItem("defaultCity", val.value.trim());
               // If user previously saved a default locality for this city, apply it
-              try {
-                const perCityKey = `defaultLocality_${userKey}_${val.value}`;
-                const savedLoc = localStorage.getItem(perCityKey);
-                if (savedLoc) setLocality(savedLoc);
-              } catch (e) {}
+              // BUT only during manual city change (not during initial restore)
+              if (initialLoadDone) {
+                try {
+                  const perCityKey = `defaultLocality_${userKey}_${val.value}`;
+                  const savedLoc = localStorage.getItem(perCityKey);
+                  if (savedLoc) setLocality(savedLoc);
+                } catch (e) {}
+              }
             }
           }}
           placeholder="Search for a city..."
         />
       </div>
-      {/* ★★★★★ END FIX ★★★★★ */}
 
       {/* LOCALITY */}
       <div className="filter-group">

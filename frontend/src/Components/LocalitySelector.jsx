@@ -4,58 +4,60 @@ import Select from "react-select";
 const LocalitySelector = ({ city, value, onChange }) => {
   const [localityList, setLocalityList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [fetchingMsg, setFetchingMsg] = useState(false); // NEW
-
+  const [fetchingMsg, setFetchingMsg] = useState(false);
+  
   const cacheKey = `localities_${city}`;
 
   const fetchLocalities = async (cityName) => {
     if (!cityName) return;
-
+    
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       setLocalityList(JSON.parse(cached));
       return;
     }
-
+    
     setLoading(true);
-    setFetchingMsg(true); // show "please wait" message
-
+    setFetchingMsg(true);
+    
     try {
       const res = await fetch(
         `http://api.geonames.org/postalCodeSearchJSON?placename=${cityName}&maxRows=500&username=Namra`
       );
-
       const data = await res.json();
-
       const localityObjects = data.postalCodes.map((p) => ({
         locality: p.placeName,
         postalCode: p.postalCode,
       }));
-
       const uniqueLocalities = Array.from(
         new Map(localityObjects.map((item) => [item.locality, item])).values()
       );
-
       setLocalityList(uniqueLocalities);
       localStorage.setItem(cacheKey, JSON.stringify(uniqueLocalities));
     } catch (err) {
       console.error("Error fetching locality:", err);
       setLocalityList([]);
     }
-
+    
     setLoading(false);
-
-    // ⏳ show wait message for 2 seconds
     setTimeout(() => setFetchingMsg(false), 2000);
   };
 
   useEffect(() => {
     if (city) {
-      setLocalityList([]);      // clear old city
-      onChange("");             // reset selected locality
+      const cached = localStorage.getItem(cacheKey);
+      if (!cached) {
+        setLocalityList([]);
+      }
+
       fetchLocalities(city);
+    } else {
+      setLocalityList([]);
+      onChange("");
     }
   }, [city]);
+
+  const selectValue = value ? { label: value, value: value } : null;
 
   return (
     <div style={{ position: "relative" }}>
@@ -80,7 +82,7 @@ const LocalitySelector = ({ city, value, onChange }) => {
           Fetching localities…
         </div>
       )}
-
+      
       <Select
         isLoading={loading}
         isDisabled={!city || fetchingMsg || loading}
@@ -89,7 +91,7 @@ const LocalitySelector = ({ city, value, onChange }) => {
           label: loc.locality,
           value: loc.locality
         }))}
-        value={value ? { label: value, value: value } : null}
+        value={selectValue}
         onChange={(selected) => onChange(selected ? selected.value : "")}
         isClearable
       />

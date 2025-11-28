@@ -186,7 +186,7 @@ export default function TenantProfile() {
         </div>
 
         <div className="bp-header">
-          <h2>Tenant Profile</h2>
+          <h2>Profile</h2>
           {!isEditing ? (
             <button onClick={() => setIsEditing(true)} className="bp-secondary-btn">
               Edit Profile

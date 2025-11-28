@@ -68,14 +68,23 @@ export default function MyApplications() {
                   <div className="my-apps-card-body">
                     
                     {/* Header Section: Photo + Name */}
-                    <div className="my-apps-card-header">
+                    <div
+                      className="my-apps-card-header"
+                      style={{ cursor: prop?.email && prop?.name ? "pointer" : "default" }}
+                      onClick={() => {
+                        if (prop?.email && prop?.name) {
+                          navigate(`/property/${prop.email}/${prop.name}`);
+                        }
+                      }}
+                    >
                         <div className="my-apps-photo-frame">
-                            <img 
-                                src="https://cdn-icons-png.flaticon.com/512/609/609803.png" 
-                                alt="Property Icon" 
-                                className="my-apps-photo"
-                                style={{ padding: '15px' }} 
-                            />
+                          <img 
+                            src={prop?.imgLink && prop.imgLink.length > 0 ? prop.imgLink[0] : "https://cdn-icons-png.flaticon.com/512/609/609803.png"}
+                            alt={prop.name || "Property Image"} 
+                            className="my-apps-photo"
+                            style={{ padding: '15px' }} 
+                            onError={(e) => { e.target.onerror = null; e.target.src = "https://cdn-icons-png.flaticon.com/512/609/609803.png" }}
+                          />
                         </div>
                         <div>
                              <h3 className="my-apps-card-title">{prop.name || "Unknown Property"}</h3>
