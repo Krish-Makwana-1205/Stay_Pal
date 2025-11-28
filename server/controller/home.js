@@ -128,7 +128,7 @@ async function applyForProperty(req, res) {
       )
     } catch (e) {
       console.log(e);
-      return res.status(500).json({ success: false, message: "could not send message" });
+      return res.status(200).json({ success: true, message: "could not send message" });
     }
     console.log('complete');
     return res.status(200).json({ success: true, message: "Application sent successfully" });

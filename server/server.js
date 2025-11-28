@@ -16,13 +16,17 @@ require('dotenv').config();
 const cors = require('cors');
 
 const url = process.env.MONGO;
-const PORT = 8002;
+const PORT = process.env.PORT || 8002;
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",
+        "https://staypal1-topaz.vercel.app"
+    ],
     credentials: true,
 }));
 
@@ -41,4 +45,4 @@ app.use("/home", dashboard);
 app.use("/roommate", roommate);  
 app.use("/chat", chat);
 app.use("/prediction", predictionRoutes);
-app.use("/radiussearch", RadiusSearch);
+app.use("/radiussearch",RadiusSearch);
