@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { searchRoommatesParams, applyForRoommate } from "../api/roommate";
+import AsyncSelect from "react-select/async";
+import { City } from "country-state-city";
 import "../StyleSheets/SearchRoommates.css"; 
 
 const STORAGE_KEY = "roommateFilters";
+const RESULTS_KEY = "roommateResults";
 
 export default function ViewRoommates() {
   const { city: routeCity } = useParams();
   const navigate = useNavigate();
+  const hasSearchedRef = useRef(false);
 
   const imagePrefs = [
     { key: "nightOwl", label: "Night Owl", img: "/nightOwl.png" },
@@ -64,10 +68,41 @@ export default function ViewRoommates() {
     return defaultFilters;
   };
 
+  // Load cached results from localStorage
+  const getInitialResults = () => {
+    try {
+      const saved = localStorage.getItem(RESULTS_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (err) {
+      console.error("Error loading results from localStorage:", err);
+    }
+    return [];
+  };
+
   const [filters, setFilters] = useState(getInitialFilters);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(getInitialResults);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // Initialize selectedCity from saved filters
+  const getInitialCity = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.city) {
+          return { value: parsed.city, label: parsed.city };
+        }
+      }
+    } catch (err) {
+      console.error("Error loading city from localStorage:", err);
+    }
+    return null;
+  };
+  
+  const [selectedCity, setSelectedCity] = useState(getInitialCity);
   // eslint-disable-next-line no-unused-vars
   const [applyLoading, setApplyLoading] = useState({});
 
@@ -80,10 +115,34 @@ export default function ViewRoommates() {
     }
   }, [filters]);
 
+  // Save results to localStorage whenever they change
   useEffect(() => {
+    try {
+      localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
+    } catch (err) {
+      console.error("Error saving results to localStorage:", err);
+    }
+  }, [results]);
+
+  // Auto-search on mount if filters exist
+  useEffect(() => {
+    const savedFilters = getInitialFilters();
+    
+    // If routeCity exists, it takes priority
     if (routeCity) {
+      setSelectedCity({ value: routeCity, label: routeCity });
       setFilters((s) => ({ ...s, city: routeCity }));
       setTimeout(() => submit({ preventDefault: () => {} }), 0);
+      hasSearchedRef.current = true;
+    } 
+    // Otherwise, if we have saved filters with a city and haven't searched yet
+    else if (savedFilters.city && savedFilters.city.trim() !== "" && !hasSearchedRef.current) {
+      // Only auto-search if we don't already have cached results
+      const cachedResults = getInitialResults();
+      if (cachedResults.length === 0) {
+        setTimeout(() => submit({ preventDefault: () => {} }), 0);
+      }
+      hasSearchedRef.current = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeCity]);
@@ -98,6 +157,18 @@ export default function ViewRoommates() {
   // Specific Toggle Handler for Icon Grid
   const togglePref = (key) => {
     setFilters((s) => ({ ...s, [key]: !s[key] }));
+  };
+
+  // City loader function for AsyncSelect
+  const loadCityOptions = (inputValue, callback) => {
+    const allCities = City.getCitiesOfCountry("IN");
+    const filtered = allCities
+      .filter((c) =>
+        c.name.toLowerCase().includes((inputValue || "").toLowerCase())
+      )
+      .slice(0, 20)
+      .map((c) => ({ label: c.name, value: c.name }));
+    callback(filtered);
   };
 
   async function submitRoommateSearch(filtersForm) {
@@ -159,14 +230,18 @@ export default function ViewRoommates() {
 
   const submit = async (e) => {
     e?.preventDefault?.();
-    if (!filters.city || filters.city.trim() === "") {
+    if (!selectedCity?.value || selectedCity.value.trim() === "") {
       setError("City is required");
       return;
     }
     setError("");
     setLoading(true);
+    
+    // Update filters with selected city
+    const updatedFilters = { ...filters, city: selectedCity.value };
+    
     try {
-      const { arr: data } = await submitRoommateSearch(filters);
+      const { arr: data } = await submitRoommateSearch(updatedFilters);
       
       const normalized = Array.isArray(data)
         ? data.map((r) => ({
@@ -196,9 +271,12 @@ export default function ViewRoommates() {
 
   const resetFilters = () => {
     setFilters(defaultFilters);
+    setSelectedCity(null);
     setResults([]);
     setError("");
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(RESULTS_KEY);
+    hasSearchedRef.current = false;
   };
 
   return (
@@ -211,7 +289,32 @@ export default function ViewRoommates() {
 
           <div className="vm-filter-group">
             <label className="vm-filter-label">City *</label>
-            <input className="vm-filter-input" value={filters.city} onChange={handleChange('city')} placeholder="e.g. Mumbai" />
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadCityOptions}
+              defaultOptions
+              value={selectedCity}
+              onChange={(val) => {
+                setSelectedCity(val);
+                setFilters((s) => ({ ...s, city: val?.value || "" }));
+                if (val?.value) {
+                  localStorage.setItem("defaultCity", val.value.trim());
+                }
+              }}
+              placeholder="Search for a city..."
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  minHeight: '40px',
+                  borderRadius: '4px',
+                  borderColor: '#ddd',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
+            />
           </div>
 
           <div className="vm-filter-group">
@@ -306,7 +409,7 @@ export default function ViewRoommates() {
         {/* RIGHT RESULTS */}
         <main className="vm-results-container">
           <div className="vm-results-card">
-            <h2 className="vm-results-heading">Results {filters.city ? `for ${filters.city}` : ''}</h2>
+            <h2 className="vm-results-heading">Results {selectedCity?.value ? `for ${selectedCity.value}` : ''}</h2>
 
             {loading && <div style={{textAlign:'center', padding:20, fontStyle:'italic'}}>Searching candidates...</div>}
             

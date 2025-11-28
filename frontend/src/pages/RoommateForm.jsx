@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AsyncSelect from "react-select/async";
+import { City } from "country-state-city";
 import NumberInput from "../Components/NumberInput";
 import Alert from "../Components/Alert";
 import API from "../api/roommate";
@@ -10,7 +12,7 @@ export default function RoommateForm() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  const [city, setCity] = useState("");
+  const [selectedCity, setSelectedCity] = useState(null);
   const [rentLower, setRentLower] = useState("");
   const [rentUpper, setRentUpper] = useState("");
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -19,6 +21,18 @@ export default function RoommateForm() {
   const [serverListing, setServerListing] = useState(null);
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+
+  // City loader function for AsyncSelect
+  const loadCityOptions = (inputValue, callback) => {
+    const allCities = City.getCitiesOfCountry("IN");
+    const filtered = allCities
+      .filter((c) =>
+        c.name.toLowerCase().includes((inputValue || "").toLowerCase())
+      )
+      .slice(0, 20)
+      .map((c) => ({ label: c.name, value: c.name }));
+    callback(filtered);
+  };
 
   // fetch server listing for current user
   useEffect(() => {
@@ -35,13 +49,13 @@ export default function RoommateForm() {
         if (Array.isArray(data) && data.length > 0) {
           const r = data[0];
           setServerListing(r);
-          setCity(r.city ?? "");
+          setSelectedCity(r.city ? { value: r.city, label: r.city } : null);
           setRentLower(String(r.rentlower ?? ""));
           setRentUpper(String(r.rentupper ?? ""));
           setIsEditing(false);
         } else {
           setServerListing(null);
-          setCity("");
+          setSelectedCity(null);
           setRentLower("");
           setRentUpper("");
           setIsEditing(false);
@@ -49,7 +63,7 @@ export default function RoommateForm() {
       } catch (err) {
         console.error("Failed to fetch roommate listing:", err);
         setServerListing(null);
-        setCity("");
+        setSelectedCity(null);
         setRentLower("");
         setRentUpper("");
       } finally {
@@ -63,7 +77,7 @@ export default function RoommateForm() {
 
   const isFormEditable = isEditing || !serverListing;
 
-  const safeSetCity = (v) => { if (isFormEditable) setCity(v); };
+  const safeSetCity = (v) => { if (isFormEditable) setSelectedCity(v); };
   const safeSetRentLower = (v) => { if (isFormEditable) setRentLower(v); };
   const safeSetRentUpper = (v) => { if (isFormEditable) setRentUpper(v); };
 
@@ -72,12 +86,12 @@ export default function RoommateForm() {
     setMessage({ text: "", type: "" });
     const lower = Number(rentLower), upper = Number(rentUpper);
 
-    if (!city || city.trim() === "") return setMessage({ text: "City required", type: "error" });
+    if (!selectedCity?.value || selectedCity.value.trim() === "") return setMessage({ text: "City required", type: "error" });
     if (Number.isNaN(lower) || Number.isNaN(upper)) return setMessage({ text: "Enter valid rents", type: "error" });
 
     setSubmitting(true);
     try {
-      const payload = { city: city.trim().toLowerCase(), rentlower: lower, rentupper: upper };
+      const payload = { city: selectedCity.value.trim().toLowerCase(), rentlower: lower, rentupper: upper };
       const res = await API.post("/add", payload, { withCredentials: true });
 
       if (res.status === 200 || res.status === 201) {
@@ -101,12 +115,12 @@ export default function RoommateForm() {
     setMessage({ text: "", type: "" });
     const lower = Number(rentLower), upper = Number(rentUpper);
 
-    if (!city || city.trim() === "") return setMessage({ text: "City required", type: "error" });
+    if (!selectedCity?.value || selectedCity.value.trim() === "") return setMessage({ text: "City required", type: "error" });
     if (Number.isNaN(lower) || Number.isNaN(upper)) return setMessage({ text: "Enter valid rents", type: "error" });
 
     setSubmitting(true);
     try {
-      const newCity = city.trim().toLowerCase();
+      const newCity = selectedCity.value.trim().toLowerCase();
       const oldCity = (serverListing?.city || "").trim().toLowerCase();
 
       let res;
@@ -138,12 +152,12 @@ export default function RoommateForm() {
     if (!window.confirm("Delete your roommate listing? This cannot be undone.")) return;
     setSubmitting(true);
     try {
-      const payload = { city: (serverListing?.city || city || "").trim().toLowerCase() };
+      const payload = { city: (serverListing?.city || selectedCity?.value || "").trim().toLowerCase() };
       const res = await API.post("/delete", payload, { withCredentials: true });
 
       if (res.status === 200) {
         setServerListing(null);
-        setCity("");
+        setSelectedCity(null);
         setRentLower("");
         setRentUpper("");
         setIsEditing(false);
@@ -212,15 +226,31 @@ export default function RoommateForm() {
             else handleCreate();
           }}
         >
-          {/* Inputs Section */}
+          {/* City Dropdown */}
           <div className="rm-form-group">
-            <label className="rm-label">City</label>
-            <input
-              className="rm-input"
-              value={city}
-              onChange={(e) => safeSetCity(e.target.value)}
-              placeholder="Enter city"
-              disabled={!isFormEditable}
+            <label className="rm-label">City *</label>
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadCityOptions}
+              defaultOptions
+              value={selectedCity}
+              onChange={(val) => safeSetCity(val)}
+              placeholder="Search for a city..."
+              isDisabled={!isFormEditable}
+              styles={{
+                control: (base, state) => ({
+                  ...base,
+                  minHeight: '40px',
+                  borderRadius: '4px',
+                  borderColor: state.isFocused ? '#4a90e2' : '#ddd',
+                  backgroundColor: !isFormEditable ? '#f5f5f5' : 'white',
+                  cursor: !isFormEditable ? 'not-allowed' : 'default',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
             />
           </div>
 
@@ -274,7 +304,7 @@ export default function RoommateForm() {
                 <button 
                   type="button" 
                   className="rm-btn-secondary" 
-                  onClick={() => { setIsEditing(false); setCity(""); setRentLower(""); setRentUpper(""); }}
+                  onClick={() => { setIsEditing(false); setSelectedCity(null); setRentLower(""); setRentUpper(""); }}
                 >
                   Cancel
                 </button>
@@ -291,7 +321,7 @@ export default function RoommateForm() {
                   className="rm-btn-secondary" 
                   onClick={() => { 
                     setIsEditing(false); 
-                    setCity(serverListing.city || ""); 
+                    setSelectedCity(serverListing.city ? { value: serverListing.city, label: serverListing.city } : null); 
                     setRentLower(String(serverListing.rentlower ?? "")); 
                     setRentUpper(String(serverListing.rentupper ?? "")); 
                   }}
