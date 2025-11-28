@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8002/propertyOwner", 
-  withCredentials:true
+  baseURL: `${import.meta.env.VITE_API_URL}/propertyOwner`,
+  withCredentials: true,
 });
 
 export const fetchMyProperties = () => API.get(`/properties`);
+export default API;
