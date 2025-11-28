@@ -9,7 +9,6 @@ import "../StyleSheets/Dashboard.css";
 import Header from '../Components/Header';
 import FeaturedProperties from "../Components/FeaturedProperties";
 
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
@@ -88,31 +87,47 @@ const Dashboard = () => {
     <>
       <Header user={user} onNavigate={navigate} onLogout={handleLogout} active="home" />
       <div className="dashboard-container">
-
         <div className="dashboard-main">
-          <hr className="dashboard-hr" />
-
           <div className="city-select-section">
-            <h2>Select a City</h2>
-           <Select
-  options={cityOptions}
-  placeholder="Choose your city..."
-  value={
-    defaultCity
-      ? { value: defaultCity, label: defaultCity }
-      : null
-  }
-  onChange={handleCityChange}
-  className="city-dropdown"
-  isSearchable
-  menuPortalTarget={document.body}   // <-- ADD THIS
-  styles={{
-    menuPortal: (base) => ({ ...base, zIndex: 9999 }),  // <-- ADD THIS
-  }}
-/>
-
+            <h2 className="city-select-title">Select Your City</h2>
+            <Select
+              options={cityOptions}
+              placeholder="Choose your city..."
+              value={
+                defaultCity
+                  ? { value: defaultCity, label: defaultCity }
+                  : null
+              }
+              onChange={handleCityChange}
+              className="city-dropdown"
+              isSearchable
+              menuPortalTarget={document.body}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                control: (base) => ({
+                  ...base,
+                  border: '2px solid var(--property-primary)',
+                  borderRadius: '0',
+                  boxShadow: '4px 4px 0 var(--property-primary)',
+                  minHeight: '50px',
+                  fontSize: '1rem',
+                  '&:hover': {
+                    borderColor: 'var(--property-primary)',
+                  }
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected 
+                    ? 'var(--property-primary)' 
+                    : state.isFocused 
+                    ? 'var(--property-bg)' 
+                    : 'white',
+                  color: state.isSelected ? 'white' : 'var(--property-primary)',
+                  cursor: 'pointer',
+                }),
+              }}
+            />
           </div>
-
 
           <FeaturedProperties
             loading={loadingProps}
@@ -121,46 +136,6 @@ const Dashboard = () => {
             onPropertyClick={(p) => navigate(`/property/${p.email}/${p.name}`)}
           />
 
-          {/* {<div className="featured-properties">
-          {loadingProps ? (
-            <p>Loading properties…</p>
-          ) : error ? (
-            <p style={{ color: "red" }}>{error}</p>
-          ) : properties.length > 0 ? (
-            properties.slice(0, 4).map((p, idx) => {
-              const imgSrc = p.img || (p.imgLink?.length > 0 ? p.imgLink[0] : null);
-              return (
-                <div key={p._id || idx} className="property-card" onClick={() => navigate(`/property/${p.email}/${p.name}`)}>
-                  {imgSrc ? (
-                    <img src={imgSrc} alt={p.city} className="property-img" />
-                  ) : (
-                    <div className="property-img-placeholder" />
-                  )}
-                  <div className="card-body">
-                    <h2>{p.name}</h2>
-                    <h3>{p.city} — {p.BHK} BHK</h3>
-                    <p>Rent: ₹{p.rent}</p>
-                    <div><img
-                      src="/location-icon.png"
-                      alt="Clickable"
-                      style={{ width: "20px", cursor: "pointer" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (p?.addressLink) {
-                          window.open(p.addressLink, "_blank", "noopener,noreferrer");
-                        } 
-                      }}
-                      role="button"
-                      tabIndex={0}
-                    /></div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <p>Select a city to view available properties.</p>
-          )}
-        </div>} */}
           {properties.length > 0 && (
             <div className="see-more-wrap">
               <button
@@ -172,7 +147,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
       </div>
     </>
   );
