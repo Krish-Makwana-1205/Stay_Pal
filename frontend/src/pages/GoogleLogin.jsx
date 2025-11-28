@@ -51,7 +51,7 @@ function GoogleLogin() {
         <h2 className="google-login-title">Login to Continue</h2>
 
         <button className="google-btn" onClick={() => googleLogin()}>
-          <img src="/google-icon.png" alt="Google" />
+          <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" />
           Continue with Google
         </button>
 

@@ -13,7 +13,6 @@ export default function Filters({ onApply, defaultCity }) {
   const storageKey = user ? `filters_${user.email}` : "filters_guest";
   const userKey = user ? user.email : "guest";
 
-  // --- Initialize all state from localStorage ---
   const [selectedCity, setSelectedCity] = useState(null);
   const [rentLower, setRentLower] = useState("0");
   const [rentUpper, setRentUpper] = useState("100000");
@@ -27,7 +26,6 @@ export default function Filters({ onApply, defaultCity }) {
   const [description, setDescription] = useState("");
   const [googleLink, setGoogleLink] = useState("");
 
-  // 🔧 NEW: Track if we've done initial load
   const [initialLoadDone, setInitialLoadDone] = useState(false);
 
   // Load saved filters on mount
@@ -38,7 +36,6 @@ export default function Filters({ onApply, defaultCity }) {
       if (saved.city) setSelectedCity({ value: saved.city, label: saved.city });
       if (saved.rentLower !== undefined) setRentLower(String(saved.rentLower));
       if (saved.rentUpper !== undefined) setRentUpper(String(saved.rentUpper));
-      // ⭐ RESTORE LOCALITY - this is the key fix
       if (saved.locality) setLocality(saved.locality);
       if (saved.BHK !== undefined) setBHK(String(saved.BHK));
       if (saved.furnishingType) setFurnishingType(saved.furnishingType);
@@ -50,10 +47,8 @@ export default function Filters({ onApply, defaultCity }) {
       if (saved.description) setDescription(saved.description);
       if (saved.googleLink) setGoogleLink(saved.googleLink);
       
-      // If there's no saved city but a parent provided defaultCity, use it
       if (!saved.city && defaultCity) {
         setSelectedCity({ value: defaultCity, label: defaultCity });
-        // try per-city default locality
         const perCityKey = `defaultLocality_${userKey}_${defaultCity}`;
         const perSaved = localStorage.getItem(perCityKey);
         if (perSaved) setLocality(perSaved);
@@ -66,9 +61,7 @@ export default function Filters({ onApply, defaultCity }) {
     }
   }, [storageKey]);
 
-  // ---------- persist filters as user types ----------
   useEffect(() => {
-    // ⭐ Don't persist until initial load is complete
     if (!initialLoadDone) return;
 
     const payload = {
@@ -105,7 +98,6 @@ export default function Filters({ onApply, defaultCity }) {
     googleLink,
   ]);
 
-  // ---------- city loader ----------
   const loadCityOptions = (inputValue, callback) => {
     const allCities = City.getCitiesOfCountry("IN");
     const filtered = allCities
@@ -117,7 +109,6 @@ export default function Filters({ onApply, defaultCity }) {
     callback(filtered);
   };
 
-  // ---------- validation ----------
   const parsedLower = Number(rentLower === "" ? NaN : rentLower);
   const parsedUpper = Number(rentUpper === "" ? NaN : rentUpper);
   const rentLowerIsValid =
@@ -134,7 +125,6 @@ export default function Filters({ onApply, defaultCity }) {
       ? "Minimum rent cannot be greater than maximum rent."
       : "";
 
-  // ---------- apply ----------
   const handleApply = () => {
     if (!selectedCity?.value) {
       alert("Please select a city before applying filters.");
@@ -172,7 +162,6 @@ export default function Filters({ onApply, defaultCity }) {
     onApply(filters);
   };
 
-  // ---------- reset ----------
   const handleReset = () => {
     setSelectedCity(null);
     setLocality("");
@@ -192,7 +181,6 @@ export default function Filters({ onApply, defaultCity }) {
     } catch {}
   };
 
-  // ---------- convert nearby ----------
   const nearbyValue = Array.isArray(nearbyPlaces)
     ? nearbyPlaces.map((p) => ({ label: p, value: p }))
     : nearbyPlaces
@@ -242,8 +230,7 @@ export default function Filters({ onApply, defaultCity }) {
           onChange={(val) => {
             setSelectedCity(val);
             
-            // ⭐ IMPORTANT: When user manually changes city, clear locality
-            // BUT only if this is NOT the initial load
+         
             if (initialLoadDone) {
               setLocality("");
             }
@@ -273,7 +260,6 @@ export default function Filters({ onApply, defaultCity }) {
           value={locality}
           onChange={(val) => {
             setLocality(val);
-            // persist per-city default locality for this user
             if (selectedCity?.value) {
               try {
                 const perCityKey = `defaultLocality_${userKey}_${selectedCity.value}`;
@@ -303,7 +289,7 @@ export default function Filters({ onApply, defaultCity }) {
         </div>
 
         <div style={{ width: 150 }}>
-          <label>Area Size (sq ft)</label>
+          <label>Area  (sq ft)</label>
           <input
             type="number"
             min="0"

@@ -320,11 +320,13 @@ const googlLogin = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.cookie("uid", token, {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false,
-        });
+      res.cookie("uid", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+});
+
 
         return res.status(200).json({
             success: true,

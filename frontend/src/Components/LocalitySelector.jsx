@@ -22,7 +22,7 @@ const LocalitySelector = ({ city, value, onChange }) => {
     
     try {
       const res = await fetch(
-        `http://api.geonames.org/postalCodeSearchJSON?placename=${cityName}&maxRows=500&username=Namra`
+        `https://api.geonames.org/postalCodeSearchJSON?placename=${cityName}&maxRows=500&username=Namra`
       );
       const data = await res.json();
       const localityObjects = data.postalCodes.map((p) => ({
