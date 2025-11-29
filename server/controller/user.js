@@ -58,12 +58,12 @@ async function uploadProfilePhoto(req, res) {
         const imageUrl = req.file.path;
         const User = req.user;
         if (!User.email || !User.name) {
-            return res.status(400).json({ message: "Error while fetching cookie data" , success:true});
+            return res.status(400).json({ message: "Error while fetching cookie data", success: true });
         }
         const updatedUser = await user.findOneAndUpdate(
-            { email: req.user.email},
+            { email: req.user.email },
             { profilePhoto: imageUrl },
-            { new: true}
+            { new: true }
         );
 
         if (!updatedUser) {
@@ -148,11 +148,11 @@ async function makeUser(req, res) {
         istenant: false,
     });
     res.cookie("uid", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/"
-});
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/"
+    });
 
     return res
         .status(200)
@@ -182,11 +182,11 @@ async function loginUser(req, res) {
     }
     const token = setUser(User);
     res.cookie("uid", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/"
-});
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/"
+    });
 
     return res.status(200).json({ success: true, message: "User login" });
 }
@@ -281,9 +281,11 @@ async function forgotPassword(req, res) {
 }
 
 function logOut(req, res) {
-    res.clearCookie("uid", {
+    res.clearcookie("uid", token, {
         httpOnly: true,
-        sameSite: "strict",
+        secure: true,
+        sameSite: "none",
+        path: "/"
     });
     res.status(200).json({ message: "Logged out successfully" });
 }
@@ -320,12 +322,12 @@ const googlLogin = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-      res.cookie("uid", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    path: "/",
-});
+        res.cookie("uid", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            path: "/",
+        });
 
 
         return res.status(200).json({

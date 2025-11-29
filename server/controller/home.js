@@ -432,6 +432,7 @@ async function getMyApplications(req, res) {
 
 
   } catch (error) {
+    
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -648,7 +649,7 @@ async function filterProperties(req, res) {
       prop,
       basePoints: calculateBasicPoints(prop),
     }));
-
+    
     baseScored.sort((a, b) => b.basePoints - a.basePoints);
 
 

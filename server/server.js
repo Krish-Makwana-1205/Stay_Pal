@@ -55,5 +55,5 @@ app.listen(PORT, () => {
 });
 
 connectmongodB(url).then(() => {
-  console.log("DB up");
+  console.log("DB up");
 });
