@@ -90,6 +90,7 @@ export default function ForgetPassword() {
       placeholder="Email"
       name="email"
       value={email}
+      maxLength={30}
       onChange={(e) => setEmail(e.target.value)}
       required
       disabled={step === "reset"}
@@ -112,6 +113,7 @@ export default function ForgetPassword() {
           type="password"
           placeholder="New Password"
           name="password"
+          maxLength={10}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -122,6 +124,7 @@ export default function ForgetPassword() {
           type="password"
           placeholder="Confirm New Password"
           name="confirmPassword"
+          maxLength={10}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required

@@ -118,6 +118,7 @@ export default function Signup() {
                 placeholder="Email"
                 name="email"
                 value={email}
+                maxLength={30}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={step === "otp"}
@@ -132,6 +133,8 @@ export default function Signup() {
                 placeholder="Set Password"
                 value={password}
                 name="password"
+                minLength={5}
+                maxLength={10}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={step === "otp"}
@@ -144,6 +147,8 @@ export default function Signup() {
               <input
                 type="password"
                 placeholder="Confirm Password"
+                minLength={5}
+                maxLength={10}
                 value={confirmPassword}
                 name="confirmPassword"
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -159,6 +164,7 @@ export default function Signup() {
                 type="text"
                 placeholder="Username"
                 value={name}
+                maxLength={15}
                 name="name"
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -174,6 +180,7 @@ export default function Signup() {
                   type="text"
                   placeholder="Enter OTP"
                   value={otp}
+                  maxLength={6}
                   name="otp"
                   onChange={(e) => setOtp(e.target.value)}
                   required

@@ -480,6 +480,7 @@ export default function Filters({ onApply, defaultCity }) {
         <label>Describe your dream property</label>
         <textarea
           value={description}
+          maxLength={100}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Describe the kind of property you want..."
           rows="3"

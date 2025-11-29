@@ -148,6 +148,7 @@ export default function ChatPage() {
             <input
               className="room-text-input"
               value={message}
+              maxLength={1000}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type message..."
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}

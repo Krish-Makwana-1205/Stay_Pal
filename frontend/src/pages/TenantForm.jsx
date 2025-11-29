@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../StyleSheets/TenantForm.css";
 import { form1 } from "../api/tenantform";
 import { useNavigate } from "react-router-dom";
@@ -6,15 +6,15 @@ import Alert from "../Components/Alert";
 import { useAuth } from "../context/AuthContext";         
 import AsyncSelect from "react-select/async";              
 import { Country, City } from "country-state-city";     
-import { useEffect } from "react";   
 
 export default function TenantForm() {
-  const { user ,fetchUser} = useAuth();
+  const { user, fetchUser } = useAuth();
   const navigate = useNavigate();
 
-    useEffect(() => {
-      if (!user) navigate("/login");
-    }, [ user, navigate]);
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [user, navigate]);
+
   const [formData, setFormData] = useState({
     nationality: "",
     hometown: "",
@@ -22,9 +22,12 @@ export default function TenantForm() {
     dob: "",
   });
 
-  const [selectedCountryCode, setSelectedCountryCode] = useState(null); 
+  const [selectedCountryCode, setSelectedCountryCode] = useState(null);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading, setLoading] = useState(false);
+
+  // Prevent future DOB
+  const today = new Date().toISOString().split("T")[0];
 
   const loadCountryOptions = (inputValue, callback) => {
     if (!inputValue || inputValue.length < 1) {
@@ -46,6 +49,7 @@ export default function TenantForm() {
 
     callback(filtered);
   };
+
   const loadCityOptions = (inputValue, callback) => {
     if (!selectedCountryCode) {
       callback([]);
@@ -80,27 +84,24 @@ export default function TenantForm() {
     return <p className="loading-text">Loading user...</p>;
   }
 
-  console.log(user);
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCountryChange = (selectedOption) => {
     if (selectedOption) {
-      setSelectedCountryCode(
-        selectedOption.value === "OTHER" ? null : selectedOption.value
-      );
+      setSelectedCountryCode(selectedOption.value);
       setFormData({
         ...formData,
         nationality: selectedOption.label,
-        hometown: "", // clear previous city if country changes
+        hometown: "",
       });
     } else {
       setSelectedCountryCode(null);
       setFormData({ ...formData, nationality: "", hometown: "" });
     }
   };
+
   const handleCityChange = (selectedOption) => {
     setFormData({
       ...formData,
@@ -142,7 +143,9 @@ export default function TenantForm() {
   return (
     <div className="tenant-form-container">
       <h2 className="form-title">Tenant Profile</h2>
+
       <form onSubmit={handleSubmit} className="tenant-form">
+
         <label>
           Country <span className="required">*</span>
         </label>
@@ -157,7 +160,6 @@ export default function TenantForm() {
         <label>
           Hometown <span className="required">*</span>
         </label>
-        {/* ✅ UPDATED: City search enabled only after country is selected */}
         <AsyncSelect
           cacheOptions
           loadOptions={loadCityOptions}
@@ -167,7 +169,7 @@ export default function TenantForm() {
               ? "Type to search your city..."
               : "Select country first"
           }
-          isDisabled={!selectedCountryCode} // ✅ disable until country chosen
+          isDisabled={!selectedCountryCode}
           isClearable
         />
 
@@ -194,6 +196,7 @@ export default function TenantForm() {
           name="dob"
           value={formData.dob}
           onChange={handleChange}
+          max={today}       // ❌ Prevents future date selection
           required
         />
 

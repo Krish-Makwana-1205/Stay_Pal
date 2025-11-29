@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { fetchproperty } from "../api/filters";
 import "../StyleSheets/Dashboard.css";
 
-import Header from '../Components/Header';
+import Header from '../components/Header';
 import FeaturedProperties from "../Components/FeaturedProperties";
 
 const Dashboard = () => {
