@@ -351,9 +351,6 @@ async function getApplicationsForOwner(req, res) {
       if (preferences.notes && tenant.description) {
         descmatch = await getSimilaritySimple(preferences.notes, tenant.description);
       }
-      console.log(tenant.username);
-      console.log(match);
-      console.log(dif);
 
       return {
         match,
@@ -432,7 +429,7 @@ async function getMyApplications(req, res) {
 
 
   } catch (error) {
-    
+
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -553,8 +550,8 @@ async function filterProperties(req, res) {
       }
 
       if (areaSize && prop.areaSize) {
-        const diff = prop.areaSize - areaSize;
-        points += Math.max(0, 10 + diff / 100); // the more the better
+        let diff = abs(prop.areaSize - areaSize);
+        points += max(100 - diff, 0)
       }
 
       if (nearbyPlaces && prop.nearbyPlaces) {
@@ -649,7 +646,7 @@ async function filterProperties(req, res) {
       prop,
       basePoints: calculateBasicPoints(prop),
     }));
-    
+
     baseScored.sort((a, b) => b.basePoints - a.basePoints);
 
 

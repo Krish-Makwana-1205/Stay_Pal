@@ -69,7 +69,6 @@ async function getSimilarity(sentence1, sentence2) {
 
     const hasNegation = /\b(no|not|never|don't|dont|do not|avoid|without|lack of)\b/i.test(text1);
     const negatedTargetRaw = extractNegatedTarget(text1); // e.g. "a house near metro"
-    console.log('neg');
     console.log(negatedTargetRaw);
     const exclusiveTargetRaw = extractExclusiveTarget(text1); // e.g. "apartment near park only"
 

@@ -281,13 +281,14 @@ async function forgotPassword(req, res) {
 }
 
 function logOut(req, res) {
-    res.clearcookie("uid", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/"
-    });
-    res.status(200).json({ message: "Logged out successfully" });
+    res.clearCookie("uid", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/"
+});
+
+res.status(200).json({ message: "Logged out successfully" });
 }
 
 const googlLogin = async (req, res) => {
