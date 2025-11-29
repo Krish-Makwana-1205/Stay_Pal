@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchChat, sendChatMessage } from "../api/chat";
-import Header from "../Components/Header";
+import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import "../StyleSheets/ChatPage.css"; 
 
@@ -16,6 +16,9 @@ export default function ChatPage() {
   // AUTH
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Check if user is trying to chat with themselves
+  const isSelfChat = user?.email === receiverEmail;
 
   // LOGOUT HANDLER
   const handleLogout = async () => {
@@ -48,8 +51,55 @@ export default function ChatPage() {
   }, [chat]);
 
   useEffect(() => {
-    loadChat();
-  }, [receiverEmail]);
+    if (!isSelfChat) {
+      loadChat();
+    }
+  }, [receiverEmail, isSelfChat]);
+
+  // If trying to chat with self, show creative error
+  if (isSelfChat) {
+    return (
+      <>
+        <Header 
+          user={user}
+          onLogout={handleLogout} 
+          onNavigate={navigate}
+        />
+
+        <div className="room-page-wrapper">
+          <div className="self-chat-error-container">
+            <div className="self-chat-error-card">
+              <div className="error-icon-wrapper">
+                <span className="error-mirror-emoji"></span>
+              </div>
+              
+              <h1 className="error-title">Oops! Talking to Yourself?</h1>
+              
+              <p className="error-message">
+                We know you're amazing, but even you can't chat with yourself! 
+                <br/>
+                <span className="error-submessage">
+                  (Try finding someone else to share your brilliance with )
+                </span>
+              </p>
+
+              <div className="error-suggestion">
+                <p>💡 <strong>Pro tip:</strong> Making friends works better when there's... you know... another person involved!</p>
+              </div>
+
+              <button 
+                className="error-back-btn"
+                onClick={() => navigate(-1)}
+              >
+                <span className="back-arrow">←</span>
+                Take Me Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -74,7 +124,7 @@ export default function ChatPage() {
           <div className="room-history-window">
             {chat?.messages?.length ? (
               chat.messages.map((msg, idx) => {
-                const isMe = msg.senderEmail !== receiverEmail; // Assuming user is sender if not receiver
+                const isMe = msg.senderEmail !== receiverEmail;
                 
                 return (
                   <div 

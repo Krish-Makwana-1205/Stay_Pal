@@ -4,6 +4,7 @@ import { form2, getProfile, uploadPhoto } from "../api/tenantform";
 import Alert from "../Components/Alert";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import CreatableSelect from "react-select/creatable";
 
 export default function TenantForm2() {
   const navigate = useNavigate();
@@ -44,7 +45,6 @@ export default function TenantForm2() {
     havePet: false,
     workPlace: "",
     descriptions: "",
-    // Added fields
     maritalStatus: "Any",
     family: false,
     language: "Any",
@@ -55,7 +55,6 @@ export default function TenantForm2() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [loading1, setloading1] = useState(false);
-  const [newHobby, setNewHobby] = useState("");
 
   // Prefill existing tenant profile
   useEffect(() => {
@@ -79,7 +78,7 @@ export default function TenantForm2() {
           studious: typeof t.studious === "boolean" ? t.studious : f.studious,
           fitness_freak: typeof t.fitness_freak === "boolean" ? t.fitness_freak : f.fitness_freak,
           sporty: typeof t.sporty === "boolean" ? t.sporty : f.sporty,
-          traveller: typeof t.traveller === "boolean" ? t.traveller : (t.traveller ?? f.traveller), // Handle legacy key
+          traveller: typeof t.traveller === "boolean" ? t.traveller : (t.traveller ?? f.traveller),
           party_lover: typeof t.party_lover === "boolean" ? t.party_lover : f.party_lover,
           music_lover: typeof t.music_lover === "boolean" ? t.music_lover : f.music_lover,
           hobbies: Array.isArray(t.hobbies) ? t.hobbies : f.hobbies,
@@ -89,7 +88,6 @@ export default function TenantForm2() {
           havePet: typeof t.Pet_lover === "boolean" ? t.Pet_lover : f.havePet,
           workPlace: t.workPlace ?? f.workPlace,
           descriptions: t.description ?? t.descriptions ?? f.descriptions,
-          // Prefill added fields:
           maritalStatus: t.maritalStatus ?? f.maritalStatus,
           family: typeof t.family === "boolean" ? t.family : f.family,
           language: t.language ?? f.language,
@@ -118,17 +116,6 @@ export default function TenantForm2() {
   // Toggle booleans (for icon buttons)
   const togglePref = (key) => {
     setFormData((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  // Hobby Handlers
-  const handleAddHobby = () => {
-    if (!newHobby.trim()) return;
-    setFormData((prev) => ({ ...prev, hobbies: [...prev.hobbies, newHobby.trim()] }));
-    setNewHobby("");
-  };
-
-  const handleRemoveHobby = (index) => {
-    setFormData((prev) => ({ ...prev, hobbies: prev.hobbies.filter((_, i) => i !== index) }));
   };
 
   // Photo Handler
@@ -202,7 +189,10 @@ export default function TenantForm2() {
 
       if (res.status === 200 || res.status === 201) {
         setMessage({ text: "Preferences saved successfully!", type: "success" });
-        // navigate("/dashboard"); // Optional: redirect or stay
+        // Redirect to dashboard/roommates after 1.5 seconds
+        setTimeout(() => {
+          navigate("/dashboard/roommates");
+        }, 1500);
       } else {
         setMessage({ text: res.data?.message || "Unexpected response", type: "error" });
       }
@@ -213,6 +203,16 @@ export default function TenantForm2() {
       setloading1(false);
     }
   };
+
+  // Convert hobbies array to react-select format
+  const hobbiesValue = Array.isArray(formData.hobbies)
+    ? formData.hobbies.map((h) => ({ label: h, value: h }))
+    : [];
+
+  // Convert allergies array to react-select format
+  const allergiesValue = Array.isArray(formData.allergies)
+    ? formData.allergies.map((a) => ({ label: a, value: a }))
+    : [];
 
   return (
     <div className="profile-page-wrapper">
@@ -290,20 +290,35 @@ export default function TenantForm2() {
               <option value="Married">Married</option>
             </select>
 
+            <label className="profile-label">Has Family?</label>
+            <select 
+              className="profile-input" 
+              name="family" 
+              value={formData.family ? "Yes" : "No"} 
+              onChange={(e) => setFormData(prev => ({ ...prev, family: e.target.value === "Yes" }))}
+            >
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+
             <label className="profile-label">Language</label>
             <input className="profile-input" type="text" name="language" value={formData.language} onChange={handleChange} placeholder="Any" />
 
             <label className="profile-label">Min Stay (Months)</label>
-            <input className="profile-input" type="number" name="minStayDuration" value={formData.minStayDuration} onChange={handleChange} min={-1} step={1} placeholder="-1 for no minimum" />
-
-            <label className="profile-label">Allergies (optional)</label>
             <input 
               className="profile-input" 
-              type="text" 
-              name="allergies" 
-              value={Array.isArray(formData.allergies) ? formData.allergies.join(", ") : formData.allergies} 
-              onChange={(e) => setFormData((p) => ({ ...p, allergies: e.target.value ? e.target.value.split(",").map(s => s.trim()).filter(Boolean) : [] }))} 
-              placeholder="comma separated" 
+              type="number" 
+              name="minStayDuration" 
+              value={formData.minStayDuration} 
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "" || !isNaN(Number(val))) {
+                  setFormData(prev => ({ ...prev, minStayDuration: val === "" ? -1 : Number(val) }));
+                }
+              }}
+              min={-1} 
+              step={1} 
+              placeholder="-1 for no minimum" 
             />
           </div>
 
@@ -333,25 +348,80 @@ export default function TenantForm2() {
             <input className="profile-input" type="text" name="workPlace" value={formData.workPlace} onChange={handleChange} />
 
             <label className="profile-label">Hobbies</label>
-            <div className="profile-hobby-area">
-              <input className="profile-input" type="text" value={newHobby} onChange={(e) => setNewHobby(e.target.value)} placeholder="Enter a hobby" />
-              <button type="button" className="profile-add-btn" onClick={handleAddHobby}>Add</button>
-            </div>
-            <ul className="profile-hobby-tags">
-              {formData.hobbies.map((hobby, index) => (
-                <li key={index}>
-                  {hobby} <button type="button" onClick={() => handleRemoveHobby(index)} className="profile-remove-tag">x</button>
-                </li>
-              ))}
-            </ul>
+            <CreatableSelect
+              isMulti
+              value={hobbiesValue}
+              onChange={(vals) =>
+                setFormData((s) => ({ ...s, hobbies: (vals || []).map((v) => v.value) }))
+              }
+              options={[
+                { value: "Reading", label: "Reading" },
+                { value: "Gaming", label: "Gaming" },
+                { value: "Cooking", label: "Cooking" },
+                { value: "Sports", label: "Sports" },
+                { value: "Music", label: "Music" },
+                { value: "Travel", label: "Travel" },
+                { value: "Photography", label: "Photography" },
+                { value: "Art", label: "Art" },
+                { value: "Yoga", label: "Yoga" },
+                { value: "Dancing", label: "Dancing" },
+                { value: "Gym", label: "Gym" },
+                { value: "Movies", label: "Movies" },
+              ]}
+              placeholder="Select or type your hobbies..."
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  minHeight: '40px',
+                  borderRadius: '4px',
+                  borderColor: '#ddd',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
+            />
+
+            <label className="profile-label" style={{marginTop: '15px'}}>Allergies</label>
+            <CreatableSelect
+              isMulti
+              value={allergiesValue}
+              onChange={(vals) =>
+                setFormData((s) => ({ ...s, allergies: (vals || []).map((v) => v.value) }))
+              }
+              options={[
+                { value: "Peanuts", label: "Peanuts" },
+                { value: "Dairy", label: "Dairy" },
+                { value: "Gluten", label: "Gluten" },
+                { value: "Shellfish", label: "Shellfish" },
+                { value: "Soy", label: "Soy" },
+                { value: "Eggs", label: "Eggs" },
+                { value: "Tree Nuts", label: "Tree Nuts" },
+                { value: "Fish", label: "Fish" },
+                { value: "Wheat", label: "Wheat" },
+                { value: "Dust", label: "Dust" },
+                { value: "Pollen", label: "Pollen" },
+                { value: "Pet Dander", label: "Pet Dander" },
+                { value: "Lactose", label: "Lactose" },
+              ]}
+              placeholder="Select or type allergies..."
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  minHeight: '40px',
+                  borderRadius: '4px',
+                  borderColor: '#ddd',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
+            />
             
-            <label className="profile-label">About Yourself</label>
+            <label className="profile-label" style={{marginTop: '15px'}}>About Yourself</label>
             <textarea className="profile-input" name="descriptions" value={formData.descriptions} onChange={handleChange} placeholder="Tell us something about yourself..." />
-            
-            <div className="profile-checkbox-wrapper">
-              <input type="checkbox" name="family" checked={formData.family} onChange={handleChange} id="famCheck" />
-              <label htmlFor="famCheck" className="profile-checkbox-label">Family-friendly</label>
-            </div>
           </div>
         </div>
 

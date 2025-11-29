@@ -80,32 +80,49 @@ export default function PropertyView() {
     navigate(`/chat/${property.email}`);
   };
 
-  const handleApplyClick = async () => {
-    if (user?.email === property?.email) {
+ const handleApplyClick = async () => {
+  if (user?.email === property?.email) {
+    setAlertType("error");
+    setAlertMsg("You cannot apply to your own property!");
+    return;
+  }
+
+  try {
+    setApplyLoading(true);
+
+    const payload = {
+      propertyName: property.name,
+      propertyOwnerEmail: property.email,
+    };
+
+    await applyForProperty(payload);
+
+    setAlertType("success");
+    setAlertMsg("Application sent to the owner!");
+  } catch (err) {
+    console.error(err);
+
+    // ⭐ If backend says “already applied”
+    const rawMsg =
+      err.response?.data?.message?.toLowerCase() ||
+      err.message?.toLowerCase() ||
+      "";
+
+    if (
+      rawMsg.includes("already") ||
+      rawMsg.includes("duplicate") ||
+      rawMsg.includes("exist")
+    ) {
       setAlertType("error");
-      setAlertMsg("You cannot apply to your own property!");
-      return;
-    }
-
-    try {
-      setApplyLoading(true);
-
-      const payload = {
-        propertyName: property.name,
-        propertyOwnerEmail: property.email,
-      };
-
-      await applyForProperty(payload);
-      setAlertType("success");
-      setAlertMsg("Application sent to the owner!");
-    } catch (err) {
-      console.error(err);
+      setAlertMsg("You already applied!");
+    } else {
       setAlertType("error");
-      setAlertMsg(err.response?.data?.message || "Failed to apply.");
-    } finally {
-      setApplyLoading(false);
+      setAlertMsg("Failed to apply. Try again later.");
     }
-  };
+  } finally {
+    setApplyLoading(false);
+  }
+};
 
   if (loading) return <h2 className="pv-loading">Loading property...</h2>;
   if (!property) return <h2 className="pv-loading">Property not found.</h2>;

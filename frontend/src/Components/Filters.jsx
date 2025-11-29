@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
 import { City } from "country-state-city";
-import NumberInput from "../Components/NumberInput";
 import LocalitySelector from "../Components/LocalitySelector";
 import { useAuth } from "../context/AuthContext";
 
@@ -230,15 +229,12 @@ export default function Filters({ onApply, defaultCity }) {
           onChange={(val) => {
             setSelectedCity(val);
             
-         
             if (initialLoadDone) {
               setLocality("");
             }
 
             if (val?.value) {
               localStorage.setItem("defaultCity", val.value.trim());
-              // If user previously saved a default locality for this city, apply it
-              // BUT only during manual city change (not during initial restore)
               if (initialLoadDone) {
                 try {
                   const perCityKey = `defaultLocality_${userKey}_${val.value}`;
@@ -283,18 +279,28 @@ export default function Filters({ onApply, defaultCity }) {
             min="1"
             max="10"
             value={BHK}
-            onChange={(e) => setBHK(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "" || (!isNaN(Number(val)) && Number(val) >= 0)) {
+                setBHK(val);
+              }
+            }}
             placeholder="Enter number of BHK"
           />
         </div>
 
         <div style={{ width: 150 }}>
-          <label>Area  (sq ft)</label>
+          <label>Area (sq ft)</label>
           <input
             type="number"
             min="0"
             value={areaSize}
-            onChange={(e) => setAreaSize(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "" || (!isNaN(Number(val)) && Number(val) >= 0)) {
+                setAreaSize(val);
+              }
+            }}
             placeholder="sq ft"
           />
         </div>
@@ -305,33 +311,55 @@ export default function Filters({ onApply, defaultCity }) {
         <label>Rent (₹)</label>
 
         <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
-          <NumberInput
-            name="rentLower"
+          <input
+            type="number"
+            placeholder="Min Rent"
             value={rentLower}
             min={0}
+            max={MAX_RENT}
             onChange={(e) => {
-              const v = e.target.value.replace(/[^\d]/g, "");
-              if (v === "") setRentLower("");
-              else {
-                let n = Number(v);
-                if (n > MAX_RENT) n = MAX_RENT;
-                setRentLower(String(n));
+              const val = e.target.value;
+              if (val === "" || (!isNaN(Number(val)) && Number(val) >= 0)) {
+                setRentLower(val);
               }
+            }}
+            onBlur={() => {
+              if (rentLower !== "" && Number(rentLower) > MAX_RENT) {
+                setRentLower(String(MAX_RENT));
+              }
+            }}
+            style={{
+              flex: 1,
+              padding: '8px',
+              fontSize: '14px',
+              border: '1px solid #ddd',
+              borderRadius: '4px'
             }}
           />
 
-          <NumberInput
-            name="rentUpper"
+          <input
+            type="number"
+            placeholder="Max Rent"
             value={rentUpper}
             min={0}
+            max={MAX_RENT}
             onChange={(e) => {
-              const v = e.target.value.replace(/[^\d]/g, "");
-              if (v === "") setRentUpper("");
-              else {
-                let n = Number(v);
-                if (n > MAX_RENT) n = MAX_RENT;
-                setRentUpper(String(n));
+              const val = e.target.value;
+              if (val === "" || (!isNaN(Number(val)) && Number(val) >= 0)) {
+                setRentUpper(val);
               }
+            }}
+            onBlur={() => {
+              if (rentUpper !== "" && Number(rentUpper) > MAX_RENT) {
+                setRentUpper(String(MAX_RENT));
+              }
+            }}
+            style={{
+              flex: 1,
+              padding: '8px',
+              fontSize: '14px',
+              border: '1px solid #ddd',
+              borderRadius: '4px'
             }}
           />
         </div>

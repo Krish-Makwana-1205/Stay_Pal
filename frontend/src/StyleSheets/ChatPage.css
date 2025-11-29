@@ -235,3 +235,193 @@
     box-shadow: 6px 6px 0 var(--room-primary);
   }
 }
+/* Re-use existing variables */
+:root {
+  --room-primary: #0d2a4f;
+  --room-accent: #007bff;
+  --room-bg: #f4f7f9;
+  --room-white: #ffffff;
+  --room-grid-line: rgba(13, 42, 79, 0.05);
+}
+
+/* Wrapper like main page */
+.self-chat-error-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+
+  background-color: var(--room-bg);
+  background-image:
+    linear-gradient(var(--room-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--room-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  overflow: hidden;
+}
+
+/* Same animated pattern as main */
+.self-chat-error-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('https://i.pinimg.com/736x/9d/f5/a6/9df5a6a9cca49ac8746154369149b667.jpg');
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  opacity: 0.12;
+  animation: roomBgPan 60s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* CARD — matches room-interface-card */
+.self-chat-error-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 650px;
+
+  background: var(--room-white);
+  border: 2px solid var(--room-primary);
+  box-shadow: 15px 15px 0 var(--room-primary);
+  padding: 50px 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  animation: roomPopIn 0.5s ease-out;
+}
+
+/* Decorative top bar */
+.self-chat-error-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 8px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--room-primary) 0%,
+    var(--room-primary) 20%,
+    var(--room-accent) 20%,
+    var(--room-accent) 40%
+  );
+}
+
+/* Title */
+.error-title {
+  font-size: 1.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--room-primary);
+  margin-bottom: 15px;
+}
+
+/* Emoji animation */
+.error-icon-wrapper {
+  margin-bottom: 15px;
+}
+
+.error-mirror-emoji {
+  font-size: 100px;
+  animation: bounce 2s infinite ease-in-out;
+  color: var(--room-primary);
+}
+
+/* Main text */
+.error-message {
+  font-size: 1rem;
+  text-align: center;
+  color: var(--room-primary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+  padding: 0 10px;
+}
+
+.error-submessage {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #555;
+  margin-top: 5px;
+}
+
+/* Suggestion Box */
+.error-suggestion {
+  background: rgba(0, 123, 255, 0.05);
+  border: 1px solid var(--room-primary);
+  padding: 18px 20px;
+  border-radius: 12px;
+  max-width: 90%;
+  margin: 25px 0;
+  box-shadow: 4px 4px 0 var(--room-primary);
+}
+
+.error-suggestion p {
+  color: var(--room-primary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Button — same theme as send button */
+.error-back-btn {
+  padding: 14px 35px;
+  background: var(--room-primary);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 4px 4px 0 var(--room-accent);
+  transition: all 0.2s ease;
+}
+
+.error-back-btn:hover {
+  background: var(--room-accent);
+  transform: translate(-2px, -2px);
+}
+
+.back-arrow {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+/* Animations reused */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+@keyframes roomBgPan {
+  from {
+    background-position: 0px 0px, 25px 25px, 50px 0px;
+  }
+  to {
+    background-position: 100px 100px, 125px 125px, 150px 100px;
+  }
+}
+
+@keyframes roomPopIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .self-chat-error-card {
+    padding: 35px 25px;
+    box-shadow: 8px 8px 0 var(--room-primary);
+  }
+
+  .error-mirror-emoji {
+    font-size: 70px;
+  }
+
+  .error-title {
+    font-size: 1.4rem;
+  }
+}
+

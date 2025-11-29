@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../StyleSheets/NearestProperties.css";
 import { useNavigate } from "react-router-dom";
+import { fetchNearestProperties } from "../api/radiusSearchApi";
 
 export default function NearestProperties() {
   const [addressLink, setAddressLink] = useState("");
@@ -12,7 +13,7 @@ export default function NearestProperties() {
 
   const navigate = useNavigate();
 
-  /* 🔥 ASK LOCATION PERMISSION ON PAGE LOAD */
+  // Auto-fill location on mount
   useEffect(() => {
     if (!("geolocation" in navigator)) {
       setError("Your browser does not support location access.");
@@ -23,20 +24,14 @@ export default function NearestProperties() {
       (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-
-        // Convert to Google Maps link
-        const googleLink = `https://www.google.com/maps?q=${lat},${lng}`;
-
-        setAddressLink(googleLink); // autofill input
+        setAddressLink(`https://www.google.com/maps?q=${lat},${lng}`);
       },
-      (err) => {
-        console.log("Location error:", err);
-        setError("Location access denied. Please paste a Google Maps link manually.");
+      () => {
+        setError("Location denied. Please paste a Google Maps link manually.");
       }
     );
   }, []);
 
-  // SEARCH FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -49,40 +44,19 @@ export default function NearestProperties() {
     }
 
     setLoading(true);
+
     try {
-      const params = new URLSearchParams({
-        addressLink: addressLink.trim(),
-        radius: radiusKm.toString(),
-      });
-
-      const res = await fetch(
-        `http://localhost:8002/radiussearch?${params.toString()}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-
-      if (res.status === 401 || res.status === 403) {
-        throw new Error("You must be logged in to use this feature.");
-      }
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Error finding nearby properties.");
-      }
+      const res = await fetchNearestProperties(addressLink.trim(), radiusKm);
+      const data = res.data;
 
       if (!data.properties || data.properties.length === 0) {
         setInfoMessage("No nearby properties found within the selected radius.");
       } else {
         setProperties(data.properties);
-        setInfoMessage(
-          `${data.properties.length} properties found within ~${radiusKm} km.`
-        );
+        setInfoMessage(`${data.properties.length} properties found within ~${radiusKm} km.`);
       }
     } catch (err) {
-      setError(err.message || "Something went wrong.");
+      setError(err?.response?.data?.message || err.message || "Search failed.");
     } finally {
       setLoading(false);
     }
@@ -92,13 +66,10 @@ export default function NearestProperties() {
     <div className="np-page-bg">
       <div className="np-card">
         <h1 className="np-title">Find Nearest Properties</h1>
-        <p className="np-subtitle">
-          Allow location access or paste a Google Maps link manually.
-        </p>
+        <p className="np-subtitle">Allow location access or paste a Google Maps link manually.</p>
 
-        {/* SEARCH FORM */}
         <form className="np-form" onSubmit={handleSubmit}>
-          {/* Address link */}
+          {/* Address Link */}
           <div className="np-field-block">
             <div className="np-field-label-bar">
               <span className="np-field-label-main">Google Maps Link *</span>
@@ -114,9 +85,7 @@ export default function NearestProperties() {
               />
             </div>
 
-            <p className="np-field-help">
-              Auto-filled if location was granted.
-            </p>
+            <p className="np-field-help">Auto-filled if location was granted.</p>
           </div>
 
           {/* Radius */}
@@ -138,7 +107,7 @@ export default function NearestProperties() {
             </div>
           </div>
 
-          {/* Button & Messages */}
+          {/* Buttons */}
           <div className="np-button-row">
             <button className="np-btn" type="submit" disabled={loading}>
               {loading ? "Searching..." : "Search Nearby Properties"}
@@ -151,16 +120,16 @@ export default function NearestProperties() {
           )}
         </form>
 
-        {/* RESULTS */}
+        {/* Results */}
         <div className="np-results">
           {properties.map((p) => (
             <div
-              key={`${p.email}-${p.name}-${p._id}`}
+              key={p._id || `${p.email}-${p.name}`}
               className="np-result-card"
               onClick={() => navigate(`/property/${p.email}/${p.name}`)}
             >
               <div className="np-result-img-wrapper">
-                {p.imgLink && p.imgLink.length > 0 ? (
+                {Array.isArray(p.imgLink) && p.imgLink.length > 0 ? (
                   <img src={p.imgLink[0]} alt={p.name} />
                 ) : (
                   <div className="np-result-img-placeholder" />
