@@ -30,7 +30,7 @@ async function makeProfileform(req, res){
             gender:body.gender
         }, {upsert:true, new:true});
     }catch(error){
-        console.log(error.message);
+        console.log(error);
         return res.status(500).json({message:"Error in contacting Database", error:error.message});
     }
     
@@ -199,5 +199,4 @@ module.exports = {
     addPreferences, 
     tenantdetails,
     fullProfile,
-    sendProperties
 };
