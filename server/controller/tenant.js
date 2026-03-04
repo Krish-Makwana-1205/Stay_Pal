@@ -107,7 +107,7 @@ async function fullProfile(req, res) {
     if((!body.nationality) || (!body.hometown) || (!body.gender) || (!body.dob)){
         return res.status(400).json({message:"Did not receive all the required form fields"});
     }
-
+//dac
     if(body.nationality) body.nationality = body.nationality.trimEnd();
     if(body.hometown) body.hometown = body.hometown.trimEnd();
     if(body.gender) body.gender = body.gender.trimEnd();
